@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PinkChat</title>
+    <title>PinkChat - Real-time Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -14,33 +14,52 @@
         }
 
         body {
-            background: #f5eef2;
+            background: #f8f0f4;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* LAYOUT */
-        .main-container {
+        /* APP LAYOUT */
+        .app {
             display: flex;
-            flex-direction: column;
             height: 100vh;
+            width: 100%;
             background: white;
         }
 
-        /* HEADER */
-        .top-bar {
+        /* SIDEBAR (DAFTAR CHAT) */
+        .sidebar {
+            width: 320px;
             background: white;
-            padding: 14px 16px;
-            border-bottom: 1px solid #f0e0e6;
+            border-right: 1px solid #ffe0e8;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* MAIN CHAT AREA */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fefafb;
+            height: 100%;
+        }
+
+        /* HEADER */
+        .header {
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #ffe0e8;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .top-avatar {
-            width: 44px;
-            height: 44px;
-            background: #ff6b9d;
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff99c8, #ff6b9d);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -50,22 +69,22 @@
             font-size: 18px;
         }
 
-        .top-info {
+        .info {
             flex: 1;
         }
 
-        .top-info h3 {
+        .info h3 {
             font-size: 16px;
             color: #2d2d2d;
         }
 
-        .top-info p {
-            font-size: 11px;
+        .info p {
+            font-size: 12px;
             color: #ff6b9d;
             margin-top: 3px;
         }
 
-        .btn-logout {
+        .btn-icon {
             background: #ffe4ec;
             border: none;
             width: 38px;
@@ -89,13 +108,14 @@
             padding: 14px 16px;
             border-bottom: 1px solid #f0eef0;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .contact-item:active {
-            background: #fff0f5;
+        .contact-item:hover {
+            background: #fff5f8;
         }
 
-        .contact-circle {
+        .contact-avatar {
             width: 48px;
             height: 48px;
             background: #ffe4ec;
@@ -108,7 +128,7 @@
             color: #ff6b9d;
         }
 
-        .contact-text {
+        .contact-details {
             flex: 1;
         }
 
@@ -118,22 +138,22 @@
             font-size: 15px;
         }
 
-        .contact-nohp {
+        .contact-phone {
             font-size: 11px;
             color: #aa8a96;
             margin-top: 3px;
         }
 
-        /* TOMBOL AKSI */
-        .action-row {
-            background: white;
-            padding: 10px 16px;
+        /* ACTION BUTTONS */
+        .actions {
+            padding: 12px 16px;
             display: flex;
             gap: 12px;
-            border-top: 1px solid #f0e0e6;
+            border-top: 1px solid #ffe0e8;
+            background: white;
         }
 
-        .action-row button {
+        .actions button {
             flex: 1;
             background: #ffe4ec;
             border: none;
@@ -149,61 +169,8 @@
             gap: 8px;
         }
 
-        /* CHAT PANEL */
-        .chat-panel {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            background: #fefafb;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 20;
-        }
-
-        .chat-panel.show {
-            display: flex;
-        }
-
-        .chat-header {
-            background: white;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f0e0e6;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-back {
-            background: none;
-            border: none;
-            font-size: 22px;
-            color: #ff6b9d;
-            cursor: pointer;
-        }
-
-        .chat-avatar {
-            width: 42px;
-            height: 42px;
-            background: #ff6b9d;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .chat-name {
-            flex: 1;
-            font-weight: 600;
-            color: #2d2d2d;
-        }
-
-        /* AREA PESAN */
-        .message-area {
+        /* MESSAGES AREA */
+        .messages {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
@@ -212,66 +179,71 @@
             gap: 8px;
         }
 
-        .message-bubble {
-            max-width: 75%;
+        .message {
+            max-width: 70%;
             display: flex;
             flex-direction: column;
         }
 
-        .message-bubble.sent {
+        .message.sent {
             align-self: flex-end;
         }
 
-        .message-bubble.received {
+        .message.received {
             align-self: flex-start;
         }
 
-        .bubble-text {
-            padding: 10px 14px;
+        .bubble {
+            padding: 10px 15px;
             border-radius: 20px;
             font-size: 14px;
             word-wrap: break-word;
         }
 
-        .sent .bubble-text {
+        .sent .bubble {
             background: #ffd9e6;
             color: #2d2d2d;
         }
 
-        .received .bubble-text {
+        .received .bubble {
             background: white;
             color: #2d2d2d;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        .message-time {
+        .time {
             font-size: 10px;
             color: #bb9aa6;
             margin-top: 4px;
             margin-left: 10px;
         }
 
-        /* INPUT PESAN - PASTI ADA */
-        .input-row {
+        .sent .time {
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        /* INPUT AREA - PASTI ADA */
+        .input-area {
             background: white;
-            padding: 10px 16px;
+            padding: 12px 16px;
             display: flex;
             gap: 10px;
             align-items: center;
-            border-top: 1px solid #f0e0e6;
+            border-top: 1px solid #ffe0e8;
         }
 
-        .input-row input {
+        .input-area input {
             flex: 1;
             background: #fef0f4;
             border: none;
-            padding: 12px 16px;
+            padding: 12px 18px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
         }
 
-        .input-row button {
+        .input-area button {
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -282,7 +254,7 @@
             cursor: pointer;
         }
 
-        .icon-circle {
+        .input-area .circle {
             width: 44px;
             height: 44px;
             background: #ffe4ec;
@@ -294,14 +266,15 @@
             color: #ff6b9d;
         }
 
-        .empty-chat {
+        /* EMPTY STATE */
+        .empty {
             text-align: center;
             padding: 40px;
             color: #cc9aa8;
         }
 
-        /* MODAL LOGIN */
-        .login-modal {
+        /* MODAL */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -311,29 +284,29 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 1000;
         }
 
-        .login-card {
+        .modal-box {
             background: white;
             width: 90%;
-            max-width: 330px;
+            max-width: 340px;
             padding: 28px;
             border-radius: 28px;
             text-align: center;
         }
 
-        .login-card h3 {
+        .modal-box h3 {
             margin-bottom: 5px;
         }
 
-        .login-card p {
+        .modal-box p {
             color: #aa8a96;
-            font-size: 12px;
-            margin-bottom: 18px;
+            font-size: 13px;
+            margin-bottom: 20px;
         }
 
-        .login-card input {
+        .modal-box input {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
@@ -343,7 +316,7 @@
             font-size: 14px;
         }
 
-        .login-card button {
+        .modal-box button {
             width: 100%;
             padding: 12px;
             background: #ff6b9d;
@@ -355,17 +328,52 @@
             cursor: pointer;
         }
 
-        .toast-msg {
+        .toast {
             position: fixed;
-            bottom: 90px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: #2d2d2d;
             color: white;
-            padding: 8px 18px;
+            padding: 10px 20px;
             border-radius: 30px;
-            font-size: 12px;
-            z-index: 200;
+            font-size: 13px;
+            z-index: 1100;
+        }
+
+        /* RESPONSIVE MOBILE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .sidebar.show {
+                display: flex;
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 100;
+                width: 280px;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            .menu-btn {
+                display: flex !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-btn, .mobile-back {
+                display: none !important;
+            }
+        }
+
+        .menu-btn, .mobile-back {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #ff6b9d;
+            cursor: pointer;
+            margin-right: 8px;
         }
 
         .hidden {
@@ -374,7 +382,7 @@
     </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="app"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -394,22 +402,22 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     
-    let USER = null;
-    let CHAT_WITH = null;
-    let CHAT_NAME = null;
-    let unsub = null;
+    let currentUser = null;
+    let selectedUserId = null;
+    let selectedUserName = null;
+    let unsubscribeMsg = null;
     
-    function toast(msg) {
-        let t = document.querySelector('.toast-msg');
+    function showToast(msg) {
+        let t = document.querySelector('.toast');
         if (t) t.remove();
         t = document.createElement('div');
-        t.className = 'toast-msg';
+        t.className = 'toast';
         t.innerText = msg;
         document.body.appendChild(t);
         setTimeout(() => t.remove(), 2000);
     }
     
-    function escape(str) {
+    function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -419,298 +427,361 @@
         });
     }
     
-    async function getUser(uid) {
-        const d = await getDoc(doc(db, 'users', uid));
-        if (d.exists()) return { uid, ...d.data() };
+    async function getUserData(uid) {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) return { uid, ...snap.data() };
         return null;
     }
     
-    // TAMPILAN UTAMA
-    async function renderHome() {
-        const root = document.getElementById('root');
+    // ========== MAIN APP ==========
+    async function renderMainApp() {
+        const root = document.getElementById('app');
+        
         root.innerHTML = `
-            <div class="main-container">
-                <div class="top-bar">
-                    <div class="top-avatar">${USER?.fullName?.charAt(0) || 'U'}</div>
-                    <div class="top-info">
-                        <h3>${escape(USER?.fullName || 'User')}</h3>
-                        <p>${USER?.phone || ''}</p>
+            <div class="app">
+                <!-- SIDEBAR -->
+                <div class="sidebar" id="sidebar">
+                    <div class="header">
+                        <div class="avatar" id="userAvatar">${currentUser?.fullName?.charAt(0) || 'U'}</div>
+                        <div class="info">
+                            <h3>${escapeHtml(currentUser?.fullName || 'User')}</h3>
+                            <p>${currentUser?.phone || ''}</p>
+                        </div>
+                        <button class="btn-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
-                    <button class="btn-logout" id="logoutHome"><i class="fas fa-sign-out-alt"></i></button>
+                    <div class="contact-list" id="contactList"></div>
+                    <div class="actions">
+                        <button id="addContactBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
+                        <button id="groupBtn"><i class="fas fa-users"></i> Grup</button>
+                    </div>
                 </div>
-                <div class="contact-list" id="contactList">Loading...</div>
-                <div class="action-row">
-                    <button id="addContactHome"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-                    <button id="groupHome"><i class="fas fa-users"></i> Grup</button>
+                
+                <!-- CHAT AREA -->
+                <div class="chat-area">
+                    <div class="header">
+                        <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+                        <button class="mobile-back" id="mobileBackBtn"><i class="fas fa-arrow-left"></i></button>
+                        <div class="avatar" id="chatAvatar">P</div>
+                        <div class="info">
+                            <h3 id="chatTitle">PinkChat</h3>
+                            <p id="chatStatus">Pilih percakapan</p>
+                        </div>
+                    </div>
+                    <div class="messages" id="messagesList">
+                        <div class="empty">Pilih chat untuk mulai mengobrol</div>
+                    </div>
+                    <div class="input-area">
+                        <div class="circle" id="emojiBtn"><i class="far fa-smile-wink"></i></div>
+                        <div class="circle" id="imageBtn"><i class="fas fa-paperclip"></i></div>
+                        <input type="text" id="messageInput" placeholder="Ketik pesan...">
+                        <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
                 </div>
             </div>
-            <div class="chat-panel" id="chatPanel">
-                <div class="chat-header">
-                    <button class="btn-back" id="backHome"><i class="fas fa-arrow-left"></i></button>
-                    <div class="chat-avatar" id="chatAvatar">P</div>
-                    <div class="chat-name" id="chatName">Chat</div>
-                </div>
-                <div class="message-area" id="msgArea"></div>
-                <div class="input-row">
-                    <div class="icon-circle" id="emojiHome"><i class="far fa-smile-wink"></i></div>
-                    <div class="icon-circle" id="imageHome"><i class="fas fa-paperclip"></i></div>
-                    <input type="text" id="msgInput" placeholder="Ketik pesan...">
-                    <button id="sendHome"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-            <input type="file" id="fileHome" accept="image/*" style="display:none">
+            <input type="file" id="fileInput" accept="image/*" style="display:none">
         `;
         
-        await loadContactsList();
+        // Load contacts
+        await loadContacts();
         
-        document.getElementById('logoutHome').onclick = async () => {
-            if (confirm('Keluar?')) await signOut(auth);
+        // Event listeners
+        document.getElementById('logoutBtn').onclick = async () => {
+            if (confirm('Yakin keluar?')) await signOut(auth);
         };
         
-        document.getElementById('addContactHome').onclick = () => {
-            const hp = prompt('Masukkan nomor HP teman:', '');
-            if (hp) addContactByPhone(hp);
+        document.getElementById('addContactBtn').onclick = () => {
+            const phone = prompt('Masukkan nomor HP pengguna:', '');
+            if (phone) addContact(phone);
         };
         
-        document.getElementById('groupHome').onclick = () => toast('🚀 Fitur grup segera hadir');
-        
-        document.getElementById('backHome').onclick = () => {
-            if (unsub) unsub();
-            document.getElementById('chatPanel').classList.remove('show');
-            CHAT_WITH = null;
+        document.getElementById('groupBtn').onclick = () => {
+            showToast('✨ Fitur grup akan segera hadir!');
         };
         
-        document.getElementById('sendHome').onclick = sendMsg;
-        document.getElementById('msgInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMsg();
+        document.getElementById('menuBtn').onclick = () => {
+            document.getElementById('sidebar').classList.add('show');
+        };
+        
+        document.getElementById('mobileBackBtn').onclick = () => {
+            if (selectedUserId) {
+                closeChat();
+            }
+        };
+        
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
         });
         
-        document.getElementById('emojiHome').onclick = () => {
-            const inp = document.getElementById('msgInput');
+        document.getElementById('emojiBtn').onclick = () => {
+            const inp = document.getElementById('messageInput');
             inp.value += '🌸';
             inp.focus();
         };
         
-        document.getElementById('imageHome').onclick = () => {
-            if (!CHAT_WITH) { toast('Pilih chat dulu'); return; }
-            document.getElementById('fileHome').click();
+        document.getElementById('imageBtn').onclick = () => {
+            if (!selectedUserId) {
+                showToast('Pilih chat dulu');
+                return;
+            }
+            document.getElementById('fileInput').click();
         };
         
-        document.getElementById('fileHome').onchange = async (e) => {
-            const f = e.target.files[0];
-            if (f && f.type.startsWith('image/') && CHAT_WITH) {
-                const rd = new FileReader();
-                rd.onload = async (ev) => {
-                    const chatId = [USER.uid, CHAT_WITH].sort().join('_');
+        document.getElementById('fileInput').onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/') && selectedUserId) {
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    const chatId = [currentUser.uid, selectedUserId].sort().join('_');
                     await addDoc(collection(db, 'chats', chatId, 'messages'), {
-                        senderId: USER.uid,
-                        text: 'Gambar',
+                        senderId: currentUser.uid,
+                        text: '📷 Gambar',
                         type: 'image',
                         imageUrl: ev.target.result,
                         timestamp: serverTimestamp()
                     });
-                    toast('Gambar terkirim');
+                    showToast('Gambar terkirim');
                 };
-                rd.readAsDataURL(f);
+                reader.readAsDataURL(file);
             }
             e.target.value = '';
         };
+        
+        // Click outside sidebar on mobile
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.getElementById('menuBtn');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
+                if (!sidebar.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
     }
     
-    async function loadContactsList() {
+    async function loadContacts() {
         const container = document.getElementById('contactList');
-        const kontak = USER?.contacts || [];
-        if (kontak.length === 0) {
-            container.innerHTML = '<div class="empty-chat">Belum ada kontak<br>Tekan ➕ Tambah Kontak</div>';
+        const contacts = currentUser?.contacts || [];
+        
+        if (contacts.length === 0) {
+            container.innerHTML = '<div class="empty">Belum ada kontak<br>Tekan ➕ Tambah Kontak</div>';
             return;
         }
+        
         container.innerHTML = '';
-        for (let kid of kontak) {
-            const userSnap = await getDoc(doc(db, 'users', kid));
+        for (let contactId of contacts) {
+            const userSnap = await getDoc(doc(db, 'users', contactId));
             if (userSnap.exists()) {
-                const d = userSnap.data();
+                const user = userSnap.data();
                 const div = document.createElement('div');
                 div.className = 'contact-item';
                 div.innerHTML = `
-                    <div class="contact-circle">${d.fullName?.charAt(0) || '?'}</div>
-                    <div class="contact-text">
-                        <div class="contact-name">${escape(d.fullName)}</div>
-                        <div class="contact-nohp">${d.phone}</div>
+                    <div class="contact-avatar">${user.fullName?.charAt(0) || '?'}</div>
+                    <div class="contact-details">
+                        <div class="contact-name">${escapeHtml(user.fullName)}</div>
+                        <div class="contact-phone">${user.phone}</div>
                     </div>
                 `;
-                div.onclick = () => openChatWindow(kid, d.fullName);
+                div.onclick = () => openChat(contactId, user.fullName);
                 container.appendChild(div);
             }
         }
     }
     
-    async function openChatWindow(uid, name) {
-        if (unsub) unsub();
-        CHAT_WITH = uid;
-        CHAT_NAME = name;
-        
-        document.getElementById('chatName').innerHTML = escape(name);
-        document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
-        
-        const msgDiv = document.getElementById('msgArea');
-        msgDiv.innerHTML = '<div class="empty-chat">Loading...</div>';
-        
-        const chatId = [USER.uid, uid].sort().join('_');
-        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        
-        unsub = onSnapshot(q, (snap) => {
-            msgDiv.innerHTML = '';
-            if (snap.empty) {
-                msgDiv.innerHTML = '<div class="empty-chat">Belum ada pesan. Kirim pertama!</div>';
-            }
-            snap.forEach(docSnap => {
-                const m = docSnap.data();
-                const isMe = m.senderId === USER.uid;
-                const el = document.createElement('div');
-                el.className = `message-bubble ${isMe ? 'sent' : 'received'}`;
-                let body = '';
-                if (m.type === 'image' && m.imageUrl) {
-                    body = `<div class="bubble-text"><img src="${m.imageUrl}" style="max-width:160px; border-radius:16px;"></div>`;
-                } else {
-                    body = `<div class="bubble-text">${escape(m.text)}</div>`;
-                }
-                const tm = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                el.innerHTML = body + `<div class="message-time">${tm}</div>`;
-                msgDiv.appendChild(el);
-            });
-            msgDiv.scrollTop = msgDiv.scrollHeight;
-        });
-        
-        document.getElementById('chatPanel').classList.add('show');
+    function closeChat() {
+        if (unsubscribeMsg) unsubscribeMsg();
+        selectedUserId = null;
+        selectedUserName = null;
+        document.getElementById('chatTitle').innerHTML = 'PinkChat';
+        document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
+        document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
     }
     
-    async function sendMsg() {
-        if (!CHAT_WITH) { toast('Pilih chat dulu'); return; }
-        const inp = document.getElementById('msgInput');
-        const txt = inp.value.trim();
-        if (!txt) return;
-        const chatId = [USER.uid, CHAT_WITH].sort().join('_');
+    async function openChat(userId, userName) {
+        if (unsubscribeMsg) unsubscribeMsg();
+        selectedUserId = userId;
+        selectedUserName = userName;
+        
+        document.getElementById('chatTitle').innerHTML = escapeHtml(userName);
+        document.getElementById('chatStatus').innerHTML = 'Online';
+        document.getElementById('chatAvatar').innerHTML = userName.charAt(0).toUpperCase();
+        
+        // Close sidebar on mobile
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('show');
+        }
+        
+        const messagesDiv = document.getElementById('messagesList');
+        messagesDiv.innerHTML = '<div class="empty">Memuat pesan...</div>';
+        
+        const chatId = [currentUser.uid, userId].sort().join('_');
+        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
+        
+        unsubscribeMsg = onSnapshot(q, (snap) => {
+            messagesDiv.innerHTML = '';
+            if (snap.empty) {
+                messagesDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
+            }
+            snap.forEach(docMsg => {
+                const msg = docMsg.data();
+                const isSent = msg.senderId === currentUser.uid;
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+                
+                let content = '';
+                if (msg.type === 'image' && msg.imageUrl) {
+                    content = `<div class="bubble"><img src="${msg.imageUrl}" style="max-width:180px; border-radius:16px;"></div>`;
+                } else {
+                    content = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
+                }
+                
+                const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                msgDiv.innerHTML = content + `<div class="time">${time}</div>`;
+                messagesDiv.appendChild(msgDiv);
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+    }
+    
+    async function sendMessage() {
+        if (!selectedUserId) {
+            showToast('Pilih chat terlebih dahulu');
+            return;
+        }
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        const chatId = [currentUser.uid, selectedUserId].sort().join('_');
         await addDoc(collection(db, 'chats', chatId, 'messages'), {
-            senderId: USER.uid,
-            text: txt,
+            senderId: currentUser.uid,
+            text: text,
             type: 'text',
             timestamp: serverTimestamp()
         });
-        inp.value = '';
+        input.value = '';
     }
     
-    async function addContactByPhone(phone) {
+    async function addContact(phone) {
         try {
-            const q = query(collection(db, 'users'), where('phone', '==', phone));
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where('phone', '==', phone));
             const snap = await getDocs(q);
-            if (snap.empty) throw new Error('Nomor tidak terdaftar');
+            if (snap.empty) throw new Error('Nomor HP tidak terdaftar');
+            
             const target = snap.docs[0];
-            if (target.id === USER.uid) throw new Error('Tidak bisa tambah sendiri');
+            if (target.id === currentUser.uid) throw new Error('Tidak bisa menambah diri sendiri');
             
-            // TWO-WAY
-            await updateDoc(doc(db, 'users', USER.uid), { contacts: arrayUnion(target.id) });
-            await updateDoc(doc(db, 'users', target.id), { contacts: arrayUnion(USER.uid) });
+            // TWO-WAY CONTACT
+            await updateDoc(doc(db, 'users', currentUser.uid), {
+                contacts: arrayUnion(target.id)
+            });
+            await updateDoc(doc(db, 'users', target.id), {
+                contacts: arrayUnion(currentUser.uid)
+            });
             
-            toast('✅ Kontak berhasil ditambahkan');
-            USER = await getUser(USER.uid);
-            await loadContactsList();
+            showToast('✅ Kontak berhasil ditambahkan');
+            currentUser = await getUserData(currentUser.uid);
+            await loadContacts();
         } catch(e) {
             alert(e.message);
         }
     }
     
-    // LOGIN / REGISTER
-    function renderAuth() {
+    // ========== LOGIN / REGISTER ==========
+    function renderLogin() {
         let isLogin = false;
-        const root = document.getElementById('root');
+        const root = document.getElementById('app');
+        
         root.innerHTML = `
-            <div class="login-modal" id="authModal">
-                <div class="login-card">
-                    <h3 id="authTitle">Daftar Akun</h3>
+            <div class="modal" id="loginModal">
+                <div class="modal-box">
+                    <h3 id="modalTitle">Daftar Akun</h3>
                     <p>Buat akun dengan nomor HP</p>
-                    <input type="text" id="nameField" placeholder="Nama lengkap">
-                    <input type="tel" id="phoneField" placeholder="Nomor HP (812345678)">
-                    <input type="password" id="passField" placeholder="Password">
-                    <button id="authSubmit">Daftar</button>
-                    <button id="authSwitch" style="background:#ffe4ec;color:#ff6b9d">Sudah punya akun? Masuk</button>
-                    <div id="authErr" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
+                    <input type="text" id="nameInput" placeholder="Nama lengkap">
+                    <input type="tel" id="phoneInput" placeholder="Nomor HP (812345678)">
+                    <input type="password" id="passInput" placeholder="Password">
+                    <button id="submitAuth">Daftar</button>
+                    <button id="switchAuth" style="background:#ffe4ec;color:#ff6b9d">Sudah punya akun? Masuk</button>
+                    <div id="errorMsg" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
                 </div>
             </div>
         `;
         
-        const nameInp = document.getElementById('nameField');
-        const switchBtn = document.getElementById('authSwitch');
-        const title = document.getElementById('authTitle');
-        const submitBtn = document.getElementById('authSubmit');
-        const errDiv = document.getElementById('authErr');
+        const nameInput = document.getElementById('nameInput');
+        const switchBtn = document.getElementById('switchAuth');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitBtn = document.getElementById('submitAuth');
+        const errorDiv = document.getElementById('errorMsg');
         
         switchBtn.onclick = () => {
             isLogin = !isLogin;
             if (isLogin) {
-                title.innerText = 'Masuk Akun';
+                modalTitle.innerText = 'Masuk Akun';
                 submitBtn.innerText = 'Masuk';
                 switchBtn.innerText = 'Belum punya akun? Daftar';
-                nameInp.style.display = 'none';
+                nameInput.style.display = 'none';
             } else {
-                title.innerText = 'Daftar Akun';
+                modalTitle.innerText = 'Daftar Akun';
                 submitBtn.innerText = 'Daftar';
                 switchBtn.innerText = 'Sudah punya akun? Masuk';
-                nameInp.style.display = 'block';
+                nameInput.style.display = 'block';
             }
         };
         
         submitBtn.onclick = async () => {
-            const phone = document.getElementById('phoneField').value.trim();
-            const pass = document.getElementById('passField').value;
+            const phone = document.getElementById('phoneInput').value.trim();
+            const password = document.getElementById('passInput').value;
+            
             try {
                 if (isLogin) {
                     const email = `${phone}@pinkchat.local`;
-                    await signInWithEmailAndPassword(auth, email, pass);
+                    await signInWithEmailAndPassword(auth, email, password);
                 } else {
-                    const name = document.getElementById('nameField').value.trim();
-                    if (!name) throw new Error('Nama harus diisi');
+                    const fullName = document.getElementById('nameInput').value.trim();
+                    if (!fullName) throw new Error('Nama harus diisi');
                     if (!phone.match(/^[0-9]{5,14}$/)) throw new Error('Nomor HP 5-14 digit');
                     
-                    const cek = query(collection(db, 'users'), where('phone', '==', phone));
-                    const cekSnap = await getDocs(cek);
-                    if (!cekSnap.empty) throw new Error('Nomor HP sudah terdaftar');
+                    const q = query(collection(db, 'users'), where('phone', '==', phone));
+                    const snap = await getDocs(q);
+                    if (!snap.empty) throw new Error('Nomor HP sudah terdaftar');
                     
                     const email = `${phone}@pinkchat.local`;
-                    const uc = await createUserWithEmailAndPassword(auth, email, pass);
-                    await setDoc(doc(db, 'users', uc.user.uid), {
-                        fullName: name,
+                    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                    await setDoc(doc(db, 'users', userCred.user.uid), {
+                        fullName: fullName,
                         phone: phone,
                         contacts: [],
                         createdAt: serverTimestamp()
                     });
                 }
-                errDiv.innerText = '';
+                errorDiv.innerText = '';
             } catch(e) {
-                errDiv.innerText = e.message;
+                errorDiv.innerText = e.message;
             }
         };
     }
     
-    // AUTH STATE
+    // ========== AUTH STATE ==========
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            USER = await getUser(user.uid);
-            if (USER) {
-                renderHome();
+            currentUser = await getUserData(user.uid);
+            if (currentUser) {
+                renderMainApp();
             } else {
                 setTimeout(async () => {
-                    USER = await getUser(user.uid);
-                    if (USER) renderHome();
-                    else renderAuth();
+                    currentUser = await getUserData(user.uid);
+                    if (currentUser) renderMainApp();
+                    else renderLogin();
                 }, 1000);
             }
         } else {
-            USER = null;
-            renderAuth();
+            currentUser = null;
+            renderLogin();
         }
     });
     
-    renderAuth();
+    renderLogin();
 </script>
 </body>
 </html>

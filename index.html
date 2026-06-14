@@ -26,7 +26,6 @@
             background: white;
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 320px;
             background: white;
@@ -36,7 +35,6 @@
             height: 100%;
         }
 
-        /* CHAT AREA */
         .chat-area {
             flex: 1;
             display: flex;
@@ -45,7 +43,6 @@
             height: 100%;
         }
 
-        /* HEADER */
         .header {
             padding: 16px 20px;
             background: white;
@@ -393,23 +390,6 @@
             z-index: 1100;
         }
 
-        .menu-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #f0eef0;
-        }
-
-        .menu-item:hover {
-            background: #fff5f8;
-        }
-
-        .menu-item.danger {
-            color: #ff4444;
-        }
-
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -454,7 +434,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
         apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
@@ -588,17 +568,13 @@
     
     async function removeMemberFromGroup(groupId, memberId) {
         const groupRef = doc(db, 'chats', groupId);
-        const groupSnap = await getDoc(groupRef);
-        if (groupSnap.data().createdBy === currentUser.uid || memberId === currentUser.uid) {
-            await updateDoc(groupRef, {
-                participants: arrayRemove(memberId)
-            });
-            await updateDoc(doc(db, 'users', memberId), {
-                groups: arrayRemove(groupId)
-            });
-            return true;
-        }
-        throw new Error('Hanya admin grup yang bisa menghapus anggota');
+        await updateDoc(groupRef, {
+            participants: arrayRemove(memberId)
+        });
+        await updateDoc(doc(db, 'users', memberId), {
+            groups: arrayRemove(groupId)
+        });
+        return true;
     }
     
     async function leaveGroup(groupId) {
@@ -619,12 +595,7 @@
     }
     
     async function deleteGroup(groupId) {
-        const groupSnap = await getDoc(doc(db, 'chats', groupId));
-        if (groupSnap.data().createdBy !== currentUser.uid) {
-            throw new Error('Hanya pembuat grup yang bisa menghapus grup');
-        }
-        
-        const participants = groupSnap.data().participants || [];
+        const participants = selectedChatData?.participants || [];
         for (let uid of participants) {
             await updateDoc(doc(db, 'users', uid), {
                 groups: arrayRemove(groupId)
@@ -660,16 +631,24 @@
         return { id: ref.id, ...newChat };
     }
     
+    // ========== SEND MESSAGE - FIXED ==========
     async function sendMessage(chatId, text, type = 'text', imageUrl = null) {
-        await addDoc(collection(db, 'chats', chatId, 'messages'), {
+        if (!chatId) {
+            showToast('Error: Chat ID tidak ditemukan');
+            return;
+        }
+        
+        const messagesRef = collection(db, 'chats', chatId, 'messages');
+        await addDoc(messagesRef, {
             senderId: currentUser.uid,
             text: text,
             type: type,
-            imageUrl: imageUrl,
+            imageUrl: imageUrl || null,
             timestamp: serverTimestamp()
         });
         
-        await updateDoc(doc(db, 'chats', chatId), {
+        const chatRef = doc(db, 'chats', chatId);
+        await updateDoc(chatRef, {
             lastMessage: text.length > 50 ? text.substring(0, 50) + '...' : text,
             lastMessageTime: serverTimestamp()
         });
@@ -1005,8 +984,6 @@
         document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
         
         const addMemberBtn = document.getElementById('addMemberBtn');
-        const infoBtn = document.getElementById('infoBtn');
-        
         if (type === 'group') {
             addMemberBtn.style.display = 'flex';
             addMemberBtn.onclick = () => showAddMemberModal(chatId);
@@ -1057,6 +1034,7 @@
         await renderChatList();
     }
     
+    // ========== SEND CURRENT MESSAGE - FIXED ==========
     async function sendCurrentMessage() {
         if (!selectedChatId) {
             showToast('Pilih chat terlebih dahulu');
@@ -1066,8 +1044,13 @@
         const text = input.value.trim();
         if (!text) return;
         
-        await sendMessage(selectedChatId, text);
-        input.value = '';
+        try {
+            await sendMessage(selectedChatId, text);
+            input.value = '';
+        } catch(e) {
+            console.error('Send message error:', e);
+            showToast('Gagal mengirim pesan: ' + e.message);
+        }
     }
     
     // ========== MAIN APP ==========

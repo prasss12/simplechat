@@ -37,7 +37,7 @@
             position: relative;
         }
 
-        /* Responsive Sidebar - Mobile First */
+        /* Sidebar */
         .sidebar {
             width: 320px;
             background: #ffffff;
@@ -46,25 +46,33 @@
             flex-direction: column;
             overflow: hidden;
             transition: transform 0.3s ease;
+            z-index: 100;
         }
 
-        /* Untuk mobile, sidebar bisa disembunyikan */
+        /* Mobile Styles */
         @media (max-width: 768px) {
             .sidebar {
                 position: absolute;
                 left: 0;
                 top: 0;
                 bottom: 0;
-                z-index: 100;
                 transform: translateX(-100%);
                 width: 85%;
-                box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+                box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+                background: white;
+                z-index: 200;
             }
             .sidebar.open {
                 transform: translateX(0);
             }
             .chat-main {
                 width: 100%;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .mobile-menu-btn {
+                display: flex !important;
             }
             .mobile-back-btn {
                 display: flex !important;
@@ -74,35 +82,52 @@
             }
             .messages-container {
                 padding: 16px !important;
+                flex: 1 !important;
+                overflow-y: auto !important;
             }
             .input-pink-area {
                 padding: 10px 12px !important;
+                background: #ffffff;
+                border-top: 1px solid #ffe4ec;
+                display: flex !important;
+                gap: 10px !important;
+            }
+            .input-pink-area input {
+                padding: 10px 16px !important;
+                font-size: 14px !important;
+            }
+            .icon-btn {
+                width: 38px !important;
+                height: 38px !important;
+            }
+            .send-pink {
+                width: 38px !important;
+                height: 38px !important;
             }
         }
 
         @media (min-width: 769px) {
-            .mobile-back-btn, .mobile-menu-btn {
+            .mobile-menu-btn, .mobile-back-btn {
                 display: none !important;
             }
         }
 
-        .mobile-menu-btn {
+        .mobile-menu-btn, .mobile-back-btn {
             background: none;
             border: none;
             font-size: 20px;
             color: #ff6b9d;
             cursor: pointer;
             margin-right: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
         }
 
-        .mobile-back-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #ff6b9d;
-            cursor: pointer;
-            margin-right: 10px;
-            display: none;
+        .mobile-menu-btn:hover, .mobile-back-btn:hover {
+            background: #ffe4ec;
         }
 
         .sidebar-header {
@@ -257,6 +282,8 @@
             display: flex;
             flex-direction: column;
             background: #ffffff;
+            height: 100%;
+            overflow: hidden;
         }
 
         .chat-header-pink {
@@ -266,6 +293,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            flex-shrink: 0;
         }
 
         .chat-header-avatar {
@@ -368,6 +396,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            background: white;
+            flex-shrink: 0;
         }
 
         .input-pink-area {
@@ -377,6 +407,7 @@
             align-items: center;
             gap: 14px;
             border-top: 1px solid #ffe4ec;
+            flex-shrink: 0;
         }
 
         .input-pink-area input {
@@ -390,6 +421,10 @@
             outline: none;
         }
 
+        .input-pink-area input:focus {
+            background: #ffe8f0;
+        }
+
         .icon-btn {
             width: 42px;
             height: 42px;
@@ -401,6 +436,7 @@
             cursor: pointer;
             color: #ff6b9d;
             transition: 0.2s;
+            flex-shrink: 0;
         }
 
         .icon-btn:hover {
@@ -533,12 +569,6 @@
             margin-top: 8px;
         }
 
-        .success-text {
-            color: #25D366;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-
         .hidden {
             display: none;
         }
@@ -548,13 +578,20 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #ffe4ec; }
-        ::-webkit-scrollbar-thumb { background: #ff99c8; border-radius: 10px; }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffe4ec;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff99c8;
+            border-radius: 10px;
+        }
 
         .toast-message {
             position: fixed;
-            bottom: 30px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: #2d2d2d;
@@ -564,12 +601,29 @@
             font-size: 14px;
             z-index: 2000;
             animation: fadeInUp 0.3s ease;
+            white-space: nowrap;
+        }
+
+        /* Overlay untuk mobile saat sidebar terbuka */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 150;
+        }
+        .sidebar-overlay.active {
+            display: block;
         }
     </style>
 </head>
 <body>
 
 <div class="app-wrapper" id="appWrapper" style="display: none;">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="user-profile">
@@ -614,7 +668,9 @@
                 <i class="fas fa-info-circle"></i>
             </div>
         </div>
-        <div class="messages-container" id="messagesContainer"></div>
+        <div class="messages-container" id="messagesContainer">
+            <div style="text-align: center; padding: 40px; color: #cc9aa8;">Pilih chat untuk mulai mengobrol</div>
+        </div>
         <div id="typingArea" class="typing-badge hidden"></div>
         <div class="input-pink-area">
             <div class="icon-btn" id="emojiPickerBtn"><i class="far fa-smile-wink"></i></div>
@@ -676,7 +732,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
@@ -753,7 +809,7 @@
         return null;
     }
     
-    // PERBAIKAN: Tambah kontak TWO-WAY (kedua belah pihak saling mendapat kontak)
+    // TWO-WAY CONTACT
     async function addContactByPhone(currentUid, phoneNumber) {
         if (!isValidPhone(phoneNumber)) throw new Error("Nomor HP harus 5-14 digit angka");
         
@@ -764,17 +820,11 @@
         const targetUser = snap.docs[0];
         if (targetUser.id === currentUid) throw new Error("Tidak bisa menambah diri sendiri");
         
-        // Tambahkan ke kedua belah pihak (two-way contact)
         const currentUserRef = doc(db, "users", currentUid);
         const targetUserRef = doc(db, "users", targetUser.id);
         
-        await updateDoc(currentUserRef, {
-            contacts: arrayUnion(targetUser.id)
-        });
-        
-        await updateDoc(targetUserRef, {
-            contacts: arrayUnion(currentUid)
-        });
+        await updateDoc(currentUserRef, { contacts: arrayUnion(targetUser.id) });
+        await updateDoc(targetUserRef, { contacts: arrayUnion(currentUid) });
         
         return true;
     }
@@ -877,9 +927,10 @@
         document.getElementById("chatAvatar").innerHTML = chatInfo.name.charAt(0).toUpperCase();
         document.getElementById("chatSubtitle").innerHTML = chatInfo.type === "group" ? "Grup • Anggota" : "Online";
         
-        // Di mobile, tutup sidebar saat chat dibuka
+        // Tutup sidebar di mobile
         if (window.innerWidth <= 768) {
             document.getElementById("sidebar").classList.remove("open");
+            document.getElementById("sidebarOverlay").classList.remove("active");
         }
         
         const msgContainer = document.getElementById("messagesContainer");
@@ -932,12 +983,22 @@
     }
     
     // Mobile menu handlers
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    
     document.getElementById("mobileMenuBtn").onclick = () => {
-        document.getElementById("sidebar").classList.add("open");
+        sidebar.classList.add("open");
+        sidebarOverlay.classList.add("active");
     };
     
+    function closeSidebar() {
+        sidebar.classList.remove("open");
+        sidebarOverlay.classList.remove("active");
+    }
+    
+    sidebarOverlay.onclick = closeSidebar;
+    
     document.getElementById("mobileBackBtn").onclick = () => {
-        // Kembali ke daftar chat (clear current chat)
         if (messagesUnsubscribe) messagesUnsubscribe();
         currentChatId = null;
         currentChatInfo = null;
@@ -948,20 +1009,12 @@
         renderChatList(currentUserData.uid, currentUserData);
     };
     
-    // Close sidebar saat klik di luar (mobile)
-    document.addEventListener("click", (e) => {
-        const sidebar = document.getElementById("sidebar");
-        const menuBtn = document.getElementById("mobileMenuBtn");
-        if (window.innerWidth <= 768 && sidebar.classList.contains("open")) {
-            if (!sidebar.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) {
-                sidebar.classList.remove("open");
-            }
-        }
-    });
-    
     // Event Listeners
     document.getElementById("sendMessageBtn").onclick = async () => {
-        if (!currentChatId) return alert("Pilih chat terlebih dahulu");
+        if (!currentChatId) {
+            showToast("❗ Pilih chat terlebih dahulu");
+            return;
+        }
         const input = document.getElementById("messageInputText");
         const text = input.value.trim();
         if (text) {
@@ -984,6 +1037,10 @@
     };
     
     document.getElementById("attachImageBtn").onclick = () => {
+        if (!currentChatId) {
+            showToast("❗ Pilih chat terlebih dahulu");
+            return;
+        }
         document.getElementById("imageUploadInput").click();
     };
     
@@ -993,6 +1050,7 @@
             const reader = new FileReader();
             reader.onload = async (ev) => {
                 await sendMessageToChat(currentChatId, currentUserData.uid, "Gambar", "image", ev.target.result);
+                showToast("📷 Gambar terkirim");
             };
             reader.readAsDataURL(file);
         }
@@ -1003,12 +1061,14 @@
         const confirmLogout = confirm("Apakah Anda yakin ingin keluar?");
         if (confirmLogout) {
             await logoutUser();
+            closeSidebar();
             showToast("👋 Anda telah logout");
         }
     };
     
     document.getElementById("newContactBtn").onclick = () => {
         document.getElementById("contactModal").classList.remove("hidden");
+        closeSidebar();
     };
     
     document.getElementById("closeContactModal").onclick = () => {
@@ -1021,7 +1081,7 @@
         const phone = document.getElementById("contactPhoneInput").value.trim();
         try {
             await addContactByPhone(currentUserData.uid, phone);
-            showToast("✅ Kontak berhasil ditambahkan (two-way)");
+            showToast("✅ Kontak berhasil ditambahkan");
             document.getElementById("contactModal").classList.add("hidden");
             document.getElementById("contactPhoneInput").value = "";
             document.getElementById("contactErrorMsg").innerText = "";
@@ -1033,6 +1093,7 @@
     };
     
     document.getElementById("newGroupBtn").onclick = async () => {
+        closeSidebar();
         const userDoc = await getDoc(doc(db, "users", currentUserData.uid));
         const contacts = userDoc.data()?.contacts || [];
         const container = document.getElementById("groupContactsChecklist");
@@ -1148,7 +1209,7 @@
         document.getElementById("loginPassword").value = "";
     };
     
-    // Search chat functionality
+    // Search chat
     document.getElementById("searchChat").addEventListener("input", (e) => {
         const searchTerm = e.target.value.toLowerCase();
         const chatItems = document.querySelectorAll(".chat-item");
@@ -1162,10 +1223,10 @@
         });
     });
     
-    // Resize handler untuk mobile
+    // Close sidebar on resize to desktop
     window.addEventListener("resize", () => {
         if (window.innerWidth > 768) {
-            document.getElementById("sidebar").classList.remove("open");
+            closeSidebar();
         }
     });
 </script>

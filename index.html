@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>PinkChat - Final</title>
+    <title>PinkChat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -21,7 +21,6 @@
             position: fixed;
         }
 
-        /* PAGES */
         .page {
             height: 100vh;
             width: 100%;
@@ -77,7 +76,7 @@
         }
 
         .title-box p {
-            font-size: 12px;
+            font-size: 11px;
             color: #ff6b9d;
             margin-top: 2px;
         }
@@ -167,7 +166,7 @@
             cursor: pointer;
         }
 
-        /* CHAT PAGE */
+        /* CHAT PAGE - INPUT PESAN PASTI ADA */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -233,12 +232,12 @@
             margin-left: 10px;
         }
 
-        /* INPUT PESAN - PASTI MUNCUL DI HP */
+        /* INPUT PESAN - HARUS MUNCUL */
         .input-row {
             background: white;
-            padding: 10px 16px;
+            padding: 10px 12px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             border-top: 1px solid #ffe0e8;
             flex-shrink: 0;
@@ -248,7 +247,7 @@
             flex: 1;
             background: #fef0f4;
             border: none;
-            padding: 12px 16px;
+            padding: 12px 14px;
             border-radius: 30px;
             font-size: 15px;
             outline: none;
@@ -295,7 +294,7 @@
             text-align: center;
         }
 
-        .modal-content input, .modal-content textarea {
+        .modal-content input {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
@@ -415,11 +414,7 @@
         await updateDoc(doc(db, 'users', USER.uid), data);
         USER = await getUser(USER.uid);
         toast('✅ Profil diperbarui');
-        // Refresh tampilan home
-        const homePage = document.getElementById('homePage');
-        if (homePage && !homePage.classList.contains('hidden')) {
-            renderHome();
-        }
+        renderHome();
     }
     
     async function uploadPhoto(file) {
@@ -566,16 +561,12 @@
     }
     
     // ========== PROFIL PRIBADI ==========
-    let isEditing = false;
-    
     function showMyProfile() {
         document.getElementById('homePage').classList.add('hidden');
         document.getElementById('profilePage').classList.remove('hidden');
         document.getElementById('profileTitle').innerHTML = 'Profil Saya';
         document.getElementById('isOtherProfile').value = 'false';
-        isEditing = false;
         
-        // Tampilkan data
         const avatarDiv = document.getElementById('profileAvatar');
         if (USER.photoURL) {
             avatarDiv.innerHTML = `<img src="${USER.photoURL}" style="width:100px;height:100px;border-radius:50%;object-fit:cover">`;
@@ -584,23 +575,20 @@
         }
         
         document.getElementById('profileNameDisplay').innerHTML = escape(USER.fullName);
-        document.getElementById('profileNameDisplay').style.display = 'block';
-        document.getElementById('profilePhoneDisplay').innerHTML = USER.phone;
+        document.getElementById('profilePhoneDisplay').innerHTML = `Nomor: ${USER.phone}`;
         document.getElementById('profileBioDisplay').innerHTML = escape(USER.bio || 'Halo! Saya menggunakan PinkChat');
-        document.getElementById('profileBioDisplay').style.display = 'block';
         
-        // Sembunyikan form edit
-        document.getElementById('editNameGroup').style.display = 'none';
-        document.getElementById('editBioGroup').style.display = 'none';
+        document.getElementById('editProfileSection').style.display = 'block';
+        document.getElementById('cameraBtn').style.display = 'flex';
         document.getElementById('editProfileBtn').style.display = 'block';
         document.getElementById('saveProfileBtn').style.display = 'none';
-        document.getElementById('cameraBtn').style.display = 'flex';
+        document.getElementById('editNameGroup').style.display = 'none';
+        document.getElementById('editBioGroup').style.display = 'none';
+        document.getElementById('profileNameDisplay').style.display = 'block';
+        document.getElementById('profileBioDisplay').style.display = 'block';
     }
     
     function editProfileMode() {
-        if (isEditing) return;
-        isEditing = true;
-        
         document.getElementById('profileNameDisplay').style.display = 'none';
         document.getElementById('profileBioDisplay').style.display = 'none';
         document.getElementById('editNameGroup').style.display = 'block';
@@ -623,7 +611,6 @@
             await updateProfile({ bio: newBio });
         }
         
-        isEditing = false;
         showMyProfile();
         renderContacts();
     }
@@ -652,11 +639,8 @@
         document.getElementById('profilePage').classList.remove('hidden');
         document.getElementById('profileTitle').innerHTML = 'Info Kontak';
         document.getElementById('isOtherProfile').value = 'true';
+        document.getElementById('editProfileSection').style.display = 'none';
         document.getElementById('cameraBtn').style.display = 'none';
-        document.getElementById('editProfileBtn').style.display = 'none';
-        document.getElementById('saveProfileBtn').style.display = 'none';
-        document.getElementById('editNameGroup').style.display = 'none';
-        document.getElementById('editBioGroup').style.display = 'none';
         
         const avatarDiv = document.getElementById('profileAvatar');
         if (other.photoURL) {
@@ -665,11 +649,12 @@
             avatarDiv.innerHTML = other.fullName?.charAt(0).toUpperCase() || '?';
         }
         
+        document.getElementById('profileNameDisplay').innerHTML = escape(other.fullName);
+        document.getElementById('profilePhoneDisplay').innerHTML = `Nomor: ${other.phone}`;
+        document.getElementById('profileBioDisplay').innerHTML = escape(other.bio || 'Halo! Saya menggunakan PinkChat');
+        
         document.getElementById('profileNameDisplay').style.display = 'block';
         document.getElementById('profileBioDisplay').style.display = 'block';
-        document.getElementById('profileNameDisplay').innerHTML = escape(other.fullName);
-        document.getElementById('profilePhoneDisplay').innerHTML = other.phone;
-        document.getElementById('profileBioDisplay').innerHTML = escape(other.bio || 'Halo! Saya menggunakan PinkChat');
     }
     
     function closeProfile() {
@@ -719,7 +704,7 @@
                     </div>
                     <div class="title-box">
                         <h3>${escape(USER?.fullName || 'User')}</h3>
-                        <p>${USER?.phone || ''}</p>
+                        <p>Nomor: ${USER?.phone || ''}</p>
                     </div>
                     <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
@@ -759,29 +744,30 @@
                         </div>
                     </div>
                     
-                    <div class="profile-field">
-                        <label>Nama</label>
-                        <div class="value" id="profileNameDisplay"></div>
-                        <div id="editNameGroup" style="display:none">
-                            <input type="text" id="editNameInput" style="width:100%; padding:8px; border:1px solid #ffe0e8; border-radius:12px">
+                    <div id="editProfileSection">
+                        <div class="profile-field">
+                            <label>Nama</label>
+                            <div class="value" id="profileNameDisplay"></div>
+                            <div id="editNameGroup" style="display:none">
+                                <input type="text" id="editNameInput" style="width:100%; padding:8px; border:1px solid #ffe0e8; border-radius:12px">
+                            </div>
                         </div>
-                    </div>
-                    <div class="profile-field">
-                        <label>Nomor HP</label>
-                        <div class="value" id="profilePhoneDisplay"></div>
-                    </div>
-                    <div class="profile-field">
-                        <label>Tentang</label>
-                        <div class="value" id="profileBioDisplay"></div>
-                        <div id="editBioGroup" style="display:none">
-                            <textarea id="editBioInput" rows="3" style="width:100%; padding:8px; border:1px solid #ffe0e8; border-radius:12px"></textarea>
+                        <div class="profile-field">
+                            <label>Nomor HP</label>
+                            <div class="value" id="profilePhoneDisplay"></div>
                         </div>
+                        <div class="profile-field">
+                            <label>Tentang</label>
+                            <div class="value" id="profileBioDisplay"></div>
+                            <div id="editBioGroup" style="display:none">
+                                <textarea id="editBioInput" rows="3" style="width:100%; padding:8px; border:1px solid #ffe0e8; border-radius:12px"></textarea>
+                            </div>
+                        </div>
+                        <button class="edit-save-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Edit Profil</button>
+                        <button class="edit-save-btn" id="saveProfileBtn" style="display:none; background:#25D366"><i class="fas fa-save"></i> Simpan</button>
                     </div>
-                    <button class="edit-save-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Edit Profil</button>
-                    <button class="edit-save-btn" id="saveProfileBtn" style="display:none; background:#25D366"><i class="fas fa-save"></i> Simpan</button>
                 </div>
             </div>
-            <input type="hidden" id="isOtherProfile" value="false">
         `;
         
         await renderContacts();
@@ -793,9 +779,14 @@
         document.getElementById('addContactBtn').onclick = showAddContactModal;
         document.getElementById('closeChatBtn').onclick = closeChat;
         document.getElementById('sendMsgBtn').onclick = sendNow;
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendNow();
-        });
+        
+        const inputField = document.getElementById('messageInput');
+        if (inputField) {
+            inputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendNow();
+            });
+        }
+        
         document.getElementById('closeProfileBtn').onclick = closeProfile;
         document.getElementById('editProfileBtn').onclick = editProfileMode;
         document.getElementById('saveProfileBtn').onclick = saveProfileEdit;
@@ -806,8 +797,10 @@
                 showOtherProfile(ACTIVE_CHAT_USER.uid);
             }
         };
-        document.getElementById('chatAvatar').onclick = showChatProfile;
-        document.getElementById('chatInfoBtn').onclick = showChatProfile;
+        const chatAvatar = document.getElementById('chatAvatar');
+        const chatInfoBtn = document.getElementById('chatInfoBtn');
+        if (chatAvatar) chatAvatar.onclick = showChatProfile;
+        if (chatInfoBtn) chatInfoBtn.onclick = showChatProfile;
     }
     
     // LOGIN

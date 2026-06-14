@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>ChatKu - Final</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -18,7 +19,6 @@
             flex-direction: column;
             overflow: hidden;
         }
-        /* HEADER */
         .header {
             background: #ff6b9d;
             padding: 12px 16px;
@@ -65,7 +65,6 @@
             height: 100%;
             object-fit: cover;
         }
-        /* DAFTAR CHAT */
         .chat-list {
             flex: 1;
             overflow-y: auto;
@@ -139,7 +138,6 @@
             justify-content: center;
             padding: 0 6px;
         }
-        /* TOMBOL BAWAH */
         .bottom-bar {
             padding: 10px 16px;
             display: flex;
@@ -158,8 +156,11 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        /* CHAT SCREEN */
         .chat-screen {
             display: none;
             flex-direction: column;
@@ -206,7 +207,6 @@
             margin-top: 4px;
             margin-left: 10px;
         }
-        /* INPUT PESAN */
         .input-area {
             background: white;
             padding: 10px 12px;
@@ -235,8 +235,10 @@
             font-size: 16px;
             cursor: pointer;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        /* PROFIL SCREEN */
         .profile-screen {
             display: none;
             flex-direction: column;
@@ -321,8 +323,11 @@
             cursor: pointer;
             margin-top: 8px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        /* MODAL */
         .modal {
             position: fixed;
             top: 0;
@@ -383,7 +388,6 @@
             padding: 40px;
             color: #999;
         }
-        /* LOGIN */
         .login-container {
             display: flex;
             align-items: center;

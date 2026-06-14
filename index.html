@@ -2,292 +2,82 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChatKu - Full</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>ChatKu - Final</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background: #f5f5f5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .header {
-            background: #ff6b9d;
-            padding: 12px 16px;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f5f5f5; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* HEADER */
+        .header { background: #ff6b9d; padding: 12px 16px; color: white; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .header h2 { font-size: 18px; flex: 1; }
-        .btn-back, .btn-logout, .btn-info {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .avatar-small {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff6b9d;
-            font-weight: bold;
-            overflow: hidden;
-        }
-        .avatar-small img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-back, .btn-logout, .btn-info { background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .avatar-sm { width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; color: #ff6b9d; font-weight: bold; overflow: hidden; cursor: pointer; }
+        .avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* LIST CHAT */
         .chat-list { flex: 1; overflow-y: auto; background: white; }
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-        .chat-avatar {
-            width: 48px;
-            height: 48px;
-            background: #ffe4ec;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff6b9d;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
+        .chat-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .chat-avatar { width: 48px; height: 48px; background: #ffe4ec; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #ff6b9d; overflow: hidden; flex-shrink: 0; }
         .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .chat-details { flex: 1; }
+        .chat-info { flex: 1; }
         .chat-name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .chat-sub { font-size: 11px; color: #999; margin-top: 3px; }
         .chat-preview { font-size: 12px; color: #888; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .unread-badge {
-            background: #ff6b9d;
-            color: white;
-            font-size: 11px;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 6px;
-        }
+        .unread-badge { background: #ff6b9d; color: white; font-size: 11px; min-width: 20px; height: 20px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; }
         .group-badge { background: #ff99c8; color: white; font-size: 10px; padding: 2px 8px; border-radius: 12px; }
-        .bottom-bar {
-            padding: 10px 16px;
-            display: flex;
-            gap: 10px;
-            background: white;
-            border-top: 1px solid #eee;
-            flex-shrink: 0;
-        }
-        .bottom-bar button {
-            flex: 1;
-            background: #ffe4ec;
-            border: none;
-            padding: 10px;
-            border-radius: 30px;
-            color: #ff6b9d;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            background: #fefafb;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 100;
-        }
+        
+        /* BOTTOM BAR */
+        .bottom-bar { padding: 10px 16px; display: flex; gap: 10px; background: white; border-top: 1px solid #eee; flex-shrink: 0; }
+        .bottom-bar button { flex: 1; background: #ffe4ec; border: none; padding: 10px; border-radius: 30px; color: #ff6b9d; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; }
+        
+        /* CHAT SCREEN - WAJIB ADA INPUTNYA */
+        .chat-screen { display: none; flex-direction: column; height: 100vh; background: #fefafb; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; }
         .messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
         .msg { max-width: 75%; display: flex; flex-direction: column; }
         .msg.sent { align-self: flex-end; }
         .msg.received { align-self: flex-start; }
         .msg-sender { font-size: 10px; color: #ff99c8; margin-bottom: 3px; }
-        .bubble { padding: 10px 14px; border-radius: 20px; font-size: 14px; }
+        .bubble { padding: 10px 14px; border-radius: 20px; font-size: 14px; word-wrap: break-word; }
         .sent .bubble { background: #ffd9e6; color: #333; }
         .received .bubble { background: white; color: #333; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .msg-time { font-size: 10px; color: #999; margin-top: 4px; margin-left: 10px; }
-        .input-wrapper {
-            background: white;
-            padding: 10px 12px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            border-top: 1px solid #eee;
-            flex-shrink: 0;
-        }
-        .input-wrapper input {
-            flex: 1;
-            background: #f5f5f5;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 30px;
-            font-size: 15px;
-            outline: none;
-        }
-        .input-wrapper button {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: none;
-            background: #ff6b9d;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .profile-screen {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            background: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 100;
-        }
+        
+        /* INPUT PESAN - PASTI MUNCUL DI HP */
+        .input-wrapper { background: white; padding: 10px 12px; display: flex; gap: 10px; align-items: center; border-top: 1px solid #eee; flex-shrink: 0; }
+        .input-wrapper input { flex: 1; background: #f5f5f5; border: none; padding: 12px 16px; border-radius: 30px; font-size: 15px; outline: none; }
+        .input-wrapper button { width: 44px; height: 44px; border-radius: 50%; border: none; background: #ff6b9d; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        
+        /* PROFIL SCREEN */
+        .profile-screen { display: none; flex-direction: column; height: 100vh; background: white; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; }
         .profile-content { flex: 1; overflow-y: auto; padding: 24px; text-align: center; }
-        .big-avatar {
-            width: 100px;
-            height: 100px;
-            background: #ffe4ec;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            font-weight: bold;
-            color: #ff6b9d;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
+        .big-avatar { width: 100px; height: 100px; background: #ffe4ec; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; color: #ff6b9d; position: relative; overflow: hidden; cursor: pointer; }
         .big-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .camera-icon {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #ff6b9d;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-        }
-        .info-row {
-            background: #f5f5f5;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            text-align: left;
-        }
+        .camera-icon { position: absolute; bottom: 0; right: 0; background: #ff6b9d; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-size: 14px; }
+        .info-row { background: #f5f5f5; border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: left; }
         .info-row label { font-size: 12px; color: #ff6b9d; display: block; margin-bottom: 5px; }
-        .info-row .value { font-size: 16px; color: #333; }
-        .info-row input, .info-row textarea { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; }
-        .edit-btn {
-            background: #ff6b9d;
-            border: none;
-            padding: 12px;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-        }
-        .modal-box {
-            background: white;
-            width: 90%;
-            max-width: 350px;
-            padding: 24px;
-            border-radius: 24px;
-            text-align: center;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+        .info-row .value { font-size: 16px; color: #333; word-break: break-word; }
+        .info-row input, .info-row textarea { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #ddd; border-radius: 12px; font-size: 14px; }
+        .edit-btn { background: #ff6b9d; border: none; padding: 12px; border-radius: 30px; color: white; font-weight: bold; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
+        
+        /* MODAL */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; }
+        .modal-box { background: white; width: 90%; max-width: 350px; padding: 24px; border-radius: 24px; text-align: center; max-height: 80vh; overflow-y: auto; }
         .modal-box input { width: 100%; padding: 12px; margin: 10px 0; background: #f5f5f5; border: none; border-radius: 30px; }
         .modal-box button { width: 100%; padding: 12px; background: #ff6b9d; border: none; border-radius: 30px; color: white; font-weight: bold; margin-top: 8px; cursor: pointer; }
-        .contact-check-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
+        .contact-check-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
         .contact-check-item input { width: 20px; margin: 0; }
         .contact-check-item label { flex: 1; text-align: left; cursor: pointer; }
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 13px;
-            z-index: 200;
-        }
+        
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 20px; border-radius: 30px; font-size: 13px; z-index: 200; }
         .empty-state { text-align: center; padding: 40px; color: #999; }
+        
+        /* LOGIN */
         .login-container { display: flex; align-items: center; justify-content: center; height: 100vh; background: white; padding: 20px; }
         .login-box { width: 100%; max-width: 320px; text-align: center; }
         .login-box h2 { color: #ff6b9d; margin-bottom: 10px; }
-        .login-box input { width: 100%; padding: 14px; margin: 8px 0; background: #f5f5f5; border: none; border-radius: 30px; }
+        .login-box input { width: 100%; padding: 14px; margin: 8px 0; background: #f5f5f5; border: none; border-radius: 30px; font-size: 15px; }
         .login-box button { width: 100%; padding: 14px; background: #ff6b9d; border: none; border-radius: 30px; color: white; font-weight: bold; margin-top: 15px; cursor: pointer; }
         .switch-btn { background: #eee !important; color: #ff6b9d !important; margin-top: 10px; }
         .error-msg { color: #ff6b9d; font-size: 12px; margin-top: 10px; }
@@ -350,14 +140,7 @@
     async function createGroup(groupName, memberIds) {
         if (memberIds.length === 0) throw new Error('Pilih minimal 1 anggota');
         const allMembers = [USER.uid, ...memberIds];
-        const groupData = {
-            type: 'group',
-            name: groupName,
-            participants: allMembers,
-            createdBy: USER.uid,
-            createdAt: serverTimestamp(),
-            lastMessage: ''
-        };
+        const groupData = { type: 'group', name: groupName, participants: allMembers, createdBy: USER.uid, createdAt: serverTimestamp(), lastMessage: '' };
         const groupRef = await addDoc(collection(db, 'chats'), groupData);
         for (let uid of allMembers) {
             await updateDoc(doc(db, 'users', uid), { groups: arrayUnion(groupRef.id) });
@@ -378,10 +161,7 @@
     async function leaveGroup(groupId) {
         await updateDoc(doc(db, 'chats', groupId), { participants: arrayRemove(USER.uid) });
         await updateDoc(doc(db, 'users', USER.uid), { groups: arrayRemove(groupId) });
-        if (ACTIVE_CHAT.id === groupId) {
-            document.getElementById('chatScreen')?.remove();
-            ACTIVE_CHAT = { id: null, type: null, name: null, data: null };
-        }
+        if (ACTIVE_CHAT.id === groupId) document.getElementById('chatScreen')?.remove();
         toast('👋 Keluar dari grup');
         renderHome();
     }
@@ -393,10 +173,7 @@
             await updateDoc(doc(db, 'users', uid), { groups: arrayRemove(groupId) });
         }
         await deleteDoc(doc(db, 'chats', groupId));
-        if (ACTIVE_CHAT.id === groupId) {
-            document.getElementById('chatScreen')?.remove();
-            ACTIVE_CHAT = { id: null, type: null, name: null, data: null };
-        }
+        if (ACTIVE_CHAT.id === groupId) document.getElementById('chatScreen')?.remove();
         toast('🗑️ Grup dihapus');
         renderHome();
     }
@@ -439,19 +216,15 @@
         let msgs = collection(db, 'chats', chatId, 'messages');
         let q = query(msgs, where('senderId', '==', senderId), where('read', '==', false));
         let snap = await getDocs(q);
-        for (let d of snap.docs) {
-            await updateDoc(d.ref, { read: true });
-        }
+        for (let d of snap.docs) { await updateDoc(d.ref, { read: true }); }
     }
     
-    // RENDER HOME
+    // ========== RENDER HOME ==========
     async function renderHome() {
         let root = document.getElementById('app');
         root.innerHTML = `
             <div class="header">
-                <div class="avatar-small" id="profileBtn">
-                    ${USER?.photoURL ? `<img src="${USER.photoURL}">` : (USER?.fullName?.charAt(0) || 'U')}
-                </div>
+                <div class="avatar-sm" id="profileBtn">${USER?.photoURL ? `<img src="${USER.photoURL}">` : (USER?.fullName?.charAt(0) || 'U')}</div>
                 <h2>ChatKu</h2>
                 <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
             </div>
@@ -463,7 +236,6 @@
             </div>
         `;
         
-        // Bersihkan preview listeners
         for (let u of PREVIEW_UNSUBS) u();
         PREVIEW_UNSUBS = [];
         
@@ -478,12 +250,9 @@
                 items.push({ id: chat.id, type: 'private', name: c.fullName, subtitle: c.phone, photo: c.photoURL, data: c });
             }
         }
-        
         for (let gid of groups) {
             let g = await getDoc(doc(db, 'chats', gid));
-            if (g.exists()) {
-                items.push({ id: gid, type: 'group', name: g.data().name, subtitle: `${g.data().participants?.length || 0} anggota`, data: g.data() });
-            }
+            if (g.exists()) { items.push({ id: gid, type: 'group', name: g.data().name, subtitle: `${g.data().participants?.length || 0} anggota`, data: g.data() }); }
         }
         
         let container = document.getElementById('chatList');
@@ -496,10 +265,8 @@
                 div.className = 'chat-item';
                 div.id = `chat_${item.id}`;
                 div.innerHTML = `
-                    <div class="chat-avatar">
-                        ${item.photo ? `<img src="${item.photo}">` : item.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="chat-details">
+                    <div class="chat-avatar">${item.photo ? `<img src="${item.photo}">` : item.name.charAt(0).toUpperCase()}</div>
+                    <div class="chat-info">
                         <div class="chat-name">
                             <span>${escapeHtml(item.name)}</span>
                             ${item.type === 'group' ? '<span class="group-badge"><i class="fas fa-users"></i> Grup</span>' : ''}
@@ -526,12 +293,8 @@
                     if (previewEl) previewEl.innerText = lastMsg ? (lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg) : 'Ketik pesan...';
                     let badgeEl = document.getElementById(`badge_${item.id}`);
                     if (badgeEl) {
-                        if (unread > 0) {
-                            badgeEl.innerText = unread;
-                            badgeEl.style.display = 'inline-flex';
-                        } else {
-                            badgeEl.style.display = 'none';
-                        }
+                        if (unread > 0) { badgeEl.innerText = unread; badgeEl.style.display = 'inline-flex'; }
+                        else { badgeEl.style.display = 'none'; }
                     }
                 });
                 PREVIEW_UNSUBS.push(unsub);
@@ -540,32 +303,15 @@
         
         document.getElementById('profileBtn').onclick = () => showProfile(USER.uid, false);
         document.getElementById('myProfileBtn').onclick = () => showProfile(USER.uid, false);
-        document.getElementById('logoutBtn').onclick = async () => {
-            if (confirm('Keluar?')) await signOut(auth);
-        };
+        document.getElementById('logoutBtn').onclick = async () => { if (confirm('Keluar?')) await signOut(auth); };
         document.getElementById('addContactBtn').onclick = () => {
-            let modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.innerHTML = `
-                <div class="modal-box">
-                    <h3>Tambah Kontak</h3>
-                    <input type="tel" id="phone" placeholder="Nomor HP">
-                    <button id="ok">Tambah</button>
-                    <button id="cancel" style="background:#eee;color:#ff6b9d">Batal</button>
-                    <div id="err" style="color:#ff6b9d;font-size:12px;margin-top:8px"></div>
-                </div>
-            `;
+            let modal = document.createElement('div'); modal.className = 'modal';
+            modal.innerHTML = `<div class="modal-box"><h3>Tambah Kontak</h3><input type="tel" id="phone" placeholder="Nomor HP"><button id="ok">Tambah</button><button id="cancel" style="background:#eee;color:#ff6b9d">Batal</button><div id="err" style="color:#ff6b9d;font-size:12px;margin-top:8px"></div></div>`;
             document.body.appendChild(modal);
             document.getElementById('ok').onclick = async () => {
                 let phone = document.getElementById('phone').value.trim();
-                try {
-                    await addContact(phone);
-                    toast('✅ Kontak ditambahkan');
-                    modal.remove();
-                    renderHome();
-                } catch(e) {
-                    document.getElementById('err').innerText = e.message;
-                }
+                try { await addContact(phone); toast('✅ Kontak ditambahkan'); modal.remove(); renderHome(); } 
+                catch(e) { document.getElementById('err').innerText = e.message; }
             };
             document.getElementById('cancel').onclick = () => modal.remove();
         };
@@ -573,68 +319,41 @@
         document.getElementById('createGroupBtn').onclick = async () => {
             let contacts = USER?.contacts || [];
             let contactsData = [];
-            for (let id of contacts) {
-                let c = await getUser(id);
-                if (c) contactsData.push(c);
-            }
-            if (contactsData.length === 0) {
-                toast('Tambahkan kontak terlebih dahulu');
-                return;
-            }
-            let modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.innerHTML = `
-                <div class="modal-box">
-                    <h3>Buat Grup Baru</h3>
-                    <input type="text" id="groupName" placeholder="Nama Grup">
-                    <p style="text-align:left; margin:10px 0 5px 0">Pilih anggota:</p>
-                    <div id="membersList" style="max-height:200px; overflow-y:auto;"></div>
-                    <button id="createBtn">Buat Grup</button>
-                    <button id="cancelBtn" style="background:#eee;color:#ff6b9d">Batal</button>
-                </div>
-            `;
+            for (let id of contacts) { let c = await getUser(id); if (c) contactsData.push(c); }
+            if (contactsData.length === 0) { toast('Tambahkan kontak terlebih dahulu'); return; }
+            let modal = document.createElement('div'); modal.className = 'modal';
+            modal.innerHTML = `<div class="modal-box"><h3>Buat Grup Baru</h3><input type="text" id="groupName" placeholder="Nama Grup"><p style="text-align:left; margin:10px 0 5px 0">Pilih anggota:</p><div id="membersList" style="max-height:200px; overflow-y:auto;"></div><button id="createBtn">Buat Grup</button><button id="cancelBtn" style="background:#eee;color:#ff6b9d">Batal</button></div>`;
             document.body.appendChild(modal);
-            let listContainer = document.getElementById('membersList');
-            let selected = [];
+            let listContainer = document.getElementById('membersList'); let selected = [];
             for (let c of contactsData) {
-                let div = document.createElement('div');
-                div.className = 'contact-check-item';
+                let div = document.createElement('div'); div.className = 'contact-check-item';
                 div.innerHTML = `<input type="checkbox" value="${c.uid}"><label>${escapeHtml(c.fullName)} (${c.phone})</label>`;
                 let chk = div.querySelector('input');
-                chk.onchange = () => {
-                    if (chk.checked) selected.push(c.uid);
-                    else selected.splice(selected.indexOf(c.uid), 1);
-                };
+                chk.onchange = () => { if (chk.checked) selected.push(c.uid); else selected.splice(selected.indexOf(c.uid), 1); };
                 listContainer.appendChild(div);
             }
             document.getElementById('createBtn').onclick = async () => {
                 let groupName = document.getElementById('groupName').value.trim();
                 if (!groupName) { toast('Masukkan nama grup'); return; }
                 if (selected.length === 0) { toast('Pilih minimal 1 anggota'); return; }
-                await createGroup(groupName, selected);
-                toast('🎉 Grup berhasil dibuat');
-                modal.remove();
-                renderHome();
+                await createGroup(groupName, selected); toast('🎉 Grup berhasil dibuat'); modal.remove(); renderHome();
             };
             document.getElementById('cancelBtn').onclick = () => modal.remove();
         };
     }
     
-    // OPEN CHAT
+    // ========== OPEN CHAT ==========
     async function openChat(item) {
         if (UNSUB_MSG) UNSUB_MSG();
         ACTIVE_CHAT = { id: item.id, type: item.type, name: item.name, data: item.data };
-        
-        if (item.type === 'private') {
-            await markAsRead(item.id, item.data.uid);
-        }
+        if (item.type === 'private') await markAsRead(item.id, item.data.uid);
         
         let root = document.getElementById('app');
         root.innerHTML += `
             <div class="chat-screen" id="chatScreen">
                 <div class="header">
                     <button class="btn-back" id="closeChat"><i class="fas fa-arrow-left"></i></button>
-                    <div class="avatar-small" id="chatAvatar">${item.name.charAt(0).toUpperCase()}</div>
+                    <div class="avatar-sm" id="chatAvatar">${item.name.charAt(0).toUpperCase()}</div>
                     <h2 style="flex:1; font-size:16px">${escapeHtml(item.name)}</h2>
                     <button class="btn-info" id="chatInfo"><i class="fas fa-info-circle"></i></button>
                 </div>
@@ -669,22 +388,9 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
         });
         
-        document.getElementById('closeChat').onclick = () => {
-            if (UNSUB_MSG) UNSUB_MSG();
-            document.getElementById('chatScreen').remove();
-            renderHome();
-        };
-        document.getElementById('sendMsg').onclick = async () => {
-            let inp = document.getElementById('msgInput');
-            let txt = inp.value.trim();
-            if (txt) {
-                await sendMessage(item.id, txt);
-                inp.value = '';
-            }
-        };
-        document.getElementById('msgInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('sendMsg').click();
-        });
+        document.getElementById('closeChat').onclick = () => { if (UNSUB_MSG) UNSUB_MSG(); document.getElementById('chatScreen').remove(); renderHome(); };
+        document.getElementById('sendMsg').onclick = async () => { let inp = document.getElementById('msgInput'); let txt = inp.value.trim(); if (txt) { await sendMessage(item.id, txt); inp.value = ''; } };
+        document.getElementById('msgInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('sendMsg').click(); });
         
         if (item.type === 'private') {
             document.getElementById('chatAvatar').onclick = () => showProfile(item.data.uid, true);
@@ -695,11 +401,10 @@
         }
     }
     
-    // SHOW GROUP PROFILE
+    // ========== SHOW GROUP PROFILE ==========
     async function showGroupProfile(groupId, groupName, groupData) {
         let isAdmin = groupData.createdBy === USER.uid;
         let members = groupData.participants || [];
-        
         let root = document.getElementById('app');
         root.innerHTML += `
             <div class="profile-screen" id="profileScreen">
@@ -709,14 +414,8 @@
                 </div>
                 <div class="profile-content">
                     <div class="big-avatar">${groupName.charAt(0).toUpperCase()}</div>
-                    <div class="info-row">
-                        <label>Nama Grup</label>
-                        <div class="value">${escapeHtml(groupName)}</div>
-                    </div>
-                    <div class="info-row">
-                        <label>Anggota</label>
-                        <div class="value">${members.length} anggota</div>
-                    </div>
+                    <div class="info-row"><label>Nama Grup</label><div class="value">${escapeHtml(groupName)}</div></div>
+                    <div class="info-row"><label>Anggota</label><div class="value">${members.length} anggota</div></div>
                     <button class="edit-btn" id="viewMembersBtn"><i class="fas fa-users"></i> Lihat Anggota</button>
                     <button class="edit-btn" id="leaveGroupBtn" style="background:#ff4444"><i class="fas fa-sign-out-alt"></i> Keluar Grup</button>
                     ${isAdmin ? '<button class="edit-btn" id="deleteGroupBtn" style="background:#ff4444"><i class="fas fa-trash"></i> Hapus Grup</button>' : ''}
@@ -725,44 +424,19 @@
         `;
         document.getElementById('profileScreen').style.display = 'flex';
         document.getElementById('closeProfile').onclick = () => document.getElementById('profileScreen').remove();
-        
-        document.getElementById('viewMembersBtn').onclick = () => {
-            document.getElementById('profileScreen').remove();
-            showGroupMembers(groupId, groupData);
-        };
-        document.getElementById('leaveGroupBtn').onclick = async () => {
-            if (confirm('Keluar dari grup?')) {
-                await leaveGroup(groupId);
-                document.getElementById('profileScreen')?.remove();
-                document.getElementById('chatScreen')?.remove();
-            }
-        };
-        if (isAdmin) {
-            document.getElementById('deleteGroupBtn').onclick = async () => {
-                if (confirm('Hapus grup? Semua pesan akan hilang')) {
-                    await deleteGroup(groupId);
-                    document.getElementById('profileScreen')?.remove();
-                    document.getElementById('chatScreen')?.remove();
-                }
-            };
-        }
+        document.getElementById('viewMembersBtn').onclick = () => { document.getElementById('profileScreen').remove(); showGroupMembers(groupId, groupData); };
+        document.getElementById('leaveGroupBtn').onclick = async () => { if (confirm('Keluar dari grup?')) { await leaveGroup(groupId); document.getElementById('profileScreen')?.remove(); document.getElementById('chatScreen')?.remove(); } };
+        if (isAdmin) { document.getElementById('deleteGroupBtn').onclick = async () => { if (confirm('Hapus grup? Semua pesan akan hilang')) { await deleteGroup(groupId); document.getElementById('profileScreen')?.remove(); document.getElementById('chatScreen')?.remove(); } }; }
     }
     
     async function showGroupMembers(groupId, groupData) {
         let members = groupData.participants || [];
         let isAdmin = groupData.createdBy === USER.uid;
-        
         let root = document.getElementById('app');
         root.innerHTML += `
             <div class="profile-screen" id="membersScreen">
-                <div class="header">
-                    <button class="btn-back" id="closeMembers"><i class="fas fa-arrow-left"></i></button>
-                    <h2>Anggota Grup</h2>
-                </div>
-                <div class="profile-content">
-                    <div id="membersList"></div>
-                    ${isAdmin ? '<button class="edit-btn" id="addMemberBtn"><i class="fas fa-user-plus"></i> Tambah Anggota</button>' : ''}
-                </div>
+                <div class="header"><button class="btn-back" id="closeMembers"><i class="fas fa-arrow-left"></i></button><h2>Anggota Grup</h2></div>
+                <div class="profile-content"><div id="membersList"></div>${isAdmin ? '<button class="edit-btn" id="addMemberBtn"><i class="fas fa-user-plus"></i> Tambah Anggota</button>' : ''}</div>
             </div>
         `;
         document.getElementById('membersScreen').style.display = 'flex';
@@ -772,25 +446,11 @@
         for (let uid of members) {
             let user = await getUser(uid);
             if (user) {
-                let div = document.createElement('div');
-                div.className = 'contact-check-item';
-                div.innerHTML = `
-                    <div class="avatar-small" style="width:36px;height:36px">${user.fullName?.charAt(0).toUpperCase()}</div>
-                    <div style="flex:1; text-align:left">
-                        <strong>${escapeHtml(user.fullName)}</strong> ${uid === USER.uid ? '(Anda)' : ''}
-                        <div style="font-size:11px; color:#999">${user.phone}</div>
-                    </div>
-                    ${isAdmin && uid !== USER.uid ? `<button id="remove_${uid}" style="background:#ff4444; color:white; border:none; padding:5px 12px; border-radius:20px;">Hapus</button>` : ''}
-                `;
+                let div = document.createElement('div'); div.className = 'contact-check-item';
+                div.innerHTML = `<div class="avatar-sm" style="width:36px;height:36px">${user.fullName?.charAt(0).toUpperCase()}</div><div style="flex:1; text-align:left"><strong>${escapeHtml(user.fullName)}</strong> ${uid === USER.uid ? '(Anda)' : ''}<div style="font-size:11px; color:#999">${user.phone}</div></div>${isAdmin && uid !== USER.uid ? `<button id="remove_${uid}" style="background:#ff4444; color:white; border:none; padding:5px 12px; border-radius:20px;">Hapus</button>` : ''}`;
                 container.appendChild(div);
                 if (isAdmin && uid !== USER.uid) {
-                    document.getElementById(`remove_${uid}`).onclick = async () => {
-                        if (confirm(`Keluarkan ${user.fullName}?`)) {
-                            await removeMemberFromGroup(groupId, uid);
-                            document.getElementById('membersScreen').remove();
-                            showGroupMembers(groupId, groupData);
-                        }
-                    };
+                    document.getElementById(`remove_${uid}`).onclick = async () => { if (confirm(`Keluarkan ${user.fullName}?`)) { await removeMemberFromGroup(groupId, uid); document.getElementById('membersScreen').remove(); showGroupMembers(groupId, groupData); } };
                 }
             }
         }
@@ -799,85 +459,41 @@
             document.getElementById('addMemberBtn').onclick = async () => {
                 let contacts = USER?.contacts || [];
                 let available = [];
-                for (let id of contacts) {
-                    if (!members.includes(id)) available.push(id);
-                }
-                if (available.length === 0) {
-                    toast('Semua kontak sudah jadi anggota');
-                    return;
-                }
-                let modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-box">
-                        <h3>Tambah Anggota</h3>
-                        <div id="availableContacts"></div>
-                        <button id="confirmAdd">Tambah</button>
-                        <button id="cancelAdd" style="background:#eee;color:#ff6b9d">Batal</button>
-                    </div>
-                `;
+                for (let id of contacts) { if (!members.includes(id)) available.push(id); }
+                if (available.length === 0) { toast('Semua kontak sudah jadi anggota'); return; }
+                let modal = document.createElement('div'); modal.className = 'modal';
+                modal.innerHTML = `<div class="modal-box"><h3>Tambah Anggota</h3><div id="availableContacts"></div><button id="confirmAdd">Tambah</button><button id="cancelAdd" style="background:#eee;color:#ff6b9d">Batal</button></div>`;
                 document.body.appendChild(modal);
-                let listContainer = document.getElementById('availableContacts');
-                let selected = [];
+                let listContainer = document.getElementById('availableContacts'); let selected = [];
                 for (let uid of available) {
                     let user = await getUser(uid);
                     if (user) {
-                        let div = document.createElement('div');
-                        div.className = 'contact-check-item';
+                        let div = document.createElement('div'); div.className = 'contact-check-item';
                         div.innerHTML = `<input type="checkbox" value="${uid}"><label>${escapeHtml(user.fullName)} (${user.phone})</label>`;
                         let chk = div.querySelector('input');
-                        chk.onchange = () => {
-                            if (chk.checked) selected.push(uid);
-                            else selected.splice(selected.indexOf(uid), 1);
-                        };
+                        chk.onchange = () => { if (chk.checked) selected.push(uid); else selected.splice(selected.indexOf(uid), 1); };
                         listContainer.appendChild(div);
                     }
                 }
-                document.getElementById('confirmAdd').onclick = async () => {
-                    for (let uid of selected) {
-                        await addMemberToGroup(groupId, uid);
-                    }
-                    toast('✅ Anggota ditambahkan');
-                    modal.remove();
-                    document.getElementById('membersScreen').remove();
-                    showGroupMembers(groupId, groupData);
-                };
+                document.getElementById('confirmAdd').onclick = async () => { for (let uid of selected) { await addMemberToGroup(groupId, uid); } toast('✅ Anggota ditambahkan'); modal.remove(); document.getElementById('membersScreen').remove(); showGroupMembers(groupId, groupData); };
                 document.getElementById('cancelAdd').onclick = () => modal.remove();
             };
         }
     }
     
-    // SHOW PROFILE (PRIVAT)
+    // ========== SHOW PROFILE ==========
     async function showProfile(uid, isOther) {
         let user = uid === USER.uid ? USER : await getUser(uid);
         if (!user) return;
-        
         let root = document.getElementById('app');
         root.innerHTML += `
             <div class="profile-screen" id="profileScreen">
-                <div class="header">
-                    <button class="btn-back" id="closeProfile"><i class="fas fa-arrow-left"></i></button>
-                    <h2>${isOther ? 'Info Kontak' : 'Profil Saya'}</h2>
-                </div>
+                <div class="header"><button class="btn-back" id="closeProfile"><i class="fas fa-arrow-left"></i></button><h2>${isOther ? 'Info Kontak' : 'Profil Saya'}</h2></div>
                 <div class="profile-content">
-                    <div class="big-avatar" id="avatarBtn">
-                        ${user.photoURL ? `<img src="${user.photoURL}">` : user.fullName?.charAt(0).toUpperCase()}
-                        ${!isOther ? '<div class="camera-icon"><i class="fas fa-camera"></i></div>' : ''}
-                    </div>
-                    <div class="info-row">
-                        <label>Nama</label>
-                        <div class="value" id="nameValue">${escapeHtml(user.fullName)}</div>
-                        ${!isOther ? '<input type="text" id="nameInput" style="display:none">' : ''}
-                    </div>
-                    <div class="info-row">
-                        <label>Nomor HP</label>
-                        <div class="value">${user.phone}</div>
-                    </div>
-                    <div class="info-row">
-                        <label>Tentang</label>
-                        <div class="value" id="bioValue">${escapeHtml(user.bio || 'Halo!')}</div>
-                        ${!isOther ? '<textarea id="bioInput" rows="2" style="display:none"></textarea>' : ''}
-                    </div>
+                    <div class="big-avatar" id="avatarBtn">${user.photoURL ? `<img src="${user.photoURL}">` : user.fullName?.charAt(0).toUpperCase()}${!isOther ? '<div class="camera-icon"><i class="fas fa-camera"></i></div>' : ''}</div>
+                    <div class="info-row"><label>Nama</label><div class="value" id="nameValue">${escapeHtml(user.fullName)}</div>${!isOther ? '<input type="text" id="nameInput" style="display:none">' : ''}</div>
+                    <div class="info-row"><label>Nomor HP</label><div class="value">${user.phone}</div></div>
+                    <div class="info-row"><label>Tentang</label><div class="value" id="bioValue">${escapeHtml(user.bio || 'Halo!')}</div>${!isOther ? '<textarea id="bioInput" rows="2" style="display:none"></textarea>' : ''}</div>
                     ${!isOther ? '<button class="edit-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Edit Profil</button>' : ''}
                     ${!isOther ? '<button class="edit-btn" id="saveProfileBtn" style="display:none; background:#25D366"><i class="fas fa-save"></i> Simpan</button>' : ''}
                 </div>
@@ -888,22 +504,16 @@
         
         if (!isOther) {
             document.querySelector('.camera-icon').onclick = () => {
-                let inp = document.createElement('input');
-                inp.type = 'file';
-                inp.accept = 'image/*';
+                let inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
                 inp.onchange = (e) => {
                     let file = e.target.files[0];
                     if (file) {
                         let reader = new FileReader();
                         reader.onload = (ev) => {
-                            let img = new Image();
-                            img.src = ev.target.result;
+                            let img = new Image(); img.src = ev.target.result;
                             img.onload = () => {
-                                let canvas = document.createElement('canvas');
-                                canvas.width = 200;
-                                canvas.height = 200;
-                                let ctx = canvas.getContext('2d');
-                                ctx.drawImage(img, 0, 0, 200, 200);
+                                let canvas = document.createElement('canvas'); canvas.width = 200; canvas.height = 200;
+                                let ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, 200, 200);
                                 let base64 = canvas.toDataURL('image/jpeg', 0.7);
                                 updateProfile({ photoURL: base64 });
                             };
@@ -930,16 +540,14 @@
             document.getElementById('saveProfileBtn').onclick = async () => {
                 let newName = document.getElementById('nameInput').value.trim();
                 let newBio = document.getElementById('bioInput').value.trim();
-                if (newName) {
-                    await updateProfile({ fullName: newName, bio: newBio });
-                }
+                if (newName) { await updateProfile({ fullName: newName, bio: newBio }); }
                 document.getElementById('profileScreen').remove();
                 showProfile(USER.uid, false);
             };
         }
     }
     
-    // LOGIN
+    // ========== LOGIN ==========
     function renderLogin() {
         let isLogin = false;
         let root = document.getElementById('app');
@@ -956,7 +564,6 @@
                 </div>
             </div>
         `;
-        
         let nameInp = document.getElementById('name');
         let submit = document.getElementById('submit');
         let switchBtn = document.getElementById('switch');
@@ -964,24 +571,16 @@
         
         switchBtn.onclick = () => {
             isLogin = !isLogin;
-            if (isLogin) {
-                submit.innerText = 'Masuk';
-                switchBtn.innerText = 'Belum punya akun? Daftar';
-                nameInp.style.display = 'none';
-            } else {
-                submit.innerText = 'Daftar';
-                switchBtn.innerText = 'Sudah punya akun? Masuk';
-                nameInp.style.display = 'block';
-            }
+            if (isLogin) { submit.innerText = 'Masuk'; switchBtn.innerText = 'Belum punya akun? Daftar'; nameInp.style.display = 'none'; }
+            else { submit.innerText = 'Daftar'; switchBtn.innerText = 'Sudah punya akun? Masuk'; nameInp.style.display = 'block'; }
         };
         
         submit.onclick = async () => {
             let phone = document.getElementById('phone').value.trim();
             let pass = document.getElementById('pass').value;
             try {
-                if (isLogin) {
-                    await signInWithEmailAndPassword(auth, `${phone}@chatku.local`, pass);
-                } else {
+                if (isLogin) { await signInWithEmailAndPassword(auth, `${phone}@chatku.local`, pass); }
+                else {
                     let name = document.getElementById('name').value.trim();
                     if (!name) throw new Error('Nama harus diisi');
                     if (!phone.match(/^[0-9]{5,14}$/)) throw new Error('Nomor HP 5-14 digit');
@@ -989,20 +588,10 @@
                     let snap = await getDocs(q);
                     if (!snap.empty) throw new Error('Nomor sudah terdaftar');
                     let uc = await createUserWithEmailAndPassword(auth, `${phone}@chatku.local`, pass);
-                    await setDoc(doc(db, 'users', uc.user.uid), {
-                        fullName: name,
-                        phone: phone,
-                        bio: 'Halo!',
-                        photoURL: null,
-                        contacts: [],
-                        groups: [],
-                        createdAt: serverTimestamp()
-                    });
+                    await setDoc(doc(db, 'users', uc.user.uid), { fullName: name, phone: phone, bio: 'Halo!', photoURL: null, contacts: [], groups: [], createdAt: serverTimestamp() });
                 }
                 errorDiv.innerText = '';
-            } catch(e) {
-                errorDiv.innerText = e.message;
-            }
+            } catch(e) { errorDiv.innerText = e.message; }
         };
     }
     
@@ -1011,10 +600,7 @@
             USER = await getUser(user.uid);
             if (USER) renderHome();
             else setTimeout(async () => { USER = await getUser(user.uid); if (USER) renderHome(); else renderLogin(); }, 1000);
-        } else {
-            USER = null;
-            renderLogin();
-        }
+        } else { USER = null; renderLogin(); }
     });
     renderLogin();
 </script>

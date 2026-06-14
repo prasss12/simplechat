@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChatKu - Realtime</title>
+    <title>ChatKu - Fix Read</title>
     <style>
         * {
             margin: 0;
@@ -71,6 +71,9 @@
         .chat-name {
             font-weight: 600;
             font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .chat-phone {
             font-size: 12px;
@@ -94,7 +97,6 @@
             align-items: center;
             justify-content: center;
             padding: 0 6px;
-            margin-left: 8px;
         }
         .bottom-bar {
             padding: 10px 16px;
@@ -377,13 +379,17 @@
         return true;
     }
     
-    async function markAsRead(chatId, otherId) {
+    // MARK ALL MESSAGES AS READ
+    async function markAllAsRead(chatId, otherId) {
+        if (!chatId) return;
         let msgsRef = collection(db, 'chats', chatId, 'messages');
         let q = query(msgsRef, where('senderId', '==', otherId), where('read', '==', false));
         let snap = await getDocs(q);
+        
         for (let docMsg of snap.docs) {
             await updateDoc(docMsg.ref, { read: true });
         }
+        return snap.size;
     }
     
     // REALTIME RENDER CHAT LIST
@@ -397,9 +403,18 @@
         });
     }
     
+    // Store unsubscribe functions for each chat preview
+    let previewUnsubs = [];
+    
     async function renderChatList() {
         let container = document.getElementById('chatList');
         if (!container) return;
+        
+        // Cleanup previous preview listeners
+        for (let unsub of previewUnsubs) {
+            if (unsub) unsub();
+        }
+        previewUnsubs = [];
         
         let contacts = USER?.contacts || [];
         let contactsData = [];
@@ -415,40 +430,9 @@
         }
         
         container.innerHTML = '';
+        
         for (let c of contactsData) {
             let chatId = await getChat(USER.uid, c.uid);
-            
-            // Subscribe ke pesan untuk update realtime
-            let msgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'));
-            let unsubPreview = onSnapshot(msgQuery, (snap) => {
-                let lastMsg = '';
-                let unread = 0;
-                snap.forEach(d => {
-                    let msg = d.data();
-                    if (lastMsg === '') lastMsg = msg.text;
-                    if (msg.senderId === c.uid && !msg.read) unread++;
-                });
-                
-                let div = document.getElementById(`chat_${chatId}`);
-                if (div) {
-                    let previewSpan = div.querySelector('.chat-preview');
-                    if (previewSpan) previewSpan.innerText = lastMsg ? (lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg) : 'Ketik pesan...';
-                    
-                    let badgeSpan = div.querySelector('.unread-badge');
-                    if (unread > 0) {
-                        if (!badgeSpan) {
-                            let nameSpan = div.querySelector('.chat-name span:first-child');
-                            if (nameSpan) nameSpan.innerHTML = `${escapeHtml(c.fullName)} <span class="unread-badge">${unread}</span>`;
-                        } else {
-                            badgeSpan.innerText = unread;
-                            badgeSpan.style.display = 'inline-flex';
-                        }
-                    } else if (badgeSpan) {
-                        let nameSpan = div.querySelector('.chat-name span:first-child');
-                        if (nameSpan) nameSpan.innerHTML = escapeHtml(c.fullName);
-                    }
-                }
-            });
             
             let div = document.createElement('div');
             div.className = 'chat-item';
@@ -458,16 +442,48 @@
                 <div style="flex:1">
                     <div class="chat-name">
                         <span>${escapeHtml(c.fullName)}</span>
+                        <span class="unread-badge" style="display:none">0</span>
                     </div>
                     <div class="chat-phone">${c.phone}</div>
                     <div class="chat-preview">Loading...</div>
                 </div>
             `;
+            
             div.onclick = async () => {
-                await markAsRead(chatId, c.uid);
+                // Mark as read when opening chat
+                await markAllAsRead(chatId, c.uid);
                 await openChat(c, chatId);
             };
             container.appendChild(div);
+            
+            // Subscribe ke pesan untuk update realtime
+            let msgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'));
+            let unsub = onSnapshot(msgQuery, (snap) => {
+                let lastMsg = '';
+                let unread = 0;
+                snap.forEach(d => {
+                    let msg = d.data();
+                    if (lastMsg === '') lastMsg = msg.text;
+                    if (msg.senderId === c.uid && !msg.read) unread++;
+                });
+                
+                let chatDiv = document.getElementById(`chat_${chatId}`);
+                if (chatDiv) {
+                    let previewSpan = chatDiv.querySelector('.chat-preview');
+                    if (previewSpan) previewSpan.innerText = lastMsg ? (lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg) : 'Ketik pesan...';
+                    
+                    let badgeSpan = chatDiv.querySelector('.unread-badge');
+                    if (unread > 0) {
+                        if (badgeSpan) {
+                            badgeSpan.innerText = unread;
+                            badgeSpan.style.display = 'inline-flex';
+                        }
+                    } else {
+                        if (badgeSpan) badgeSpan.style.display = 'none';
+                    }
+                }
+            });
+            previewUnsubs.push(unsub);
         }
     }
     

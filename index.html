@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>PinkChat - Fast Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -11,17 +11,21 @@
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background: #f8f0f4;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
 
         .app {
             display: flex;
-            height: 100vh;
+            height: 100%;
             width: 100%;
             background: white;
         }
@@ -41,20 +45,22 @@
             flex-direction: column;
             background: #fefafb;
             height: 100%;
+            width: 100%;
         }
 
         .header {
-            padding: 16px 20px;
+            padding: 12px 16px;
             background: white;
             border-bottom: 1px solid #ffe0e8;
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-shrink: 0;
         }
 
         .avatar {
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             background: linear-gradient(135deg, #ff99c8, #ff6b9d);
             border-radius: 50%;
             display: flex;
@@ -62,7 +68,7 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
         }
 
@@ -72,21 +78,21 @@
         }
 
         .info h3 {
-            font-size: 16px;
+            font-size: 15px;
             color: #2d2d2d;
         }
 
         .info p {
-            font-size: 12px;
+            font-size: 11px;
             color: #ff6b9d;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         .btn-icon {
             background: #ffe4ec;
             border: none;
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             color: #ff6b9d;
             font-size: 16px;
@@ -96,19 +102,21 @@
         .chat-list {
             flex: 1;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .chat-item {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-bottom: 1px solid #f0eef0;
             cursor: pointer;
             transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .chat-item:hover {
+        .chat-item:active {
             background: #fff5f8;
         }
 
@@ -142,11 +150,12 @@
         }
 
         .actions {
-            padding: 12px 16px;
+            padding: 10px 12px;
             display: flex;
-            gap: 12px;
+            gap: 10px;
             border-top: 1px solid #ffe0e8;
             background: white;
+            flex-shrink: 0;
         }
 
         .actions button {
@@ -163,6 +172,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .messages {
@@ -172,10 +182,11 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
-            max-width: 70%;
+            max-width: 75%;
             display: flex;
             flex-direction: column;
         }
@@ -189,7 +200,7 @@
         }
 
         .bubble {
-            padding: 10px 15px;
+            padding: 10px 14px;
             border-radius: 20px;
             font-size: 14px;
             word-wrap: break-word;
@@ -215,18 +226,19 @@
 
         .input-area {
             background: white;
-            padding: 12px 16px;
+            padding: 10px 12px;
             display: flex;
             gap: 10px;
             align-items: center;
             border-top: 1px solid #ffe0e8;
+            flex-shrink: 0;
         }
 
         .input-area input {
             flex: 1;
             background: #fef0f4;
             border: none;
-            padding: 12px 18px;
+            padding: 12px 16px;
             border-radius: 30px;
             font-size: 15px;
             outline: none;
@@ -241,6 +253,7 @@
             color: white;
             font-size: 16px;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .empty {
@@ -278,6 +291,7 @@
             background: #fef0f4;
             border: none;
             border-radius: 30px;
+            font-size: 15px;
         }
 
         .modal-box button {
@@ -290,11 +304,12 @@
             font-weight: bold;
             margin-top: 10px;
             cursor: pointer;
+            font-size: 15px;
         }
 
         .toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: #2d2d2d;
@@ -303,26 +318,59 @@
             border-radius: 30px;
             font-size: 13px;
             z-index: 1100;
+            white-space: nowrap;
         }
 
+        /* MOBILE STYLES */
         @media (max-width: 768px) {
             .sidebar {
-                display: none;
                 position: fixed;
-                left: 0;
+                left: -100%;
                 top: 0;
                 bottom: 0;
-                z-index: 100;
-                width: 280px;
+                z-index: 200;
+                width: 85%;
+                max-width: 300px;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             }
-            .sidebar.show {
-                display: flex;
+            .sidebar.open {
+                left: 0;
             }
             .menu-btn {
                 display: flex !important;
             }
             .back-btn {
                 display: flex !important;
+            }
+            .header {
+                padding: 10px 12px;
+            }
+            .avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 14px;
+            }
+            .btn-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
+            }
+            .input-area input {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+            .input-area button {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+            .messages {
+                padding: 12px;
+            }
+            .bubble {
+                padding: 8px 12px;
+                font-size: 13px;
             }
         }
 
@@ -339,6 +387,26 @@
             color: #ff6b9d;
             cursor: pointer;
             margin-right: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 150;
+        }
+        .overlay.active {
+            display: block;
         }
     </style>
 </head>
@@ -347,7 +415,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
@@ -363,10 +431,11 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     
-    let user = null;
-    let chatId = null;
-    let chatName = null;
-    let unsubMsg = null;
+    let USER = null;
+    let CHAT_ID = null;
+    let CHAT_NAME = null;
+    let UNSUB_MSG = null;
+    let UNSUB_USER = null;
     
     function toast(msg) {
         let t = document.querySelector('.toast');
@@ -388,7 +457,7 @@
         return s.exists() ? { uid, ...s.data() } : null;
     }
     
-    // ========== GET ATAU BUAT CHAT ==========
+    // GET OR CREATE CHAT
     async function getChat(uid1, uid2) {
         const chats = collection(db, 'chats');
         const q1 = query(chats, where('participants', '==', [uid1, uid2]));
@@ -405,40 +474,41 @@
         return ref.id;
     }
     
-    // ========== KIRIM PESAN ==========
-    async function kirimPesan(chat, text) {
+    // SEND MESSAGE
+    async function sendMsg(chat, text) {
         if (!chat || !text) return;
         const msgs = collection(db, 'chats', chat, 'messages');
         await addDoc(msgs, {
-            senderId: user.uid,
+            senderId: USER.uid,
             text: text,
             timestamp: serverTimestamp()
         });
     }
     
-    // ========== TAMBAH KONTAK ==========
-    async function tambahKontak(phone) {
+    // ADD CONTACT
+    async function addContact(phone) {
         const q = query(collection(db, 'users'), where('phone', '==', phone));
         const s = await getDocs(q);
         if (s.empty) throw new Error('Nomor tidak terdaftar');
         const target = s.docs[0];
-        if (target.id === user.uid) throw new Error('Tidak bisa tambah sendiri');
+        if (target.id === USER.uid) throw new Error('Tidak bisa tambah sendiri');
         
-        await updateDoc(doc(db, 'users', user.uid), { contacts: arrayUnion(target.id) });
-        await updateDoc(doc(db, 'users', target.id), { contacts: arrayUnion(user.uid) });
+        await updateDoc(doc(db, 'users', USER.uid), { contacts: arrayUnion(target.id) });
+        await updateDoc(doc(db, 'users', target.id), { contacts: arrayUnion(USER.uid) });
+        return true;
     }
     
-    // ========== RENDER DAFTAR CHAT ==========
-    async function renderList() {
+    // RENDER CHAT LIST
+    async function renderChats() {
         const container = document.getElementById('chatList');
         if (!container) return;
         
-        const u = await getUserData(user.uid);
+        const u = await getUserData(USER.uid);
         const kontak = u?.contacts || [];
         const items = [];
         
         for (let id of kontak) {
-            const chat = await getChat(user.uid, id);
+            const chat = await getChat(USER.uid, id);
             const partner = await getUserData(id);
             if (partner) items.push({ chatId: chat, name: partner.fullName, phone: partner.phone });
         }
@@ -453,43 +523,44 @@
             const div = document.createElement('div');
             div.className = 'chat-item';
             div.innerHTML = `
-                <div class="chat-avatar">${item.name.charAt(0).toUpperCase()}</div>
+                <div class="chat-avatar">${escape(item.name.charAt(0).toUpperCase())}</div>
                 <div class="chat-details">
                     <div class="chat-name">${escape(item.name)}</div>
-                    <div class="chat-sub">${item.phone}</div>
+                    <div class="chat-sub">${escape(item.phone)}</div>
                 </div>
             `;
-            div.onclick = () => bukaChat(item.chatId, item.name);
+            div.onclick = () => openChat(item.chatId, item.name);
             container.appendChild(div);
         }
     }
     
-    // ========== BUKA CHAT ==========
-    async function bukaChat(id, name) {
-        if (unsubMsg) unsubMsg();
-        chatId = id;
-        chatName = name;
+    // OPEN CHAT
+    async function openChat(id, name) {
+        if (UNSUB_MSG) UNSUB_MSG();
+        CHAT_ID = id;
+        CHAT_NAME = name;
         
         document.getElementById('chatTitle').innerHTML = escape(name);
         document.getElementById('chatStatus').innerHTML = 'Online';
         document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
         
+        // Close sidebar on mobile
         if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.remove('show');
+            closeSidebar();
         }
         
         const msgDiv = document.getElementById('messagesList');
         msgDiv.innerHTML = '<div class="empty">Loading...</div>';
         
         const q = query(collection(db, 'chats', id, 'messages'), orderBy('timestamp', 'asc'));
-        unsubMsg = onSnapshot(q, (snap) => {
+        UNSUB_MSG = onSnapshot(q, (snap) => {
             msgDiv.innerHTML = '';
             if (snap.empty) {
-                msgDiv.innerHTML = '<div class="empty">Belum ada pesan</div>';
+                msgDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
             }
             snap.forEach(d => {
                 const m = d.data();
-                const isMe = m.senderId === user.uid;
+                const isMe = m.senderId === USER.uid;
                 const el = document.createElement('div');
                 el.className = `message ${isMe ? 'sent' : 'received'}`;
                 const t = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
@@ -499,12 +570,12 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
         });
         
-        renderList();
+        renderChats();
     }
     
-    // ========== KIRIM ==========
-    async function kirim() {
-        if (!chatId) {
+    // SEND
+    async function send() {
+        if (!CHAT_ID) {
             toast('Pilih chat dulu');
             return;
         }
@@ -512,12 +583,24 @@
         const text = input.value.trim();
         if (!text) return;
         
-        await kirimPesan(chatId, text);
+        await sendMsg(CHAT_ID, text);
         input.value = '';
+        input.focus();
     }
     
-    // ========== MODAL TAMBAH KONTAK ==========
-    function modalTambahKontak() {
+    // SIDEBAR FUNCTIONS
+    function openSidebar() {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('overlay').classList.add('active');
+    }
+    
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+    
+    // MODAL ADD CONTACT
+    function showAddContact() {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
@@ -534,10 +617,11 @@
         document.getElementById('add').onclick = async () => {
             const phone = document.getElementById('phone').value.trim();
             try {
-                await tambahKontak(phone);
+                await addContact(phone);
                 toast('✅ Kontak ditambahkan');
                 modal.remove();
-                renderList();
+                renderChats();
+                closeSidebar();
             } catch(e) {
                 document.getElementById('err').innerText = e.message;
             }
@@ -545,16 +629,16 @@
         document.getElementById('cancel').onclick = () => modal.remove();
     }
     
-    // ========== PROFIL ==========
-    function modalProfil() {
+    // SHOW PROFILE
+    function showProfile() {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
             <div class="modal-box">
-                <div class="avatar" style="margin:0 auto 15px auto; width:80px; height:80px; font-size:32px;">${user.fullName?.charAt(0) || 'U'}</div>
-                <h3>${escape(user.fullName)}</h3>
-                <p>${user.phone}</p>
-                <p style="color:#aa8a96;">${escape(user.bio || 'Halo!')}</p>
+                <div class="avatar" style="margin:0 auto 15px auto; width:80px; height:80px; font-size:32px;">${USER.fullName?.charAt(0) || 'U'}</div>
+                <h3>${escape(USER.fullName)}</h3>
+                <p>${USER.phone}</p>
+                <p style="color:#aa8a96; margin-top:10px;">${escape(USER.bio || 'Halo! Saya menggunakan PinkChat')}</p>
                 <button id="close" style="background:#ffe4ec;color:#ff6b9d">Tutup</button>
             </div>
         `;
@@ -562,18 +646,18 @@
         document.getElementById('close').onclick = () => modal.remove();
     }
     
-    // ========== MAIN APP ==========
-    async function mainApp() {
+    // MAIN APP
+    async function renderMain() {
         const root = document.getElementById('app');
         
         root.innerHTML = `
             <div class="app">
                 <div class="sidebar" id="sidebar">
                     <div class="header">
-                        <div class="avatar" id="profileBtn">${user?.fullName?.charAt(0) || 'U'}</div>
+                        <div class="avatar" id="profileBtn">${USER?.fullName?.charAt(0) || 'U'}</div>
                         <div class="info" id="profileInfo">
-                            <h3>${escape(user?.fullName || 'User')}</h3>
-                            <p>${user?.phone || ''}</p>
+                            <h3>${escape(USER?.fullName || 'User')}</h3>
+                            <p>${USER?.phone || ''}</p>
                         </div>
                         <button class="btn-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
@@ -583,12 +667,13 @@
                         <button id="groupBtn" disabled style="opacity:0.5"><i class="fas fa-users"></i> Grup</button>
                     </div>
                 </div>
+                <div class="overlay" id="overlay"></div>
                 
                 <div class="chat-area">
                     <div class="header">
                         <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
                         <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
-                        <div class="avatar" id="chatAvatar">P</div>
+                        <div class="avatar" id="chatAvatarBtn">P</div>
                         <div class="info" id="chatInfo">
                             <h3 id="chatTitle">PinkChat</h3>
                             <p id="chatStatus">Pilih percakapan</p>
@@ -605,40 +690,60 @@
             </div>
         `;
         
-        await renderList();
+        await renderChats();
         
-        document.getElementById('profileBtn').onclick = modalProfil;
-        document.getElementById('profileInfo').onclick = modalProfil;
+        // EVENT LISTENERS
+        document.getElementById('profileBtn').onclick = showProfile;
+        document.getElementById('profileInfo').onclick = showProfile;
         document.getElementById('logoutBtn').onclick = async () => {
             if (confirm('Yakin keluar?')) await signOut(auth);
         };
-        document.getElementById('addContactBtn').onclick = modalTambahKontak;
-        document.getElementById('menuBtn').onclick = () => document.getElementById('sidebar').classList.add('show');
+        document.getElementById('addContactBtn').onclick = showAddContact;
+        document.getElementById('menuBtn').onclick = openSidebar;
+        document.getElementById('overlay').onclick = closeSidebar;
         document.getElementById('backBtn').onclick = () => {
-            if (unsubMsg) unsubMsg();
-            chatId = null;
+            if (UNSUB_MSG) UNSUB_MSG();
+            CHAT_ID = null;
             document.getElementById('chatTitle').innerHTML = 'PinkChat';
             document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
             document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
         };
-        document.getElementById('sendBtn').onclick = kirim;
+        document.getElementById('sendBtn').onclick = send;
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') kirim();
+            if (e.key === 'Enter') send();
         });
         
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const menu = document.getElementById('menuBtn');
-            if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
-                if (!sidebar.contains(e.target) && e.target !== menu) {
-                    sidebar.classList.remove('show');
+        // Chat header click untuk lihat profil kontak (optional)
+        const showContactProfile = async () => {
+            if (!CHAT_ID) return;
+            const chatDoc = await getDoc(doc(db, 'chats', CHAT_ID));
+            if (chatDoc.exists() && chatDoc.data().type === 'private') {
+                const otherId = chatDoc.data().participants.find(p => p !== USER.uid);
+                const other = await getUserData(otherId);
+                if (other) {
+                    const modal = document.createElement('div');
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-box">
+                            <div class="avatar" style="margin:0 auto 15px auto; width:80px; height:80px; font-size:32px;">${other.fullName?.charAt(0) || '?'}</div>
+                            <h3>${escape(other.fullName)}</h3>
+                            <p>${other.phone}</p>
+                            <p style="color:#aa8a96; margin-top:10px;">${escape(other.bio || 'Halo! Saya menggunakan PinkChat')}</p>
+                            <button id="close" style="background:#ffe4ec;color:#ff6b9d">Tutup</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    document.getElementById('close').onclick = () => modal.remove();
                 }
             }
-        });
+        };
+        
+        document.getElementById('chatAvatarBtn').onclick = showContactProfile;
+        document.getElementById('chatInfo').onclick = showContactProfile;
     }
     
-    // ========== LOGIN ==========
-    function loginPage() {
+    // LOGIN PAGE
+    function renderLogin() {
         let isLogin = false;
         const root = document.getElementById('app');
         
@@ -709,26 +814,26 @@
         };
     }
     
-    // ========== AUTH ==========
+    // AUTH STATE
     onAuthStateChanged(auth, async (u) => {
         if (u) {
-            user = await getUserData(u.uid);
-            if (user) {
-                mainApp();
+            USER = await getUserData(u.uid);
+            if (USER) {
+                renderMain();
             } else {
                 setTimeout(async () => {
-                    user = await getUserData(u.uid);
-                    if (user) mainApp();
-                    else loginPage();
+                    USER = await getUserData(u.uid);
+                    if (USER) renderMain();
+                    else renderLogin();
                 }, 1000);
             }
         } else {
-            user = null;
-            loginPage();
+            USER = null;
+            renderLogin();
         }
     });
     
-    loginPage();
+    renderLogin();
 </script>
 </body>
 </html>

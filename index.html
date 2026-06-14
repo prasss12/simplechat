@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PinkChat - Simple Chat</title>
+    <title>PinkChat - Fast Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -347,7 +347,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
@@ -363,10 +363,10 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     
-    let CURRENT_USER = null;
-    let CURRENT_CHAT_ID = null;
-    let CURRENT_CHAT_NAME = null;
-    let unsubscribe = null;
+    let user = null;
+    let chatId = null;
+    let chatName = null;
+    let unsubMsg = null;
     
     function toast(msg) {
         let t = document.querySelector('.toast');
@@ -380,22 +380,16 @@
     
     function escape(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, m => {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
     
-    async function getUser(uid) {
+    async function getUserData(uid) {
         const s = await getDoc(doc(db, 'users', uid));
-        if (s.exists()) return { uid, ...s.data() };
-        return null;
+        return s.exists() ? { uid, ...s.data() } : null;
     }
     
-    // ========== CHAT ==========
-    async function getChatId(uid1, uid2) {
+    // ========== GET ATAU BUAT CHAT ==========
+    async function getChat(uid1, uid2) {
         const chats = collection(db, 'chats');
         const q1 = query(chats, where('participants', '==', [uid1, uid2]));
         const q2 = query(chats, where('participants', '==', [uid2, uid1]));
@@ -403,52 +397,50 @@
         if (s.empty) s = await getDocs(q2);
         if (!s.empty) return s.docs[0].id;
         
-        const newChat = {
+        const ref = await addDoc(chats, {
             type: 'private',
             participants: [uid1, uid2],
             createdAt: serverTimestamp()
-        };
-        const ref = await addDoc(chats, newChat);
+        });
         return ref.id;
     }
     
-    async function sendMessage(chatId, text) {
-        if (!chatId || !text) return false;
-        const msgRef = collection(db, 'chats', chatId, 'messages');
-        await addDoc(msgRef, {
-            senderId: CURRENT_USER.uid,
+    // ========== KIRIM PESAN ==========
+    async function kirimPesan(chat, text) {
+        if (!chat || !text) return;
+        const msgs = collection(db, 'chats', chat, 'messages');
+        await addDoc(msgs, {
+            senderId: user.uid,
             text: text,
             timestamp: serverTimestamp()
         });
-        return true;
     }
     
-    // ========== KONTAK ==========
-    async function addContact(phone) {
+    // ========== TAMBAH KONTAK ==========
+    async function tambahKontak(phone) {
         const q = query(collection(db, 'users'), where('phone', '==', phone));
         const s = await getDocs(q);
         if (s.empty) throw new Error('Nomor tidak terdaftar');
         const target = s.docs[0];
-        if (target.id === CURRENT_USER.uid) throw new Error('Tidak bisa tambah sendiri');
+        if (target.id === user.uid) throw new Error('Tidak bisa tambah sendiri');
         
-        await updateDoc(doc(db, 'users', CURRENT_USER.uid), { contacts: arrayUnion(target.id) });
-        await updateDoc(doc(db, 'users', target.id), { contacts: arrayUnion(CURRENT_USER.uid) });
-        return true;
+        await updateDoc(doc(db, 'users', user.uid), { contacts: arrayUnion(target.id) });
+        await updateDoc(doc(db, 'users', target.id), { contacts: arrayUnion(user.uid) });
     }
     
-    // ========== RENDER CHAT LIST ==========
-    async function renderChats() {
+    // ========== RENDER DAFTAR CHAT ==========
+    async function renderList() {
         const container = document.getElementById('chatList');
         if (!container) return;
         
-        const user = await getUser(CURRENT_USER.uid);
-        const contacts = user?.contacts || [];
+        const u = await getUserData(user.uid);
+        const kontak = u?.contacts || [];
         const items = [];
         
-        for (let cid of contacts) {
-            const chatId = await getChatId(CURRENT_USER.uid, cid);
-            const u = await getUser(cid);
-            if (u) items.push({ id: chatId, name: u.fullName, phone: u.phone });
+        for (let id of kontak) {
+            const chat = await getChat(user.uid, id);
+            const partner = await getUserData(id);
+            if (partner) items.push({ chatId: chat, name: partner.fullName, phone: partner.phone });
         }
         
         container.innerHTML = '';
@@ -467,16 +459,16 @@
                     <div class="chat-sub">${item.phone}</div>
                 </div>
             `;
-            div.onclick = () => openChat(item.id, item.name);
+            div.onclick = () => bukaChat(item.chatId, item.name);
             container.appendChild(div);
         }
     }
     
-    // ========== OPEN CHAT ==========
-    async function openChat(chatId, name) {
-        if (unsubscribe) unsubscribe();
-        CURRENT_CHAT_ID = chatId;
-        CURRENT_CHAT_NAME = name;
+    // ========== BUKA CHAT ==========
+    async function bukaChat(id, name) {
+        if (unsubMsg) unsubMsg();
+        chatId = id;
+        chatName = name;
         
         document.getElementById('chatTitle').innerHTML = escape(name);
         document.getElementById('chatStatus').innerHTML = 'Online';
@@ -489,30 +481,30 @@
         const msgDiv = document.getElementById('messagesList');
         msgDiv.innerHTML = '<div class="empty">Loading...</div>';
         
-        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        unsubscribe = onSnapshot(q, (snap) => {
+        const q = query(collection(db, 'chats', id, 'messages'), orderBy('timestamp', 'asc'));
+        unsubMsg = onSnapshot(q, (snap) => {
             msgDiv.innerHTML = '';
             if (snap.empty) {
-                msgDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pertama!</div>';
+                msgDiv.innerHTML = '<div class="empty">Belum ada pesan</div>';
             }
             snap.forEach(d => {
-                const msg = d.data();
-                const isMe = msg.senderId === CURRENT_USER.uid;
+                const m = d.data();
+                const isMe = m.senderId === user.uid;
                 const el = document.createElement('div');
                 el.className = `message ${isMe ? 'sent' : 'received'}`;
-                const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                el.innerHTML = `<div class="bubble">${escape(msg.text)}</div><div class="time">${time}</div>`;
+                const t = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                el.innerHTML = `<div class="bubble">${escape(m.text)}</div><div class="time">${t}</div>`;
                 msgDiv.appendChild(el);
             });
             msgDiv.scrollTop = msgDiv.scrollHeight;
         });
         
-        await renderChats();
+        renderList();
     }
     
-    // ========== SEND ==========
-    async function send() {
-        if (!CURRENT_CHAT_ID) {
+    // ========== KIRIM ==========
+    async function kirim() {
+        if (!chatId) {
             toast('Pilih chat dulu');
             return;
         }
@@ -520,12 +512,12 @@
         const text = input.value.trim();
         if (!text) return;
         
-        await sendMessage(CURRENT_CHAT_ID, text);
+        await kirimPesan(chatId, text);
         input.value = '';
     }
     
-    // ========== MODALS ==========
-    function showAddContact() {
+    // ========== MODAL TAMBAH KONTAK ==========
+    function modalTambahKontak() {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
@@ -542,10 +534,10 @@
         document.getElementById('add').onclick = async () => {
             const phone = document.getElementById('phone').value.trim();
             try {
-                await addContact(phone);
+                await tambahKontak(phone);
                 toast('✅ Kontak ditambahkan');
                 modal.remove();
-                renderChats();
+                renderList();
             } catch(e) {
                 document.getElementById('err').innerText = e.message;
             }
@@ -553,15 +545,16 @@
         document.getElementById('cancel').onclick = () => modal.remove();
     }
     
-    function showProfile() {
+    // ========== PROFIL ==========
+    function modalProfil() {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
             <div class="modal-box">
-                <div class="avatar" style="margin:0 auto 15px auto; width:80px; height:80px; font-size:32px;">${CURRENT_USER.fullName?.charAt(0) || 'U'}</div>
-                <h3>${escape(CURRENT_USER.fullName)}</h3>
-                <p>${CURRENT_USER.phone}</p>
-                <p style="color:#aa8a96;">${escape(CURRENT_USER.bio || 'Halo!')}</p>
+                <div class="avatar" style="margin:0 auto 15px auto; width:80px; height:80px; font-size:32px;">${user.fullName?.charAt(0) || 'U'}</div>
+                <h3>${escape(user.fullName)}</h3>
+                <p>${user.phone}</p>
+                <p style="color:#aa8a96;">${escape(user.bio || 'Halo!')}</p>
                 <button id="close" style="background:#ffe4ec;color:#ff6b9d">Tutup</button>
             </div>
         `;
@@ -570,24 +563,24 @@
     }
     
     // ========== MAIN APP ==========
-    async function renderMain() {
+    async function mainApp() {
         const root = document.getElementById('app');
         
         root.innerHTML = `
             <div class="app">
                 <div class="sidebar" id="sidebar">
                     <div class="header">
-                        <div class="avatar" id="profileBtn">${CURRENT_USER?.fullName?.charAt(0) || 'U'}</div>
+                        <div class="avatar" id="profileBtn">${user?.fullName?.charAt(0) || 'U'}</div>
                         <div class="info" id="profileInfo">
-                            <h3>${escape(CURRENT_USER?.fullName || 'User')}</h3>
-                            <p>${CURRENT_USER?.phone || ''}</p>
+                            <h3>${escape(user?.fullName || 'User')}</h3>
+                            <p>${user?.phone || ''}</p>
                         </div>
                         <button class="btn-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
                     <div class="chat-list" id="chatList"></div>
                     <div class="actions">
                         <button id="addContactBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-                        <button id="groupBtn" style="opacity:0.5"><i class="fas fa-users"></i> Grup</button>
+                        <button id="groupBtn" disabled style="opacity:0.5"><i class="fas fa-users"></i> Grup</button>
                     </div>
                 </div>
                 
@@ -612,25 +605,25 @@
             </div>
         `;
         
-        await renderChats();
+        await renderList();
         
-        document.getElementById('profileBtn').onclick = showProfile;
-        document.getElementById('profileInfo').onclick = showProfile;
+        document.getElementById('profileBtn').onclick = modalProfil;
+        document.getElementById('profileInfo').onclick = modalProfil;
         document.getElementById('logoutBtn').onclick = async () => {
             if (confirm('Yakin keluar?')) await signOut(auth);
         };
-        document.getElementById('addContactBtn').onclick = showAddContact;
+        document.getElementById('addContactBtn').onclick = modalTambahKontak;
         document.getElementById('menuBtn').onclick = () => document.getElementById('sidebar').classList.add('show');
         document.getElementById('backBtn').onclick = () => {
-            if (unsubscribe) unsubscribe();
-            CURRENT_CHAT_ID = null;
+            if (unsubMsg) unsubMsg();
+            chatId = null;
             document.getElementById('chatTitle').innerHTML = 'PinkChat';
             document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
             document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
         };
-        document.getElementById('sendBtn').onclick = send;
+        document.getElementById('sendBtn').onclick = kirim;
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') send();
+            if (e.key === 'Enter') kirim();
         });
         
         document.addEventListener('click', (e) => {
@@ -645,7 +638,7 @@
     }
     
     // ========== LOGIN ==========
-    function renderLogin() {
+    function loginPage() {
         let isLogin = false;
         const root = document.getElementById('app');
         
@@ -663,7 +656,7 @@
             </div>
         `;
         
-        const nameInput = document.getElementById('name');
+        const nameInp = document.getElementById('name');
         const title = document.getElementById('title');
         const submit = document.getElementById('submit');
         const switchBtn = document.getElementById('switch');
@@ -675,12 +668,12 @@
                 title.innerText = 'Masuk Akun';
                 submit.innerText = 'Masuk';
                 switchBtn.innerText = 'Belum punya akun? Daftar';
-                nameInput.style.display = 'none';
+                nameInp.style.display = 'none';
             } else {
                 title.innerText = 'Daftar Akun';
                 submit.innerText = 'Daftar';
                 switchBtn.innerText = 'Sudah punya akun? Masuk';
-                nameInput.style.display = 'block';
+                nameInp.style.display = 'block';
             }
         };
         
@@ -717,25 +710,25 @@
     }
     
     // ========== AUTH ==========
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            CURRENT_USER = await getUser(user.uid);
-            if (CURRENT_USER) {
-                renderMain();
+    onAuthStateChanged(auth, async (u) => {
+        if (u) {
+            user = await getUserData(u.uid);
+            if (user) {
+                mainApp();
             } else {
                 setTimeout(async () => {
-                    CURRENT_USER = await getUser(user.uid);
-                    if (CURRENT_USER) renderMain();
-                    else renderLogin();
+                    user = await getUserData(u.uid);
+                    if (user) mainApp();
+                    else loginPage();
                 }, 1000);
             }
         } else {
-            CURRENT_USER = null;
-            renderLogin();
+            user = null;
+            loginPage();
         }
     });
     
-    renderLogin();
+    loginPage();
 </script>
 </body>
 </html>

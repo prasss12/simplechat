@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PinkChat - Real-time Chat</title>
+    <title>PinkChat - Real-time Chat & Grup</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -19,7 +19,6 @@
             overflow: hidden;
         }
 
-        /* APP LAYOUT */
         .app {
             display: flex;
             height: 100vh;
@@ -27,7 +26,7 @@
             background: white;
         }
 
-        /* SIDEBAR (DAFTAR CHAT) */
+        /* SIDEBAR */
         .sidebar {
             width: 320px;
             background: white;
@@ -37,7 +36,7 @@
             height: 100%;
         }
 
-        /* MAIN CHAT AREA */
+        /* CHAT AREA */
         .chat-area {
             flex: 1;
             display: flex;
@@ -95,13 +94,13 @@
             cursor: pointer;
         }
 
-        /* LIST KONTAK */
-        .contact-list {
+        /* LIST CHAT (kontak + grup) */
+        .chat-list {
             flex: 1;
             overflow-y: auto;
         }
 
-        .contact-item {
+        .chat-item {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -111,11 +110,11 @@
             transition: background 0.2s;
         }
 
-        .contact-item:hover {
+        .chat-item:hover {
             background: #fff5f8;
         }
 
-        .contact-avatar {
+        .chat-avatar {
             width: 48px;
             height: 48px;
             background: #ffe4ec;
@@ -128,20 +127,29 @@
             color: #ff6b9d;
         }
 
-        .contact-details {
+        .chat-details {
             flex: 1;
         }
 
-        .contact-name {
+        .chat-name {
             font-weight: 600;
             color: #2d2d2d;
             font-size: 15px;
         }
 
-        .contact-phone {
+        .chat-sub {
             font-size: 11px;
             color: #aa8a96;
             margin-top: 3px;
+        }
+
+        .group-badge {
+            background: #ff99c8;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
         }
 
         /* ACTION BUTTONS */
@@ -223,7 +231,7 @@
             margin-right: 10px;
         }
 
-        /* INPUT AREA - PASTI ADA */
+        /* INPUT AREA */
         .input-area {
             background: white;
             padding: 12px 16px;
@@ -266,7 +274,6 @@
             color: #ff6b9d;
         }
 
-        /* EMPTY STATE */
         .empty {
             text-align: center;
             padding: 40px;
@@ -290,10 +297,12 @@
         .modal-box {
             background: white;
             width: 90%;
-            max-width: 340px;
+            max-width: 380px;
             padding: 28px;
             border-radius: 28px;
             text-align: center;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal-box h3 {
@@ -328,6 +337,30 @@
             cursor: pointer;
         }
 
+        .contact-check-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px solid #f0eef0;
+            cursor: pointer;
+        }
+
+        .contact-check-item:hover {
+            background: #fff0f5;
+        }
+
+        .contact-check-item input {
+            width: 20px;
+            margin: 0;
+        }
+
+        .contact-check-item label {
+            flex: 1;
+            text-align: left;
+            cursor: pointer;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -341,13 +374,10 @@
             z-index: 1100;
         }
 
-        /* RESPONSIVE MOBILE */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
-            }
-            .sidebar.show {
-                display: flex;
                 position: fixed;
                 left: 0;
                 top: 0;
@@ -356,7 +386,13 @@
                 width: 280px;
                 box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             }
+            .sidebar.show {
+                display: flex;
+            }
             .menu-btn {
+                display: flex !important;
+            }
+            .mobile-back {
                 display: flex !important;
             }
         }
@@ -375,10 +411,6 @@
             cursor: pointer;
             margin-right: 8px;
         }
-
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -386,7 +418,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
@@ -403,8 +435,9 @@
     const auth = getAuth(app);
     
     let currentUser = null;
-    let selectedUserId = null;
-    let selectedUserName = null;
+    let selectedChatId = null;
+    let selectedChatType = null;
+    let selectedChatName = null;
     let unsubscribeMsg = null;
     
     function showToast(msg) {
@@ -433,13 +466,428 @@
         return null;
     }
     
+    // ========== GRUP ==========
+    async function createGroup(groupName, memberIds) {
+        if (memberIds.length === 0) throw new Error('Pilih minimal 1 anggota');
+        
+        const allMembers = [currentUser.uid, ...memberIds];
+        const groupData = {
+            type: 'group',
+            name: groupName,
+            participants: allMembers,
+            createdBy: currentUser.uid,
+            createdAt: serverTimestamp(),
+            lastMessage: '',
+            lastMessageTime: serverTimestamp()
+        };
+        
+        const groupRef = await addDoc(collection(db, 'chats'), groupData);
+        
+        // Tambahkan ke daftar grup user
+        for (let uid of allMembers) {
+            await updateDoc(doc(db, 'users', uid), {
+                groups: arrayUnion(groupRef.id)
+            });
+        }
+        
+        return { id: groupRef.id, ...groupData };
+    }
+    
+    async function addMemberToGroup(groupId, newMemberId) {
+        const groupRef = doc(db, 'chats', groupId);
+        const groupSnap = await getDoc(groupRef);
+        if (!groupSnap.exists()) throw new Error('Grup tidak ditemukan');
+        
+        const currentParticipants = groupSnap.data().participants || [];
+        if (currentParticipants.includes(newMemberId)) throw new Error('Sudah anggota grup');
+        
+        await updateDoc(groupRef, {
+            participants: arrayUnion(newMemberId)
+        });
+        
+        await updateDoc(doc(db, 'users', newMemberId), {
+            groups: arrayUnion(groupId)
+        });
+        
+        return true;
+    }
+    
+    // ========== KONTAK PRIVAT ==========
+    async function getOrCreatePrivateChat(uid1, uid2) {
+        const chatsRef = collection(db, 'chats');
+        const q1 = query(chatsRef, where('participants', '==', [uid1, uid2]));
+        const q2 = query(chatsRef, where('participants', '==', [uid2, uid1]));
+        let snap = await getDocs(q1);
+        if (snap.empty) snap = await getDocs(q2);
+        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
+        
+        const newChat = {
+            type: 'private',
+            participants: [uid1, uid2],
+            createdAt: serverTimestamp(),
+            lastMessage: '',
+            lastMessageTime: serverTimestamp()
+        };
+        const ref = await addDoc(chatsRef, newChat);
+        return { id: ref.id, ...newChat };
+    }
+    
+    async function addContact(phone) {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('phone', '==', phone));
+        const snap = await getDocs(q);
+        if (snap.empty) throw new Error('Nomor HP tidak terdaftar');
+        const target = snap.docs[0];
+        if (target.id === currentUser.uid) throw new Error('Tidak bisa menambah diri sendiri');
+        
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+            contacts: arrayUnion(target.id)
+        });
+        await updateDoc(doc(db, 'users', target.id), {
+            contacts: arrayUnion(currentUser.uid)
+        });
+        
+        return true;
+    }
+    
+    async function sendMessage(chatId, text, type = 'text', imageUrl = null) {
+        await addDoc(collection(db, 'chats', chatId, 'messages'), {
+            senderId: currentUser.uid,
+            text: text,
+            type: type,
+            imageUrl: imageUrl,
+            timestamp: serverTimestamp()
+        });
+        
+        await updateDoc(doc(db, 'chats', chatId), {
+            lastMessage: text.length > 50 ? text.substring(0, 50) + '...' : text,
+            lastMessageTime: serverTimestamp()
+        });
+    }
+    
+    // ========== RENDER CHAT LIST ==========
+    async function renderChatList() {
+        const container = document.getElementById('chatList');
+        if (!container) return;
+        
+        const userData = await getUserData(currentUser.uid);
+        const contacts = userData?.contacts || [];
+        const groups = userData?.groups || [];
+        
+        let chatItems = [];
+        
+        // Private chats
+        for (let contactId of contacts) {
+            const chat = await getOrCreatePrivateChat(currentUser.uid, contactId);
+            const partnerSnap = await getDoc(doc(db, 'users', contactId));
+            if (partnerSnap.exists()) {
+                chatItems.push({
+                    id: chat.id,
+                    type: 'private',
+                    name: partnerSnap.data().fullName,
+                    subtitle: partnerSnap.data().phone,
+                    lastMessage: chat.lastMessage || ''
+                });
+            }
+        }
+        
+        // Groups
+        for (let groupId of groups) {
+            const groupSnap = await getDoc(doc(db, 'chats', groupId));
+            if (groupSnap.exists()) {
+                const group = groupSnap.data();
+                chatItems.push({
+                    id: groupId,
+                    type: 'group',
+                    name: group.name,
+                    subtitle: `${group.participants?.length || 0} anggota`,
+                    lastMessage: group.lastMessage || ''
+                });
+            }
+        }
+        
+        container.innerHTML = '';
+        if (chatItems.length === 0) {
+            container.innerHTML = '<div class="empty">Belum ada chat<br>Tekan ➕ Tambah Kontak atau Buat Grup</div>';
+            return;
+        }
+        
+        for (let chat of chatItems) {
+            const div = document.createElement('div');
+            div.className = 'chat-item';
+            div.innerHTML = `
+                <div class="chat-avatar">${chat.name.charAt(0).toUpperCase()}</div>
+                <div class="chat-details">
+                    <div class="chat-name">${escapeHtml(chat.name)} ${chat.type === 'group' ? '<span class="group-badge"><i class="fas fa-users"></i> Grup</span>' : ''}</div>
+                    <div class="chat-sub">${escapeHtml(chat.subtitle)}</div>
+                </div>
+            `;
+            div.onclick = () => openChat(chat.id, chat.type, chat.name);
+            container.appendChild(div);
+        }
+    }
+    
+    // ========== OPEN CHAT ==========
+    async function openChat(chatId, type, name) {
+        if (unsubscribeMsg) unsubscribeMsg();
+        selectedChatId = chatId;
+        selectedChatType = type;
+        selectedChatName = name;
+        
+        document.getElementById('chatTitle').innerHTML = escapeHtml(name);
+        document.getElementById('chatStatus').innerHTML = type === 'group' ? 'Grup • ' + name : 'Online';
+        document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
+        
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('show');
+        }
+        
+        const messagesDiv = document.getElementById('messagesList');
+        messagesDiv.innerHTML = '<div class="empty">Memuat pesan...</div>';
+        
+        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
+        
+        unsubscribeMsg = onSnapshot(q, (snap) => {
+            messagesDiv.innerHTML = '';
+            if (snap.empty) {
+                messagesDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
+            }
+            snap.forEach(docMsg => {
+                const msg = docMsg.data();
+                const isSent = msg.senderId === currentUser.uid;
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+                
+                let senderName = '';
+                if (type === 'group' && !isSent) {
+                    senderName = `<div style="font-size: 10px; color: #ff99c8; margin-bottom: 3px;">${msg.senderName || 'Anggota'}</div>`;
+                }
+                
+                let content = '';
+                if (msg.type === 'image' && msg.imageUrl) {
+                    content = `<div class="bubble"><img src="${msg.imageUrl}" style="max-width:180px; border-radius:16px;"></div>`;
+                } else {
+                    content = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
+                }
+                
+                const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                msgDiv.innerHTML = senderName + content + `<div class="time">${time}</div>`;
+                messagesDiv.appendChild(msgDiv);
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+        
+        renderChatList();
+    }
+    
+    async function sendCurrentMessage() {
+        if (!selectedChatId) {
+            showToast('Pilih chat terlebih dahulu');
+            return;
+        }
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        await sendMessage(selectedChatId, text);
+        input.value = '';
+    }
+    
+    // ========== MODAL TAMBAH KONTAK ==========
+    function showAddContactModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Tambah Kontak Baru</h3>
+                <p>Masukkan nomor HP pengguna yang ingin ditambahkan</p>
+                <input type="tel" id="contactPhoneInput" placeholder="Nomor HP (812345678)">
+                <button id="confirmAddContact">Tambahkan</button>
+                <button id="cancelModal" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
+                <div id="modalError" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        document.getElementById('confirmAddContact').onclick = async () => {
+            const phone = document.getElementById('contactPhoneInput').value.trim();
+            try {
+                await addContact(phone);
+                showToast('✅ Kontak berhasil ditambahkan');
+                modal.remove();
+                renderChatList();
+            } catch(e) {
+                document.getElementById('modalError').innerText = e.message;
+            }
+        };
+        
+        document.getElementById('cancelModal').onclick = () => modal.remove();
+    }
+    
+    // ========== MODAL BUAT GRUP ==========
+    async function showCreateGroupModal() {
+        // Ambil semua kontak user
+        const userData = await getUserData(currentUser.uid);
+        const contacts = userData?.contacts || [];
+        
+        if (contacts.length === 0) {
+            showToast('Tambahkan kontak terlebih dahulu sebelum membuat grup');
+            return;
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Buat Grup Baru</h3>
+                <input type="text" id="groupNameInput" placeholder="Nama Grup">
+                <p style="text-align:left; margin:10px 0 5px 0">Pilih anggota:</p>
+                <div id="contactsListModal" style="max-height:250px; overflow-y:auto; margin-bottom:10px"></div>
+                <button id="confirmCreateGroup">Buat Grup</button>
+                <button id="cancelGroupModal" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
+                <div id="groupModalError" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const container = document.getElementById('contactsListModal');
+        const selectedMembers = [];
+        
+        for (let contactId of contacts) {
+            const userSnap = await getDoc(doc(db, 'users', contactId));
+            if (userSnap.exists()) {
+                const user = userSnap.data();
+                const div = document.createElement('div');
+                div.className = 'contact-check-item';
+                div.innerHTML = `
+                    <input type="checkbox" value="${contactId}" id="chk_${contactId}">
+                    <label for="chk_${contactId}">${escapeHtml(user.fullName)} (${user.phone})</label>
+                `;
+                const chk = div.querySelector('input');
+                chk.onchange = () => {
+                    if (chk.checked) selectedMembers.push(contactId);
+                    else {
+                        const idx = selectedMembers.indexOf(contactId);
+                        if (idx !== -1) selectedMembers.splice(idx, 1);
+                    }
+                };
+                container.appendChild(div);
+            }
+        }
+        
+        document.getElementById('confirmCreateGroup').onclick = async () => {
+            const groupName = document.getElementById('groupNameInput').value.trim();
+            if (!groupName) {
+                document.getElementById('groupModalError').innerText = 'Nama grup harus diisi';
+                return;
+            }
+            if (selectedMembers.length === 0) {
+                document.getElementById('groupModalError').innerText = 'Pilih minimal 1 anggota';
+                return;
+            }
+            try {
+                await createGroup(groupName, selectedMembers);
+                showToast('🎉 Grup berhasil dibuat');
+                modal.remove();
+                renderChatList();
+            } catch(e) {
+                document.getElementById('groupModalError').innerText = e.message;
+            }
+        };
+        
+        document.getElementById('cancelGroupModal').onclick = () => modal.remove();
+    }
+    
+    // ========== MODAL TAMBAH ANGGOTA KE GRUP ==========
+    async function showAddMemberModal() {
+        if (!selectedChatId || selectedChatType !== 'group') {
+            showToast('Pilih grup terlebih dahulu');
+            return;
+        }
+        
+        const groupSnap = await getDoc(doc(db, 'chats', selectedChatId));
+        const currentMembers = groupSnap.data()?.participants || [];
+        
+        // Ambil kontak yang belum jadi anggota
+        const userData = await getUserData(currentUser.uid);
+        const contacts = userData?.contacts || [];
+        const availableContacts = contacts.filter(c => !currentMembers.includes(c));
+        
+        if (availableContacts.length === 0) {
+            showToast('Semua kontak sudah menjadi anggota grup');
+            return;
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Tambah Anggota ke Grup</h3>
+                <p>Pilih kontak yang ingin ditambahkan</p>
+                <div id="contactsAddList" style="max-height:300px; overflow-y:auto"></div>
+                <button id="confirmAddMember">Tambah Anggota</button>
+                <button id="cancelAddMember" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
+                <div id="addMemberError" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const container = document.getElementById('contactsAddList');
+        const selectedMembers = [];
+        
+        for (let contactId of availableContacts) {
+            const userSnap = await getDoc(doc(db, 'users', contactId));
+            if (userSnap.exists()) {
+                const user = userSnap.data();
+                const div = document.createElement('div');
+                div.className = 'contact-check-item';
+                div.innerHTML = `
+                    <input type="checkbox" value="${contactId}" id="add_${contactId}">
+                    <label for="add_${contactId}">${escapeHtml(user.fullName)} (${user.phone})</label>
+                `;
+                const chk = div.querySelector('input');
+                chk.onchange = () => {
+                    if (chk.checked) selectedMembers.push(contactId);
+                    else {
+                        const idx = selectedMembers.indexOf(contactId);
+                        if (idx !== -1) selectedMembers.splice(idx, 1);
+                    }
+                };
+                container.appendChild(div);
+            }
+        }
+        
+        document.getElementById('confirmAddMember').onclick = async () => {
+            if (selectedMembers.length === 0) {
+                document.getElementById('addMemberError').innerText = 'Pilih anggota yang akan ditambahkan';
+                return;
+            }
+            try {
+                for (let memberId of selectedMembers) {
+                    await addMemberToGroup(selectedChatId, memberId);
+                }
+                showToast('✅ Anggota berhasil ditambahkan');
+                modal.remove();
+                renderChatList();
+                // Refresh chat title
+                const groupSnap2 = await getDoc(doc(db, 'chats', selectedChatId));
+                if (groupSnap2.exists()) {
+                    document.getElementById('chatStatus').innerHTML = `Grup • ${groupSnap2.data().participants?.length || 0} anggota`;
+                }
+            } catch(e) {
+                document.getElementById('addMemberError').innerText = e.message;
+            }
+        };
+        
+        document.getElementById('cancelAddMember').onclick = () => modal.remove();
+    }
+    
     // ========== MAIN APP ==========
     async function renderMainApp() {
         const root = document.getElementById('app');
         
         root.innerHTML = `
             <div class="app">
-                <!-- SIDEBAR -->
                 <div class="sidebar" id="sidebar">
                     <div class="header">
                         <div class="avatar" id="userAvatar">${currentUser?.fullName?.charAt(0) || 'U'}</div>
@@ -449,14 +897,13 @@
                         </div>
                         <button class="btn-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
-                    <div class="contact-list" id="contactList"></div>
+                    <div class="chat-list" id="chatList"></div>
                     <div class="actions">
                         <button id="addContactBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-                        <button id="groupBtn"><i class="fas fa-users"></i> Grup</button>
+                        <button id="createGroupBtn"><i class="fas fa-users"></i> Grup Baru</button>
                     </div>
                 </div>
                 
-                <!-- CHAT AREA -->
                 <div class="chat-area">
                     <div class="header">
                         <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
@@ -466,6 +913,7 @@
                             <h3 id="chatTitle">PinkChat</h3>
                             <p id="chatStatus">Pilih percakapan</p>
                         </div>
+                        <button class="btn-icon" id="addMemberBtn" style="display: none;"><i class="fas fa-user-plus"></i></button>
                     </div>
                     <div class="messages" id="messagesList">
                         <div class="empty">Pilih chat untuk mulai mengobrol</div>
@@ -481,36 +929,36 @@
             <input type="file" id="fileInput" accept="image/*" style="display:none">
         `;
         
-        // Load contacts
-        await loadContacts();
+        await renderChatList();
         
-        // Event listeners
+        // Tombol tambah anggota grup (muncul hanya saat grup dipilih)
+        const addMemberBtn = document.getElementById('addMemberBtn');
+        
         document.getElementById('logoutBtn').onclick = async () => {
             if (confirm('Yakin keluar?')) await signOut(auth);
         };
         
-        document.getElementById('addContactBtn').onclick = () => {
-            const phone = prompt('Masukkan nomor HP pengguna:', '');
-            if (phone) addContact(phone);
-        };
-        
-        document.getElementById('groupBtn').onclick = () => {
-            showToast('✨ Fitur grup akan segera hadir!');
-        };
+        document.getElementById('addContactBtn').onclick = () => showAddContactModal();
+        document.getElementById('createGroupBtn').onclick = () => showCreateGroupModal();
         
         document.getElementById('menuBtn').onclick = () => {
             document.getElementById('sidebar').classList.add('show');
         };
         
         document.getElementById('mobileBackBtn').onclick = () => {
-            if (selectedUserId) {
-                closeChat();
+            if (selectedChatId) {
+                if (unsubscribeMsg) unsubscribeMsg();
+                selectedChatId = null;
+                document.getElementById('chatTitle').innerHTML = 'PinkChat';
+                document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
+                document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
+                addMemberBtn.style.display = 'none';
             }
         };
         
-        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('sendBtn').onclick = sendCurrentMessage;
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+            if (e.key === 'Enter') sendCurrentMessage();
         });
         
         document.getElementById('emojiBtn').onclick = () => {
@@ -520,7 +968,7 @@
         };
         
         document.getElementById('imageBtn').onclick = () => {
-            if (!selectedUserId) {
+            if (!selectedChatId) {
                 showToast('Pilih chat dulu');
                 return;
             }
@@ -529,25 +977,82 @@
         
         document.getElementById('fileInput').onchange = async (e) => {
             const file = e.target.files[0];
-            if (file && file.type.startsWith('image/') && selectedUserId) {
+            if (file && file.type.startsWith('image/') && selectedChatId) {
                 const reader = new FileReader();
                 reader.onload = async (ev) => {
-                    const chatId = [currentUser.uid, selectedUserId].sort().join('_');
-                    await addDoc(collection(db, 'chats', chatId, 'messages'), {
-                        senderId: currentUser.uid,
-                        text: '📷 Gambar',
-                        type: 'image',
-                        imageUrl: ev.target.result,
-                        timestamp: serverTimestamp()
-                    });
-                    showToast('Gambar terkirim');
+                    await sendMessage(selectedChatId, 'Gambar', 'image', ev.target.result);
+                    showToast('📷 Gambar terkirim');
                 };
                 reader.readAsDataURL(file);
             }
             e.target.value = '';
         };
         
-        // Click outside sidebar on mobile
+        // Override openChat untuk menampilkan tombol tambah anggota
+        window.openChat = async (chatId, type, name) => {
+            if (unsubscribeMsg) unsubscribeMsg();
+            selectedChatId = chatId;
+            selectedChatType = type;
+            selectedChatName = name;
+            
+            document.getElementById('chatTitle').innerHTML = escapeHtml(name);
+            document.getElementById('chatStatus').innerHTML = type === 'group' ? 'Grup' : 'Online';
+            document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
+            
+            if (type === 'group') {
+                addMemberBtn.style.display = 'flex';
+                const groupSnap = await getDoc(doc(db, 'chats', chatId));
+                if (groupSnap.exists()) {
+                    document.getElementById('chatStatus').innerHTML = `Grup • ${groupSnap.data().participants?.length || 0} anggota`;
+                }
+                addMemberBtn.onclick = () => showAddMemberModal();
+            } else {
+                addMemberBtn.style.display = 'none';
+            }
+            
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+            
+            const messagesDiv = document.getElementById('messagesList');
+            messagesDiv.innerHTML = '<div class="empty">Memuat pesan...</div>';
+            
+            const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
+            
+            unsubscribeMsg = onSnapshot(q, async (snap) => {
+                messagesDiv.innerHTML = '';
+                if (snap.empty) {
+                    messagesDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
+                }
+                for (const docMsg of snap.docs) {
+                    const msg = docMsg.data();
+                    const isSent = msg.senderId === currentUser.uid;
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+                    
+                    let senderName = '';
+                    if (type === 'group' && !isSent) {
+                        const senderData = await getUserData(msg.senderId);
+                        senderName = `<div style="font-size: 10px; color: #ff99c8; margin-bottom: 3px;">${escapeHtml(senderData?.fullName || 'Anggota')}</div>`;
+                    }
+                    
+                    let content = '';
+                    if (msg.type === 'image' && msg.imageUrl) {
+                        content = `<div class="bubble"><img src="${msg.imageUrl}" style="max-width:180px; border-radius:16px;"></div>`;
+                    } else {
+                        content = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
+                    }
+                    
+                    const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                    msgDiv.innerHTML = senderName + content + `<div class="time">${time}</div>`;
+                    messagesDiv.appendChild(msgDiv);
+                }
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+            
+            renderChatList();
+        };
+        
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
             const menuBtn = document.getElementById('menuBtn');
@@ -559,136 +1064,7 @@
         });
     }
     
-    async function loadContacts() {
-        const container = document.getElementById('contactList');
-        const contacts = currentUser?.contacts || [];
-        
-        if (contacts.length === 0) {
-            container.innerHTML = '<div class="empty">Belum ada kontak<br>Tekan ➕ Tambah Kontak</div>';
-            return;
-        }
-        
-        container.innerHTML = '';
-        for (let contactId of contacts) {
-            const userSnap = await getDoc(doc(db, 'users', contactId));
-            if (userSnap.exists()) {
-                const user = userSnap.data();
-                const div = document.createElement('div');
-                div.className = 'contact-item';
-                div.innerHTML = `
-                    <div class="contact-avatar">${user.fullName?.charAt(0) || '?'}</div>
-                    <div class="contact-details">
-                        <div class="contact-name">${escapeHtml(user.fullName)}</div>
-                        <div class="contact-phone">${user.phone}</div>
-                    </div>
-                `;
-                div.onclick = () => openChat(contactId, user.fullName);
-                container.appendChild(div);
-            }
-        }
-    }
-    
-    function closeChat() {
-        if (unsubscribeMsg) unsubscribeMsg();
-        selectedUserId = null;
-        selectedUserName = null;
-        document.getElementById('chatTitle').innerHTML = 'PinkChat';
-        document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
-        document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
-    }
-    
-    async function openChat(userId, userName) {
-        if (unsubscribeMsg) unsubscribeMsg();
-        selectedUserId = userId;
-        selectedUserName = userName;
-        
-        document.getElementById('chatTitle').innerHTML = escapeHtml(userName);
-        document.getElementById('chatStatus').innerHTML = 'Online';
-        document.getElementById('chatAvatar').innerHTML = userName.charAt(0).toUpperCase();
-        
-        // Close sidebar on mobile
-        if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.remove('show');
-        }
-        
-        const messagesDiv = document.getElementById('messagesList');
-        messagesDiv.innerHTML = '<div class="empty">Memuat pesan...</div>';
-        
-        const chatId = [currentUser.uid, userId].sort().join('_');
-        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        
-        unsubscribeMsg = onSnapshot(q, (snap) => {
-            messagesDiv.innerHTML = '';
-            if (snap.empty) {
-                messagesDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
-            }
-            snap.forEach(docMsg => {
-                const msg = docMsg.data();
-                const isSent = msg.senderId === currentUser.uid;
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-                
-                let content = '';
-                if (msg.type === 'image' && msg.imageUrl) {
-                    content = `<div class="bubble"><img src="${msg.imageUrl}" style="max-width:180px; border-radius:16px;"></div>`;
-                } else {
-                    content = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
-                }
-                
-                const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                msgDiv.innerHTML = content + `<div class="time">${time}</div>`;
-                messagesDiv.appendChild(msgDiv);
-            });
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-    }
-    
-    async function sendMessage() {
-        if (!selectedUserId) {
-            showToast('Pilih chat terlebih dahulu');
-            return;
-        }
-        const input = document.getElementById('messageInput');
-        const text = input.value.trim();
-        if (!text) return;
-        
-        const chatId = [currentUser.uid, selectedUserId].sort().join('_');
-        await addDoc(collection(db, 'chats', chatId, 'messages'), {
-            senderId: currentUser.uid,
-            text: text,
-            type: 'text',
-            timestamp: serverTimestamp()
-        });
-        input.value = '';
-    }
-    
-    async function addContact(phone) {
-        try {
-            const usersRef = collection(db, 'users');
-            const q = query(usersRef, where('phone', '==', phone));
-            const snap = await getDocs(q);
-            if (snap.empty) throw new Error('Nomor HP tidak terdaftar');
-            
-            const target = snap.docs[0];
-            if (target.id === currentUser.uid) throw new Error('Tidak bisa menambah diri sendiri');
-            
-            // TWO-WAY CONTACT
-            await updateDoc(doc(db, 'users', currentUser.uid), {
-                contacts: arrayUnion(target.id)
-            });
-            await updateDoc(doc(db, 'users', target.id), {
-                contacts: arrayUnion(currentUser.uid)
-            });
-            
-            showToast('✅ Kontak berhasil ditambahkan');
-            currentUser = await getUserData(currentUser.uid);
-            await loadContacts();
-        } catch(e) {
-            alert(e.message);
-        }
-    }
-    
-    // ========== LOGIN / REGISTER ==========
+    // ========== LOGIN ==========
     function renderLogin() {
         let isLogin = false;
         const root = document.getElementById('app');
@@ -752,6 +1128,7 @@
                         fullName: fullName,
                         phone: phone,
                         contacts: [],
+                        groups: [],
                         createdAt: serverTimestamp()
                     });
                 }

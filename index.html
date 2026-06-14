@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PinkChat - Real-time Chat & Grup</title>
+    <title>PinkChat - Complete Chat App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -66,10 +66,12 @@
             color: white;
             font-weight: bold;
             font-size: 18px;
+            cursor: pointer;
         }
 
         .info {
             flex: 1;
+            cursor: pointer;
         }
 
         .info h3 {
@@ -94,7 +96,6 @@
             cursor: pointer;
         }
 
-        /* LIST CHAT (kontak + grup) */
         .chat-list {
             flex: 1;
             overflow-y: auto;
@@ -147,12 +148,11 @@
             background: #ff99c8;
             color: white;
             font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
             margin-left: 8px;
         }
 
-        /* ACTION BUTTONS */
         .actions {
             padding: 12px 16px;
             display: flex;
@@ -177,7 +177,6 @@
             gap: 8px;
         }
 
-        /* MESSAGES AREA */
         .messages {
             flex: 1;
             overflow-y: auto;
@@ -231,7 +230,6 @@
             margin-right: 10px;
         }
 
-        /* INPUT AREA */
         .input-area {
             background: white;
             padding: 12px 16px;
@@ -280,7 +278,6 @@
             color: #cc9aa8;
         }
 
-        /* MODAL */
         .modal {
             position: fixed;
             top: 0;
@@ -315,7 +312,7 @@
             margin-bottom: 20px;
         }
 
-        .modal-box input {
+        .modal-box input, .modal-box textarea {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
@@ -323,6 +320,11 @@
             border: none;
             border-radius: 30px;
             font-size: 14px;
+        }
+
+        .modal-box textarea {
+            border-radius: 20px;
+            resize: none;
         }
 
         .modal-box button {
@@ -335,6 +337,15 @@
             font-weight: bold;
             margin-top: 10px;
             cursor: pointer;
+        }
+
+        .modal-box button.danger {
+            background: #ff4444;
+        }
+
+        .modal-box button.secondary {
+            background: #ffe4ec;
+            color: #ff6b9d;
         }
 
         .contact-check-item {
@@ -361,6 +372,14 @@
             cursor: pointer;
         }
 
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-bottom: 1px solid #f0eef0;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -374,7 +393,23 @@
             z-index: 1100;
         }
 
-        /* RESPONSIVE */
+        .menu-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f0eef0;
+        }
+
+        .menu-item:hover {
+            background: #fff5f8;
+        }
+
+        .menu-item.danger {
+            color: #ff4444;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -418,8 +453,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     const firebaseConfig = {
         apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
@@ -438,7 +473,9 @@
     let selectedChatId = null;
     let selectedChatType = null;
     let selectedChatName = null;
+    let selectedChatData = null;
     let unsubscribeMsg = null;
+    let unsubscribeChats = null;
     
     function showToast(msg) {
         let t = document.querySelector('.toast');
@@ -466,6 +503,42 @@
         return null;
     }
     
+    // ========== PROFILE ==========
+    async function updateProfileUser(fullName, bio) {
+        const userRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userRef, { fullName: fullName, bio: bio });
+        currentUser = await getUserData(currentUser.uid);
+        showToast('✅ Profil berhasil diperbarui');
+        renderMainApp();
+    }
+    
+    // ========== KONTAK ==========
+    async function addContact(phone) {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('phone', '==', phone));
+        const snap = await getDocs(q);
+        if (snap.empty) throw new Error('Nomor HP tidak terdaftar');
+        const target = snap.docs[0];
+        if (target.id === currentUser.uid) throw new Error('Tidak bisa menambah diri sendiri');
+        
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+            contacts: arrayUnion(target.id)
+        });
+        await updateDoc(doc(db, 'users', target.id), {
+            contacts: arrayUnion(currentUser.uid)
+        });
+        
+        return true;
+    }
+    
+    async function removeContact(contactId) {
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+            contacts: arrayRemove(contactId)
+        });
+        showToast('✅ Kontak berhasil dihapus');
+        await renderChatList();
+    }
+    
     // ========== GRUP ==========
     async function createGroup(groupName, memberIds) {
         if (memberIds.length === 0) throw new Error('Pilih minimal 1 anggota');
@@ -474,6 +547,7 @@
         const groupData = {
             type: 'group',
             name: groupName,
+            bio: '',
             participants: allMembers,
             createdBy: currentUser.uid,
             createdAt: serverTimestamp(),
@@ -483,7 +557,6 @@
         
         const groupRef = await addDoc(collection(db, 'chats'), groupData);
         
-        // Tambahkan ke daftar grup user
         for (let uid of allMembers) {
             await updateDoc(doc(db, 'users', uid), {
                 groups: arrayUnion(groupRef.id)
@@ -493,26 +566,81 @@
         return { id: groupRef.id, ...groupData };
     }
     
+    async function updateGroup(groupId, name, bio) {
+        await updateDoc(doc(db, 'chats', groupId), { name: name, bio: bio });
+        showToast('✅ Informasi grup diperbarui');
+        await renderChatList();
+        if (selectedChatId === groupId) {
+            document.getElementById('chatTitle').innerHTML = escapeHtml(name);
+            document.getElementById('chatStatus').innerHTML = bio || 'Grup';
+        }
+    }
+    
     async function addMemberToGroup(groupId, newMemberId) {
-        const groupRef = doc(db, 'chats', groupId);
-        const groupSnap = await getDoc(groupRef);
-        if (!groupSnap.exists()) throw new Error('Grup tidak ditemukan');
-        
-        const currentParticipants = groupSnap.data().participants || [];
-        if (currentParticipants.includes(newMemberId)) throw new Error('Sudah anggota grup');
-        
-        await updateDoc(groupRef, {
+        await updateDoc(doc(db, 'chats', groupId), {
             participants: arrayUnion(newMemberId)
         });
-        
         await updateDoc(doc(db, 'users', newMemberId), {
             groups: arrayUnion(groupId)
         });
-        
         return true;
     }
     
-    // ========== KONTAK PRIVAT ==========
+    async function removeMemberFromGroup(groupId, memberId) {
+        const groupRef = doc(db, 'chats', groupId);
+        const groupSnap = await getDoc(groupRef);
+        if (groupSnap.data().createdBy === currentUser.uid || memberId === currentUser.uid) {
+            await updateDoc(groupRef, {
+                participants: arrayRemove(memberId)
+            });
+            await updateDoc(doc(db, 'users', memberId), {
+                groups: arrayRemove(groupId)
+            });
+            return true;
+        }
+        throw new Error('Hanya admin grup yang bisa menghapus anggota');
+    }
+    
+    async function leaveGroup(groupId) {
+        await updateDoc(doc(db, 'chats', groupId), {
+            participants: arrayRemove(currentUser.uid)
+        });
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+            groups: arrayRemove(groupId)
+        });
+        if (selectedChatId === groupId) {
+            selectedChatId = null;
+            document.getElementById('chatTitle').innerHTML = 'PinkChat';
+            document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
+            document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
+        }
+        showToast('👋 Anda telah keluar dari grup');
+        await renderChatList();
+    }
+    
+    async function deleteGroup(groupId) {
+        const groupSnap = await getDoc(doc(db, 'chats', groupId));
+        if (groupSnap.data().createdBy !== currentUser.uid) {
+            throw new Error('Hanya pembuat grup yang bisa menghapus grup');
+        }
+        
+        const participants = groupSnap.data().participants || [];
+        for (let uid of participants) {
+            await updateDoc(doc(db, 'users', uid), {
+                groups: arrayRemove(groupId)
+            });
+        }
+        await deleteDoc(doc(db, 'chats', groupId));
+        
+        if (selectedChatId === groupId) {
+            selectedChatId = null;
+            document.getElementById('chatTitle').innerHTML = 'PinkChat';
+            document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
+        }
+        showToast('🗑️ Grup telah dihapus');
+        await renderChatList();
+    }
+    
     async function getOrCreatePrivateChat(uid1, uid2) {
         const chatsRef = collection(db, 'chats');
         const q1 = query(chatsRef, where('participants', '==', [uid1, uid2]));
@@ -532,24 +660,6 @@
         return { id: ref.id, ...newChat };
     }
     
-    async function addContact(phone) {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('phone', '==', phone));
-        const snap = await getDocs(q);
-        if (snap.empty) throw new Error('Nomor HP tidak terdaftar');
-        const target = snap.docs[0];
-        if (target.id === currentUser.uid) throw new Error('Tidak bisa menambah diri sendiri');
-        
-        await updateDoc(doc(db, 'users', currentUser.uid), {
-            contacts: arrayUnion(target.id)
-        });
-        await updateDoc(doc(db, 'users', target.id), {
-            contacts: arrayUnion(currentUser.uid)
-        });
-        
-        return true;
-    }
-    
     async function sendMessage(chatId, text, type = 'text', imageUrl = null) {
         await addDoc(collection(db, 'chats', chatId, 'messages'), {
             senderId: currentUser.uid,
@@ -566,6 +676,14 @@
     }
     
     // ========== RENDER CHAT LIST ==========
+    function startRealtimeChatList() {
+        if (unsubscribeChats) unsubscribeChats();
+        const userRef = doc(db, 'users', currentUser.uid);
+        unsubscribeChats = onSnapshot(userRef, async () => {
+            await renderChatList();
+        });
+    }
+    
     async function renderChatList() {
         const container = document.getElementById('chatList');
         if (!container) return;
@@ -576,7 +694,6 @@
         
         let chatItems = [];
         
-        // Private chats
         for (let contactId of contacts) {
             const chat = await getOrCreatePrivateChat(currentUser.uid, contactId);
             const partnerSnap = await getDoc(doc(db, 'users', contactId));
@@ -586,12 +703,13 @@
                     type: 'private',
                     name: partnerSnap.data().fullName,
                     subtitle: partnerSnap.data().phone,
-                    lastMessage: chat.lastMessage || ''
+                    bio: partnerSnap.data().bio || '',
+                    lastMessage: chat.lastMessage || '',
+                    data: partnerSnap.data()
                 });
             }
         }
         
-        // Groups
         for (let groupId of groups) {
             const groupSnap = await getDoc(doc(db, 'chats', groupId));
             if (groupSnap.exists()) {
@@ -601,7 +719,9 @@
                     type: 'group',
                     name: group.name,
                     subtitle: `${group.participants?.length || 0} anggota`,
-                    lastMessage: group.lastMessage || ''
+                    bio: group.bio || '',
+                    lastMessage: group.lastMessage || '',
+                    data: group
                 });
             }
         }
@@ -615,6 +735,7 @@
         for (let chat of chatItems) {
             const div = document.createElement('div');
             div.className = 'chat-item';
+            if (selectedChatId === chat.id) div.style.background = '#ffeef3';
             div.innerHTML = `
                 <div class="chat-avatar">${chat.name.charAt(0).toUpperCase()}</div>
                 <div class="chat-details">
@@ -622,21 +743,276 @@
                     <div class="chat-sub">${escapeHtml(chat.subtitle)}</div>
                 </div>
             `;
-            div.onclick = () => openChat(chat.id, chat.type, chat.name);
+            div.onclick = () => openChat(chat.id, chat.type, chat.name, chat.data);
             container.appendChild(div);
         }
     }
     
+    // ========== PROFILE VIEW ==========
+    async function showProfile(uid, type, data) {
+        if (type === 'private') {
+            const user = await getUserData(uid);
+            const isContact = currentUser.contacts?.includes(uid) || false;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <div class="avatar" style="margin: 0 auto 15px auto; width: 80px; height: 80px; font-size: 32px;">${user.fullName?.charAt(0) || '?'}</div>
+                    <h3>${escapeHtml(user.fullName)}</h3>
+                    <p style="color: #ff6b9d;">${user.phone}</p>
+                    <p style="color: #aa8a96; margin: 10px 0;">${escapeHtml(user.bio || 'Halo! Saya menggunakan PinkChat')}</p>
+                    ${isContact ? `<button id="removeContactBtn" class="danger" style="background:#ff4444;">Hapus Kontak</button>` : ''}
+                    <button id="closeProfile" class="secondary">Tutup</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            if (isContact) {
+                document.getElementById('removeContactBtn').onclick = async () => {
+                    if (confirm('Hapus kontak ini?')) {
+                        await removeContact(uid);
+                        modal.remove();
+                        await renderChatList();
+                    }
+                };
+            }
+            document.getElementById('closeProfile').onclick = () => modal.remove();
+        } else if (type === 'group') {
+            const group = data;
+            const isAdmin = group.createdBy === currentUser.uid;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <div class="avatar" style="margin: 0 auto 15px auto; width: 80px; height: 80px; font-size: 32px;">${group.name?.charAt(0) || 'G'}</div>
+                    <h3>${escapeHtml(group.name)}</h3>
+                    <p style="color: #ff6b9d;">${group.participants?.length || 0} anggota</p>
+                    <p style="color: #aa8a96; margin: 10px 0;">${escapeHtml(group.bio || 'Grup PinkChat')}</p>
+                    ${isAdmin ? `<button id="editGroupBtn">Edit Grup</button>` : ''}
+                    <button id="viewMembersBtn">Lihat Anggota</button>
+                    <button id="leaveGroupBtn" class="danger" style="background:#ff4444;">Keluar dari Grup</button>
+                    ${isAdmin ? `<button id="deleteGroupBtn" class="danger" style="background:#ff4444; margin-top:5px;">Hapus Grup</button>` : ''}
+                    <button id="closeProfile" class="secondary">Tutup</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            if (isAdmin) {
+                document.getElementById('editGroupBtn').onclick = () => {
+                    modal.remove();
+                    showEditGroupModal(selectedChatId, group.name, group.bio);
+                };
+                document.getElementById('deleteGroupBtn').onclick = async () => {
+                    if (confirm('Yakin hapus grup ini? Semua pesan akan hilang')) {
+                        await deleteGroup(selectedChatId);
+                        modal.remove();
+                    }
+                };
+            }
+            
+            document.getElementById('viewMembersBtn').onclick = () => {
+                modal.remove();
+                showGroupMembers(selectedChatId);
+            };
+            
+            document.getElementById('leaveGroupBtn').onclick = async () => {
+                if (confirm('Yakin keluar dari grup ini?')) {
+                    await leaveGroup(selectedChatId);
+                    modal.remove();
+                }
+            };
+            
+            document.getElementById('closeProfile').onclick = () => modal.remove();
+        }
+    }
+    
+    async function showGroupMembers(groupId) {
+        const groupSnap = await getDoc(doc(db, 'chats', groupId));
+        const members = groupSnap.data().participants || [];
+        const isAdmin = groupSnap.data().createdBy === currentUser.uid;
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Anggota Grup</h3>
+                <div id="membersList" style="max-height: 300px; overflow-y: auto;"></div>
+                ${isAdmin ? `<button id="addMemberToGroupBtn">Tambah Anggota</button>` : ''}
+                <button id="closeMembers" class="secondary">Tutup</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const container = document.getElementById('membersList');
+        for (let uid of members) {
+            const user = await getUserData(uid);
+            if (user) {
+                const div = document.createElement('div');
+                div.className = 'profile-row';
+                div.innerHTML = `
+                    <div class="avatar" style="width: 40px; height: 40px; font-size: 16px;">${user.fullName?.charAt(0) || '?'}</div>
+                    <div style="flex:1">
+                        <div><strong>${escapeHtml(user.fullName)}</strong> ${uid === currentUser.uid ? '(Anda)' : ''} ${groupSnap.data().createdBy === uid ? '<span style="color:#ff6b9d; font-size:11px;">Admin</span>' : ''}</div>
+                        <div style="font-size:11px; color:#aa8a96;">${user.phone}</div>
+                    </div>
+                    ${isAdmin && uid !== currentUser.uid ? `<button id="remove_${uid}" style="background:#ff4444; color:white; border:none; padding:5px 12px; border-radius:20px;">Hapus</button>` : ''}
+                `;
+                container.appendChild(div);
+                
+                if (isAdmin && uid !== currentUser.uid) {
+                    document.getElementById(`remove_${uid}`).onclick = async () => {
+                        if (confirm(`Hapus ${user.fullName} dari grup?`)) {
+                            await removeMemberFromGroup(groupId, uid);
+                            modal.remove();
+                            showToast(`✅ ${user.fullName} telah dikeluarkan`);
+                            showGroupMembers(groupId);
+                        }
+                    };
+                }
+            }
+        }
+        
+        if (isAdmin) {
+            document.getElementById('addMemberToGroupBtn').onclick = () => {
+                modal.remove();
+                showAddMemberModal(groupId);
+            };
+        }
+        
+        document.getElementById('closeMembers').onclick = () => modal.remove();
+    }
+    
+    async function showEditGroupModal(groupId, currentName, currentBio) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Edit Grup</h3>
+                <input type="text" id="editGroupName" placeholder="Nama Grup" value="${escapeHtml(currentName)}">
+                <textarea id="editGroupBio" placeholder="Deskripsi grup" rows="3">${escapeHtml(currentBio || '')}</textarea>
+                <button id="saveGroupEdit">Simpan</button>
+                <button id="cancelEdit" class="secondary">Batal</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        document.getElementById('saveGroupEdit').onclick = async () => {
+            const newName = document.getElementById('editGroupName').value.trim();
+            const newBio = document.getElementById('editGroupBio').value.trim();
+            if (newName) {
+                await updateGroup(groupId, newName, newBio);
+                modal.remove();
+                await renderChatList();
+                if (selectedChatId === groupId) {
+                    document.getElementById('chatTitle').innerHTML = escapeHtml(newName);
+                }
+            }
+        };
+        document.getElementById('cancelEdit').onclick = () => modal.remove();
+    }
+    
+    async function showAddMemberModal(groupId) {
+        const userData = await getUserData(currentUser.uid);
+        const contacts = userData?.contacts || [];
+        const groupSnap = await getDoc(doc(db, 'chats', groupId));
+        const currentMembers = groupSnap.data()?.participants || [];
+        const availableContacts = contacts.filter(c => !currentMembers.includes(c));
+        
+        if (availableContacts.length === 0) {
+            showToast('Semua kontak sudah menjadi anggota');
+            return;
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Tambah Anggota</h3>
+                <div id="contactsList" style="max-height:300px; overflow-y:auto;"></div>
+                <button id="confirmAdd">Tambah</button>
+                <button id="cancelAdd" class="secondary">Batal</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const container = document.getElementById('contactsList');
+        const selected = [];
+        
+        for (let cid of availableContacts) {
+            const user = await getUserData(cid);
+            if (user) {
+                const div = document.createElement('div');
+                div.className = 'contact-check-item';
+                div.innerHTML = `<input type="checkbox" value="${cid}" id="chk_${cid}"><label for="chk_${cid}">${escapeHtml(user.fullName)} (${user.phone})</label>`;
+                const chk = div.querySelector('input');
+                chk.onchange = () => {
+                    if (chk.checked) selected.push(cid);
+                    else selected.splice(selected.indexOf(cid), 1);
+                };
+                container.appendChild(div);
+            }
+        }
+        
+        document.getElementById('confirmAdd').onclick = async () => {
+            for (let mid of selected) {
+                await addMemberToGroup(groupId, mid);
+            }
+            showToast('✅ Anggota ditambahkan');
+            modal.remove();
+        };
+        document.getElementById('cancelAdd').onclick = () => modal.remove();
+    }
+    
+    // ========== PROFILE USER ==========
+    function showMyProfile() {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <div class="avatar" style="margin: 0 auto 15px auto; width: 80px; height: 80px; font-size: 32px;">${currentUser.fullName?.charAt(0) || 'U'}</div>
+                <h3>Profil Saya</h3>
+                <input type="text" id="editName" placeholder="Nama" value="${escapeHtml(currentUser.fullName || '')}">
+                <textarea id="editBio" placeholder="Bio" rows="3">${escapeHtml(currentUser.bio || '')}</textarea>
+                <button id="saveProfile">Simpan</button>
+                <button id="closeProfile" class="secondary">Tutup</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        document.getElementById('saveProfile').onclick = async () => {
+            const newName = document.getElementById('editName').value.trim();
+            const newBio = document.getElementById('editBio').value.trim();
+            if (newName) {
+                await updateProfileUser(newName, newBio);
+                modal.remove();
+            }
+        };
+        document.getElementById('closeProfile').onclick = () => modal.remove();
+    }
+    
     // ========== OPEN CHAT ==========
-    async function openChat(chatId, type, name) {
+    async function openChat(chatId, type, name, data) {
         if (unsubscribeMsg) unsubscribeMsg();
         selectedChatId = chatId;
         selectedChatType = type;
         selectedChatName = name;
+        selectedChatData = data;
         
         document.getElementById('chatTitle').innerHTML = escapeHtml(name);
-        document.getElementById('chatStatus').innerHTML = type === 'group' ? 'Grup • ' + name : 'Online';
+        document.getElementById('chatStatus').innerHTML = type === 'group' ? (data?.bio || 'Grup') : 'Online';
         document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
+        
+        const addMemberBtn = document.getElementById('addMemberBtn');
+        const infoBtn = document.getElementById('infoBtn');
+        
+        if (type === 'group') {
+            addMemberBtn.style.display = 'flex';
+            addMemberBtn.onclick = () => showAddMemberModal(chatId);
+        } else {
+            addMemberBtn.style.display = 'none';
+        }
         
         if (window.innerWidth <= 768) {
             document.getElementById('sidebar').classList.remove('show');
@@ -647,12 +1023,12 @@
         
         const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
         
-        unsubscribeMsg = onSnapshot(q, (snap) => {
+        unsubscribeMsg = onSnapshot(q, async (snap) => {
             messagesDiv.innerHTML = '';
             if (snap.empty) {
                 messagesDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
             }
-            snap.forEach(docMsg => {
+            for (const docMsg of snap.docs) {
                 const msg = docMsg.data();
                 const isSent = msg.senderId === currentUser.uid;
                 const msgDiv = document.createElement('div');
@@ -660,7 +1036,8 @@
                 
                 let senderName = '';
                 if (type === 'group' && !isSent) {
-                    senderName = `<div style="font-size: 10px; color: #ff99c8; margin-bottom: 3px;">${msg.senderName || 'Anggota'}</div>`;
+                    const senderData = await getUserData(msg.senderId);
+                    senderName = `<div style="font-size: 10px; color: #ff99c8; margin-bottom: 3px;">${escapeHtml(senderData?.fullName || 'Anggota')}</div>`;
                 }
                 
                 let content = '';
@@ -673,11 +1050,11 @@
                 const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
                 msgDiv.innerHTML = senderName + content + `<div class="time">${time}</div>`;
                 messagesDiv.appendChild(msgDiv);
-            });
+            }
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         });
         
-        renderChatList();
+        await renderChatList();
     }
     
     async function sendCurrentMessage() {
@@ -693,195 +1070,6 @@
         input.value = '';
     }
     
-    // ========== MODAL TAMBAH KONTAK ==========
-    function showAddContactModal() {
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-box">
-                <h3>Tambah Kontak Baru</h3>
-                <p>Masukkan nomor HP pengguna yang ingin ditambahkan</p>
-                <input type="tel" id="contactPhoneInput" placeholder="Nomor HP (812345678)">
-                <button id="confirmAddContact">Tambahkan</button>
-                <button id="cancelModal" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
-                <div id="modalError" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        document.getElementById('confirmAddContact').onclick = async () => {
-            const phone = document.getElementById('contactPhoneInput').value.trim();
-            try {
-                await addContact(phone);
-                showToast('✅ Kontak berhasil ditambahkan');
-                modal.remove();
-                renderChatList();
-            } catch(e) {
-                document.getElementById('modalError').innerText = e.message;
-            }
-        };
-        
-        document.getElementById('cancelModal').onclick = () => modal.remove();
-    }
-    
-    // ========== MODAL BUAT GRUP ==========
-    async function showCreateGroupModal() {
-        // Ambil semua kontak user
-        const userData = await getUserData(currentUser.uid);
-        const contacts = userData?.contacts || [];
-        
-        if (contacts.length === 0) {
-            showToast('Tambahkan kontak terlebih dahulu sebelum membuat grup');
-            return;
-        }
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-box">
-                <h3>Buat Grup Baru</h3>
-                <input type="text" id="groupNameInput" placeholder="Nama Grup">
-                <p style="text-align:left; margin:10px 0 5px 0">Pilih anggota:</p>
-                <div id="contactsListModal" style="max-height:250px; overflow-y:auto; margin-bottom:10px"></div>
-                <button id="confirmCreateGroup">Buat Grup</button>
-                <button id="cancelGroupModal" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
-                <div id="groupModalError" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        const container = document.getElementById('contactsListModal');
-        const selectedMembers = [];
-        
-        for (let contactId of contacts) {
-            const userSnap = await getDoc(doc(db, 'users', contactId));
-            if (userSnap.exists()) {
-                const user = userSnap.data();
-                const div = document.createElement('div');
-                div.className = 'contact-check-item';
-                div.innerHTML = `
-                    <input type="checkbox" value="${contactId}" id="chk_${contactId}">
-                    <label for="chk_${contactId}">${escapeHtml(user.fullName)} (${user.phone})</label>
-                `;
-                const chk = div.querySelector('input');
-                chk.onchange = () => {
-                    if (chk.checked) selectedMembers.push(contactId);
-                    else {
-                        const idx = selectedMembers.indexOf(contactId);
-                        if (idx !== -1) selectedMembers.splice(idx, 1);
-                    }
-                };
-                container.appendChild(div);
-            }
-        }
-        
-        document.getElementById('confirmCreateGroup').onclick = async () => {
-            const groupName = document.getElementById('groupNameInput').value.trim();
-            if (!groupName) {
-                document.getElementById('groupModalError').innerText = 'Nama grup harus diisi';
-                return;
-            }
-            if (selectedMembers.length === 0) {
-                document.getElementById('groupModalError').innerText = 'Pilih minimal 1 anggota';
-                return;
-            }
-            try {
-                await createGroup(groupName, selectedMembers);
-                showToast('🎉 Grup berhasil dibuat');
-                modal.remove();
-                renderChatList();
-            } catch(e) {
-                document.getElementById('groupModalError').innerText = e.message;
-            }
-        };
-        
-        document.getElementById('cancelGroupModal').onclick = () => modal.remove();
-    }
-    
-    // ========== MODAL TAMBAH ANGGOTA KE GRUP ==========
-    async function showAddMemberModal() {
-        if (!selectedChatId || selectedChatType !== 'group') {
-            showToast('Pilih grup terlebih dahulu');
-            return;
-        }
-        
-        const groupSnap = await getDoc(doc(db, 'chats', selectedChatId));
-        const currentMembers = groupSnap.data()?.participants || [];
-        
-        // Ambil kontak yang belum jadi anggota
-        const userData = await getUserData(currentUser.uid);
-        const contacts = userData?.contacts || [];
-        const availableContacts = contacts.filter(c => !currentMembers.includes(c));
-        
-        if (availableContacts.length === 0) {
-            showToast('Semua kontak sudah menjadi anggota grup');
-            return;
-        }
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-box">
-                <h3>Tambah Anggota ke Grup</h3>
-                <p>Pilih kontak yang ingin ditambahkan</p>
-                <div id="contactsAddList" style="max-height:300px; overflow-y:auto"></div>
-                <button id="confirmAddMember">Tambah Anggota</button>
-                <button id="cancelAddMember" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
-                <div id="addMemberError" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        const container = document.getElementById('contactsAddList');
-        const selectedMembers = [];
-        
-        for (let contactId of availableContacts) {
-            const userSnap = await getDoc(doc(db, 'users', contactId));
-            if (userSnap.exists()) {
-                const user = userSnap.data();
-                const div = document.createElement('div');
-                div.className = 'contact-check-item';
-                div.innerHTML = `
-                    <input type="checkbox" value="${contactId}" id="add_${contactId}">
-                    <label for="add_${contactId}">${escapeHtml(user.fullName)} (${user.phone})</label>
-                `;
-                const chk = div.querySelector('input');
-                chk.onchange = () => {
-                    if (chk.checked) selectedMembers.push(contactId);
-                    else {
-                        const idx = selectedMembers.indexOf(contactId);
-                        if (idx !== -1) selectedMembers.splice(idx, 1);
-                    }
-                };
-                container.appendChild(div);
-            }
-        }
-        
-        document.getElementById('confirmAddMember').onclick = async () => {
-            if (selectedMembers.length === 0) {
-                document.getElementById('addMemberError').innerText = 'Pilih anggota yang akan ditambahkan';
-                return;
-            }
-            try {
-                for (let memberId of selectedMembers) {
-                    await addMemberToGroup(selectedChatId, memberId);
-                }
-                showToast('✅ Anggota berhasil ditambahkan');
-                modal.remove();
-                renderChatList();
-                // Refresh chat title
-                const groupSnap2 = await getDoc(doc(db, 'chats', selectedChatId));
-                if (groupSnap2.exists()) {
-                    document.getElementById('chatStatus').innerHTML = `Grup • ${groupSnap2.data().participants?.length || 0} anggota`;
-                }
-            } catch(e) {
-                document.getElementById('addMemberError').innerText = e.message;
-            }
-        };
-        
-        document.getElementById('cancelAddMember').onclick = () => modal.remove();
-    }
-    
     // ========== MAIN APP ==========
     async function renderMainApp() {
         const root = document.getElementById('app');
@@ -890,8 +1078,8 @@
             <div class="app">
                 <div class="sidebar" id="sidebar">
                     <div class="header">
-                        <div class="avatar" id="userAvatar">${currentUser?.fullName?.charAt(0) || 'U'}</div>
-                        <div class="info">
+                        <div class="avatar" id="profileBtn" style="cursor:pointer;">${currentUser?.fullName?.charAt(0) || 'U'}</div>
+                        <div class="info" id="profileInfoBtn" style="cursor:pointer;">
                             <h3>${escapeHtml(currentUser?.fullName || 'User')}</h3>
                             <p>${currentUser?.phone || ''}</p>
                         </div>
@@ -908,12 +1096,13 @@
                     <div class="header">
                         <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
                         <button class="mobile-back" id="mobileBackBtn"><i class="fas fa-arrow-left"></i></button>
-                        <div class="avatar" id="chatAvatar">P</div>
-                        <div class="info">
+                        <div class="avatar" id="chatAvatarBtn" style="cursor:pointer;">P</div>
+                        <div class="info" id="chatInfoBtn" style="cursor:pointer;">
                             <h3 id="chatTitle">PinkChat</h3>
                             <p id="chatStatus">Pilih percakapan</p>
                         </div>
                         <button class="btn-icon" id="addMemberBtn" style="display: none;"><i class="fas fa-user-plus"></i></button>
+                        <button class="btn-icon" id="infoBtn"><i class="fas fa-info-circle"></i></button>
                     </div>
                     <div class="messages" id="messagesList">
                         <div class="empty">Pilih chat untuk mulai mengobrol</div>
@@ -929,22 +1118,61 @@
             <input type="file" id="fileInput" accept="image/*" style="display:none">
         `;
         
+        startRealtimeChatList();
         await renderChatList();
         
-        // Tombol tambah anggota grup (muncul hanya saat grup dipilih)
-        const addMemberBtn = document.getElementById('addMemberBtn');
+        document.getElementById('profileBtn').onclick = () => showMyProfile();
+        document.getElementById('profileInfoBtn').onclick = () => showMyProfile();
+        
+        document.getElementById('chatAvatarBtn').onclick = () => {
+            if (selectedChatId) {
+                showProfile(selectedChatId, selectedChatType, selectedChatData);
+            }
+        };
+        document.getElementById('chatInfoBtn').onclick = () => {
+            if (selectedChatId) {
+                showProfile(selectedChatId, selectedChatType, selectedChatData);
+            }
+        };
+        document.getElementById('infoBtn').onclick = () => {
+            if (selectedChatId) {
+                showProfile(selectedChatId, selectedChatType, selectedChatData);
+            }
+        };
         
         document.getElementById('logoutBtn').onclick = async () => {
             if (confirm('Yakin keluar?')) await signOut(auth);
         };
         
-        document.getElementById('addContactBtn').onclick = () => showAddContactModal();
-        document.getElementById('createGroupBtn').onclick = () => showCreateGroupModal();
-        
-        document.getElementById('menuBtn').onclick = () => {
-            document.getElementById('sidebar').classList.add('show');
+        document.getElementById('addContactBtn').onclick = () => {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <h3>Tambah Kontak</h3>
+                    <input type="tel" id="contactPhone" placeholder="Nomor HP">
+                    <button id="confirmAdd">Tambah</button>
+                    <button id="cancelAdd" class="secondary">Batal</button>
+                    <div id="errMsg" style="color:#ff6b9d; font-size:12px;"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.getElementById('confirmAdd').onclick = async () => {
+                const phone = document.getElementById('contactPhone').value.trim();
+                try {
+                    await addContact(phone);
+                    showToast('✅ Kontak ditambahkan');
+                    modal.remove();
+                    await renderChatList();
+                } catch(e) {
+                    document.getElementById('errMsg').innerText = e.message;
+                }
+            };
+            document.getElementById('cancelAdd').onclick = () => modal.remove();
         };
         
+        document.getElementById('createGroupBtn').onclick = () => showCreateGroupModal();
+        document.getElementById('menuBtn').onclick = () => document.getElementById('sidebar').classList.add('show');
         document.getElementById('mobileBackBtn').onclick = () => {
             if (selectedChatId) {
                 if (unsubscribeMsg) unsubscribeMsg();
@@ -952,29 +1180,22 @@
                 document.getElementById('chatTitle').innerHTML = 'PinkChat';
                 document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
                 document.getElementById('messagesList').innerHTML = '<div class="empty">Pilih chat untuk mulai mengobrol</div>';
-                addMemberBtn.style.display = 'none';
+                document.getElementById('addMemberBtn').style.display = 'none';
             }
         };
-        
         document.getElementById('sendBtn').onclick = sendCurrentMessage;
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendCurrentMessage();
         });
-        
         document.getElementById('emojiBtn').onclick = () => {
             const inp = document.getElementById('messageInput');
             inp.value += '🌸';
             inp.focus();
         };
-        
         document.getElementById('imageBtn').onclick = () => {
-            if (!selectedChatId) {
-                showToast('Pilih chat dulu');
-                return;
-            }
+            if (!selectedChatId) { showToast('Pilih chat dulu'); return; }
             document.getElementById('fileInput').click();
         };
-        
         document.getElementById('fileInput').onchange = async (e) => {
             const file = e.target.files[0];
             if (file && file.type.startsWith('image/') && selectedChatId) {
@@ -988,71 +1209,6 @@
             e.target.value = '';
         };
         
-        // Override openChat untuk menampilkan tombol tambah anggota
-        window.openChat = async (chatId, type, name) => {
-            if (unsubscribeMsg) unsubscribeMsg();
-            selectedChatId = chatId;
-            selectedChatType = type;
-            selectedChatName = name;
-            
-            document.getElementById('chatTitle').innerHTML = escapeHtml(name);
-            document.getElementById('chatStatus').innerHTML = type === 'group' ? 'Grup' : 'Online';
-            document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
-            
-            if (type === 'group') {
-                addMemberBtn.style.display = 'flex';
-                const groupSnap = await getDoc(doc(db, 'chats', chatId));
-                if (groupSnap.exists()) {
-                    document.getElementById('chatStatus').innerHTML = `Grup • ${groupSnap.data().participants?.length || 0} anggota`;
-                }
-                addMemberBtn.onclick = () => showAddMemberModal();
-            } else {
-                addMemberBtn.style.display = 'none';
-            }
-            
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('show');
-            }
-            
-            const messagesDiv = document.getElementById('messagesList');
-            messagesDiv.innerHTML = '<div class="empty">Memuat pesan...</div>';
-            
-            const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-            
-            unsubscribeMsg = onSnapshot(q, async (snap) => {
-                messagesDiv.innerHTML = '';
-                if (snap.empty) {
-                    messagesDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
-                }
-                for (const docMsg of snap.docs) {
-                    const msg = docMsg.data();
-                    const isSent = msg.senderId === currentUser.uid;
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-                    
-                    let senderName = '';
-                    if (type === 'group' && !isSent) {
-                        const senderData = await getUserData(msg.senderId);
-                        senderName = `<div style="font-size: 10px; color: #ff99c8; margin-bottom: 3px;">${escapeHtml(senderData?.fullName || 'Anggota')}</div>`;
-                    }
-                    
-                    let content = '';
-                    if (msg.type === 'image' && msg.imageUrl) {
-                        content = `<div class="bubble"><img src="${msg.imageUrl}" style="max-width:180px; border-radius:16px;"></div>`;
-                    } else {
-                        content = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
-                    }
-                    
-                    const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                    msgDiv.innerHTML = senderName + content + `<div class="time">${time}</div>`;
-                    messagesDiv.appendChild(msgDiv);
-                }
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            });
-            
-            renderChatList();
-        };
-        
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
             const menuBtn = document.getElementById('menuBtn');
@@ -1062,6 +1218,58 @@
                 }
             }
         });
+    }
+    
+    async function showCreateGroupModal() {
+        const userData = await getUserData(currentUser.uid);
+        const contacts = userData?.contacts || [];
+        if (contacts.length === 0) {
+            showToast('Tambahkan kontak terlebih dahulu');
+            return;
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-box">
+                <h3>Buat Grup Baru</h3>
+                <input type="text" id="groupName" placeholder="Nama Grup">
+                <p style="text-align:left;">Pilih anggota:</p>
+                <div id="contactsList" style="max-height:200px; overflow-y:auto;"></div>
+                <button id="createBtn">Buat Grup</button>
+                <button id="cancelBtn" class="secondary">Batal</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        const container = document.getElementById('contactsList');
+        const selected = [];
+        
+        for (let cid of contacts) {
+            const user = await getUserData(cid);
+            if (user) {
+                const div = document.createElement('div');
+                div.className = 'contact-check-item';
+                div.innerHTML = `<input type="checkbox" value="${cid}"><label>${escapeHtml(user.fullName)} (${user.phone})</label>`;
+                const chk = div.querySelector('input');
+                chk.onchange = () => {
+                    if (chk.checked) selected.push(cid);
+                    else selected.splice(selected.indexOf(cid), 1);
+                };
+                container.appendChild(div);
+            }
+        }
+        
+        document.getElementById('createBtn').onclick = async () => {
+            const name = document.getElementById('groupName').value.trim();
+            if (!name) { showToast('Masukkan nama grup'); return; }
+            if (selected.length === 0) { showToast('Pilih minimal 1 anggota'); return; }
+            await createGroup(name, selected);
+            showToast('🎉 Grup berhasil dibuat');
+            modal.remove();
+            await renderChatList();
+        };
+        document.getElementById('cancelBtn').onclick = () => modal.remove();
     }
     
     // ========== LOGIN ==========
@@ -1127,6 +1335,7 @@
                     await setDoc(doc(db, 'users', userCred.user.uid), {
                         fullName: fullName,
                         phone: phone,
+                        bio: 'Halo! Saya menggunakan PinkChat',
                         contacts: [],
                         groups: [],
                         createdAt: serverTimestamp()

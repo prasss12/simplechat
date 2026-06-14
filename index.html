@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChatKu - With Notifications</title>
+    <title>ChatKu - Final</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -72,7 +72,6 @@
             padding: 12px 16px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
-            position: relative;
         }
         .chat-item:active {
             background: #f9f9f9;
@@ -89,7 +88,7 @@
             font-weight: bold;
             color: #ff6b9d;
             overflow: hidden;
-            position: relative;
+            flex-shrink: 0;
         }
         .chat-avatar img {
             width: 100%;
@@ -128,15 +127,10 @@
             min-width: 20px;
             height: 20px;
             border-radius: 20px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             padding: 0 6px;
-        }
-        .chat-time {
-            font-size: 10px;
-            color: #999;
-            margin-top: 3px;
         }
         .bottom-bar {
             padding: 10px 16px;
@@ -336,30 +330,13 @@
             font-size: 13px;
             z-index: 1100;
         }
-        /* Notifikasi Browser */
-        .notification-permission {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #ff6b9d;
-            color: white;
-            padding: 12px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
         }
-        .notification-permission button {
-            background: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 20px;
-            color: #ff6b9d;
-            font-weight: bold;
-            cursor: pointer;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -389,29 +366,7 @@
     let CHAT_USER = null;
     let UNSUB = null;
     let NOTIFICATION_PERMISSION = false;
-    
-    // Data unread messages per chat
     let unreadCounts = {};
-    let lastSeenTimestamps = {};
-    
-    // Request notification permission
-    function requestNotificationPermission() {
-        if ('Notification' in window) {
-            Notification.requestPermission().then(perm => {
-                NOTIFICATION_PERMISSION = perm === 'granted';
-                if (NOTIFICATION_PERMISSION) {
-                    document.getElementById('notificationBanner')?.remove();
-                }
-            });
-        }
-    }
-    
-    // Show browser notification
-    function showNotification(title, body, icon = null) {
-        if (NOTIFICATION_PERMISSION && document.hidden && !document.getElementById('chatScreen')?.style.display === 'flex') {
-            new Notification(title, { body: body, icon: icon });
-        }
-    }
     
     function toast(msg) {
         let t = document.querySelector('.toast');
@@ -428,7 +383,6 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
     
-    // Kompres foto
     function compressImage(file, callback) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -437,14 +391,11 @@
             img.src = e.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                let width = 200;
-                let height = 200;
-                canvas.width = width;
-                canvas.height = height;
+                canvas.width = 200;
+                canvas.height = 200;
                 const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                callback(compressedBase64);
+                ctx.drawImage(img, 0, 0, 200, 200);
+                callback(canvas.toDataURL('image/jpeg', 0.7));
             };
         };
     }
@@ -462,8 +413,8 @@
     }
     
     function uploadPhoto(file) {
-        compressImage(file, async (compressedBase64) => {
-            await updateUser({ photoURL: compressedBase64 });
+        compressImage(file, async (base64) => {
+            await updateUser({ photoURL: base64 });
             toast('✅ Foto profil tersimpan');
         });
     }
@@ -489,19 +440,6 @@
         });
     }
     
-    // Mark messages as read in chat
-    async function markMessagesRead(chatId, otherUserId) {
-        if (!chatId) return;
-        const messagesRef = collection(db, 'chats', chatId, 'messages');
-        const q = query(messagesRef, where('senderId', '==', otherUserId), where('read', '==', false));
-        const snap = await getDocs(q);
-        for (let docMsg of snap.docs) {
-            await updateDoc(docMsg.ref, { read: true });
-        }
-        unreadCounts[chatId] = 0;
-        renderHome();
-    }
-    
     async function addContact(phone) {
         let q = query(collection(db, 'users'), where('phone', '==', phone));
         let snap = await getDocs(q);
@@ -513,9 +451,23 @@
         return true;
     }
     
-    // Update last seen timestamp for a chat (when user opens chat)
-    function updateLastSeen(chatId) {
-        lastSeenTimestamps[chatId] = Date.now();
+    // MARK MESSAGES AS READ
+    async function markAsRead(chatId, otherId) {
+        if (!chatId) return;
+        let msgsRef = collection(db, 'chats', chatId, 'messages');
+        let q = query(msgsRef, where('senderId', '==', otherId), where('read', '==', false));
+        let snap = await getDocs(q);
+        for (let docMsg of snap.docs) {
+            await updateDoc(docMsg.ref, { read: true });
+        }
+        unreadCounts[chatId] = 0;
+    }
+    
+    // SHOW NOTIFICATION
+    function showNotif(title, body) {
+        if (NOTIFICATION_PERMISSION && document.hidden) {
+            new Notification(title, { body: body });
+        }
     }
     
     // HOME PAGE
@@ -534,92 +486,78 @@
                 <button id="addBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
                 <button id="myProfileBtn"><i class="fas fa-user"></i> Profil Saya</button>
             </div>
-            ${!NOTIFICATION_PERMISSION && 'Notification' in window ? `
-            <div class="notification-permission" id="notificationBanner">
-                <span><i class="fas fa-bell"></i> Aktifkan notifikasi untuk pesan baru</span>
-                <button id="enableNotif">Aktifkan</button>
-            </div>` : ''}
         `;
         
-        if (document.getElementById('enableNotif')) {
-            document.getElementById('enableNotif').onclick = requestNotificationPermission;
-        }
-        
-        let container = document.getElementById('chatList');
         let contacts = USER?.contacts || [];
-        let items = [];
+        let contactsData = [];
+        
         for (let id of contacts) {
             let c = await getUser(id);
-            if (c) items.push(c);
+            if (c) contactsData.push(c);
         }
         
-        // Subscribe to chats untuk update unread count dan preview
-        container.innerHTML = '<div style="text-align:center; padding:40px; color:#999">Memuat...</div>';
+        let chatListContainer = document.getElementById('chatList');
+        chatListContainer.innerHTML = '<div class="loading">Memuat kontak...</div>';
         
-        let chatData = [];
-        for (let c of items) {
-            let chatId = await getChat(USER.uid, c.uid);
-            chatData.push({ contact: c, chatId: chatId });
-        }
-        
-        // Subscribe ke setiap chat untuk mendapatkan last message dan unread count
-        let unsubList = [];
-        let lastMessages = {};
-        let unreadMap = {};
-        
-        for (let data of chatData) {
-            const qMessages = query(collection(db, 'chats', data.chatId, 'messages'), orderBy('timestamp', 'desc'), where('senderId', '==', data.contact.uid));
-            const unsub = onSnapshot(qMessages, (snap) => {
-                if (!snap.empty) {
-                    let latest = snap.docs[0].data();
-                    lastMessages[data.chatId] = latest.text;
+        if (contactsData.length === 0) {
+            chatListContainer.innerHTML = '<div class="loading">Belum ada kontak<br>Tekan Tambah Kontak</div>';
+        } else {
+            chatListContainer.innerHTML = '';
+            for (let c of contactsData) {
+                let chatId = await getChat(USER.uid, c.uid);
+                
+                // Subscribe ke pesan untuk update unread dan preview
+                let msgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'), where('senderId', '==', c.uid));
+                let unsubMsg = onSnapshot(msgQuery, (snap) => {
+                    let lastMsg = '';
                     let unread = 0;
-                    snap.docs.forEach(d => {
+                    snap.forEach(d => {
                         let msg = d.data();
-                        if (msg.senderId === data.contact.uid && !msg.read) unread++;
+                        if (lastMsg === '') lastMsg = msg.text;
+                        if (!msg.read) unread++;
                     });
-                    unreadMap[data.chatId] = unread;
-                    unreadCounts[data.chatId] = unread;
-                    renderChatList(items, lastMessages, unreadMap);
-                }
-            });
-            unsubList.push(unsub);
-        }
-        
-        function renderChatList(contactsList, lastMsgMap, unreadMap) {
-            container.innerHTML = '';
-            if (contactsList.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#999">Belum ada kontak<br>Tekan Tambah Kontak</div>';
-                return;
-            }
-            
-            for (let c of contactsList) {
-                (async () => {
-                    let chatId = await getChat(USER.uid, c.uid);
-                    let div = document.createElement('div');
-                    div.className = 'chat-item';
-                    let unread = unreadMap[chatId] || 0;
-                    let lastMsg = lastMsgMap[chatId] || 'Ketik pesan...';
-                    div.innerHTML = `
-                        <div class="chat-avatar">
-                            ${c.photoURL ? `<img src="${c.photoURL}">` : c.fullName?.charAt(0).toUpperCase()}
+                    unreadCounts[chatId] = unread;
+                    
+                    // Update tampilan chat item
+                    let chatItem = document.getElementById(`chat_${chatId}`);
+                    if (chatItem) {
+                        let previewSpan = chatItem.querySelector('.chat-preview');
+                        if (previewSpan) previewSpan.innerText = lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg;
+                        
+                        let badgeSpan = chatItem.querySelector('.unread-badge');
+                        if (unread > 0) {
+                            if (badgeSpan) badgeSpan.innerText = unread;
+                            else {
+                                let nameDiv = chatItem.querySelector('.chat-name');
+                                if (nameDiv) nameDiv.innerHTML = `${escapeHtml(c.fullName)} <span class="unread-badge">${unread}</span>`;
+                            }
+                        } else if (badgeSpan) {
+                            badgeSpan.remove();
+                        }
+                    }
+                });
+                
+                let div = document.createElement('div');
+                div.className = 'chat-item';
+                div.id = `chat_${chatId}`;
+                div.innerHTML = `
+                    <div class="chat-avatar">
+                        ${c.photoURL ? `<img src="${c.photoURL}">` : c.fullName?.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-name">
+                            ${escapeHtml(c.fullName)}
+                            ${unreadCounts[chatId] > 0 ? `<span class="unread-badge">${unreadCounts[chatId]}</span>` : ''}
                         </div>
-                        <div class="chat-info">
-                            <div class="chat-name">
-                                ${escapeHtml(c.fullName)}
-                                ${unread > 0 ? `<span class="unread-badge">${unread}</span>` : ''}
-                            </div>
-                            <div class="chat-phone">${c.phone}</div>
-                            <div class="chat-preview">${escapeHtml(lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg)}</div>
-                        </div>
-                    `;
-                    div.onclick = async () => {
-                        await openChat(c, chatId);
-                        // Mark as read when opening chat
-                        await markMessagesRead(chatId, c.uid);
-                    };
-                    container.appendChild(div);
-                })();
+                        <div class="chat-phone">${c.phone}</div>
+                        <div class="chat-preview">...</div>
+                    </div>
+                `;
+                div.onclick = async () => {
+                    await markAsRead(chatId, c.uid);
+                    await openChat(c, chatId);
+                };
+                chatListContainer.appendChild(div);
             }
         }
         
@@ -654,18 +592,20 @@
             };
             document.getElementById('cancel').onclick = () => modal.remove();
         };
+        
+        // Request notifikasi
+        if ('Notification' in window && !NOTIFICATION_PERMISSION && Notification.permission !== 'denied') {
+            Notification.requestPermission().then(perm => {
+                NOTIFICATION_PERMISSION = perm === 'granted';
+            });
+        }
     }
     
     // OPEN CHAT
-    async function openChat(contact, existingChatId = null) {
+    async function openChat(contact, chatId) {
         if (UNSUB) UNSUB();
-        let chatId = existingChatId || await getChat(USER.uid, contact.uid);
         CHAT_ID = chatId;
         CHAT_USER = contact;
-        
-        // Mark as read saat buka chat
-        await markMessagesRead(chatId, contact.uid);
-        updateLastSeen(chatId);
         
         let root = document.getElementById('app');
         root.innerHTML = `
@@ -689,7 +629,7 @@
         let q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
         UNSUB = onSnapshot(q, (snap) => {
             msgDiv.innerHTML = '';
-            if (snap.empty) msgDiv.innerHTML = '<div style="text-align:center; padding:40px; color:#999">Belum ada pesan</div>';
+            if (snap.empty) msgDiv.innerHTML = '<div class="loading">Belum ada pesan</div>';
             snap.forEach(d => {
                 let m = d.data();
                 let isMe = m.senderId === USER.uid;
@@ -702,20 +642,20 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
         });
         
-        // Subscribe to new messages for notification
-        const newMsgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'), where('senderId', '==', contact.uid));
-        const unsubNew = onSnapshot(newMsgQuery, (snap) => {
-            if (!snap.empty) {
+        // Notifikasi untuk pesan baru
+        let notifQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'), where('senderId', '==', contact.uid));
+        let unsubNotif = onSnapshot(notifQuery, (snap) => {
+            if (!snap.empty && document.hidden) {
                 let latest = snap.docs[0].data();
-                if (latest.senderId === contact.uid && !latest.read && document.hidden) {
-                    showNotification(contact.fullName, latest.text);
+                if (!latest.read) {
+                    showNotif(contact.fullName, latest.text);
                 }
             }
         });
         
         document.getElementById('backBtn').onclick = () => {
             if (UNSUB) UNSUB();
-            unsubNew();
+            unsubNotif();
             renderHome();
         };
         document.getElementById('sendBtn').onclick = async () => {
@@ -770,12 +710,9 @@
             let input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
-            input.onchange = async (e) => {
+            input.onchange = (e) => {
                 let file = e.target.files[0];
-                if (file) {
-                    toast('📷 Memproses foto...');
-                    uploadPhoto(file);
-                }
+                if (file) uploadPhoto(file);
             };
             input.click();
         };
@@ -835,11 +772,8 @@
             </div>
         `;
         document.getElementById('backBtn').onclick = () => {
-            if (CHAT_ID) {
-                openChat(CHAT_USER);
-            } else {
-                renderHome();
-            }
+            if (CHAT_ID) openChat(CHAT_USER, CHAT_ID);
+            else renderHome();
         };
     }
     

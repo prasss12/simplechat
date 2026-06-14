@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>PinkChat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -10,101 +10,37 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: #fff;
+            background: #f8f0f4;
             height: 100vh;
-            width: 100%;
             overflow: hidden;
-            position: fixed;
         }
 
-        /* ========== HALAMAN LOGIN ========== */
-        .login-screen {
+        /* LAYOUT UTAMA */
+        .screen {
+            height: 100vh;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            padding: 20px;
-            background: white;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-        }
-
-        .login-card h2 {
-            color: #ff6b9d;
-            margin-bottom: 10px;
-        }
-
-        .login-card p {
-            color: #aa8a96;
-            font-size: 13px;
-            margin-bottom: 30px;
-        }
-
-        .login-card input {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            background: #fef0f4;
-            border: none;
-            border-radius: 30px;
-            font-size: 15px;
-        }
-
-        .login-card button {
-            width: 100%;
-            padding: 14px;
-            background: #ff6b9d;
-            border: none;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-
-        .login-card .switch-btn {
-            background: #ffe4ec;
-            color: #ff6b9d;
-            margin-top: 10px;
-        }
-
-        .error-msg {
-            color: #ff6b9d;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-
-        /* ========== HALAMAN UTAMA ========== */
-        .main-screen {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
             background: white;
         }
 
         /* HEADER */
-        .main-header {
+        .header {
+            padding: 16px;
             background: white;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f0e0e6;
+            border-bottom: 1px solid #ffe0e8;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .profile-avatar {
-            width: 44px;
-            height: 44px;
+        .avatar {
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, #ff99c8, #ff6b9d);
             border-radius: 50%;
             display: flex;
@@ -115,21 +51,22 @@
             font-size: 18px;
         }
 
-        .profile-text {
+        .info {
             flex: 1;
         }
 
-        .profile-text h4 {
+        .info h3 {
             font-size: 16px;
             color: #2d2d2d;
         }
 
-        .profile-text p {
-            font-size: 11px;
+        .info p {
+            font-size: 12px;
             color: #ff6b9d;
+            margin-top: 2px;
         }
 
-        .logout-icon {
+        .btn-icon {
             background: #ffe4ec;
             border: none;
             width: 38px;
@@ -140,13 +77,13 @@
             cursor: pointer;
         }
 
-        /* LIST KONTAK */
-        .contact-list {
+        /* LIST CHAT */
+        .chat-list {
             flex: 1;
             overflow-y: auto;
         }
 
-        .contact-item {
+        .chat-item {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -155,11 +92,11 @@
             cursor: pointer;
         }
 
-        .contact-item:active {
+        .chat-item:active {
             background: #fff5f8;
         }
 
-        .contact-avatar {
+        .chat-avatar {
             width: 50px;
             height: 50px;
             background: #ffe4ec;
@@ -172,28 +109,28 @@
             color: #ff6b9d;
         }
 
-        .contact-name {
+        .chat-name {
             font-weight: 600;
             color: #2d2d2d;
             font-size: 15px;
         }
 
-        .contact-phone {
+        .chat-phone {
             font-size: 11px;
             color: #aa8a96;
             margin-top: 3px;
         }
 
-        /* TOMBOL BAWAH */
-        .bottom-buttons {
+        /* TOMBOL AKSI */
+        .actions {
             padding: 12px 16px;
             display: flex;
             gap: 12px;
-            border-top: 1px solid #f0e0e6;
+            border-top: 1px solid #ffe0e8;
             background: white;
         }
 
-        .bottom-buttons button {
+        .actions button {
             flex: 1;
             background: #ffe4ec;
             border: none;
@@ -205,67 +142,30 @@
             cursor: pointer;
         }
 
-        /* ========== HALAMAN CHAT ========== */
-        .chat-screen {
+        /* CHAT VIEW */
+        .chat-view {
             display: none;
             flex-direction: column;
             height: 100vh;
             background: #fefafb;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 10;
         }
 
-        .chat-header {
+        .chat-view .header {
             background: white;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f0e0e6;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
         .back-btn {
             background: none;
             border: none;
-            font-size: 22px;
+            font-size: 20px;
             color: #ff6b9d;
             cursor: pointer;
             width: 36px;
             height: 36px;
         }
 
-        .chat-header-avatar {
-            width: 40px;
-            height: 40px;
-            background: #ffe4ec;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #ff6b9d;
-        }
-
-        .chat-header-info {
-            flex: 1;
-        }
-
-        .chat-header-info h4 {
-            font-size: 16px;
-            color: #2d2d2d;
-        }
-
-        .chat-header-info p {
-            font-size: 11px;
-            color: #ff99c8;
-        }
-
-        /* AREA PESAN */
-        .messages-area {
+        /* MESSAGES */
+        .messages {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
@@ -274,55 +174,55 @@
             gap: 8px;
         }
 
-        .msg {
+        .message {
             max-width: 75%;
             display: flex;
             flex-direction: column;
         }
 
-        .msg.sent {
+        .message.sent {
             align-self: flex-end;
         }
 
-        .msg.received {
+        .message.received {
             align-self: flex-start;
         }
 
-        .msg-bubble {
-            padding: 10px 14px;
+        .bubble {
+            padding: 10px 15px;
             border-radius: 20px;
             font-size: 14px;
         }
 
-        .sent .msg-bubble {
+        .sent .bubble {
             background: #ffd9e6;
             color: #2d2d2d;
         }
 
-        .received .msg-bubble {
+        .received .bubble {
             background: white;
             color: #2d2d2d;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        .msg-time {
+        .time {
             font-size: 10px;
             color: #bb9aa6;
             margin-top: 4px;
             margin-left: 10px;
         }
 
-        /* INPUT PESAN */
-        .chat-input {
+        /* INPUT */
+        .input-area {
             background: white;
-            padding: 10px 12px;
+            padding: 10px 16px;
             display: flex;
             gap: 10px;
             align-items: center;
-            border-top: 1px solid #f0e0e6;
+            border-top: 1px solid #ffe0e8;
         }
 
-        .chat-input input {
+        .input-area input {
             flex: 1;
             background: #fef0f4;
             border: none;
@@ -332,7 +232,7 @@
             outline: none;
         }
 
-        .chat-input button {
+        .input-area button {
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -379,7 +279,6 @@
             background: #fef0f4;
             border: none;
             border-radius: 30px;
-            font-size: 14px;
         }
 
         .modal-box button {
@@ -396,7 +295,7 @@
 
         .toast {
             position: fixed;
-            bottom: 100px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: #2d2d2d;
@@ -409,7 +308,7 @@
     </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="root"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -430,9 +329,9 @@
     const auth = getAuth(app);
     
     let USER = null;
-    let ACTIVE_CHAT_ID = null;
-    let ACTIVE_CHAT_NAME = null;
-    let UNSUB_MSGS = null;
+    let CHAT_ID = null;
+    let CHAT_NAME = null;
+    let UNSUB = null;
     
     function toast(msg) {
         let t = document.querySelector('.toast');
@@ -446,7 +345,12 @@
     
     function escape(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
     
     async function getUser(uid) {
@@ -454,7 +358,7 @@
         return s.exists() ? { uid, ...s.data() } : null;
     }
     
-    // ========== CHAT FUNCTIONS ==========
+    // GET CHAT ID
     async function getChatId(uid1, uid2) {
         const chats = collection(db, 'chats');
         const q1 = query(chats, where('participants', '==', [uid1, uid2]));
@@ -464,14 +368,14 @@
         if (!s.empty) return s.docs[0].id;
         
         const ref = await addDoc(chats, {
-            type: 'private',
             participants: [uid1, uid2],
             createdAt: serverTimestamp()
         });
         return ref.id;
     }
     
-    async function sendMessage(chatId, text) {
+    // SEND MESSAGE
+    async function sendMsg(chatId, text) {
         if (!chatId || !text) return;
         await addDoc(collection(db, 'chats', chatId, 'messages'), {
             senderId: USER.uid,
@@ -480,6 +384,7 @@
         });
     }
     
+    // ADD CONTACT
     async function addContact(phone) {
         const q = query(collection(db, 'users'), where('phone', '==', phone));
         const s = await getDocs(q);
@@ -492,9 +397,9 @@
         return true;
     }
     
-    // ========== RENDER KONTAK ==========
+    // RENDER KONTAK
     async function renderContacts() {
-        const container = document.getElementById('contactList');
+        const container = document.getElementById('chatList');
         if (!container) return;
         
         const u = await getUser(USER.uid);
@@ -514,12 +419,12 @@
         
         for (let item of items) {
             const div = document.createElement('div');
-            div.className = 'contact-item';
+            div.className = 'chat-item';
             div.innerHTML = `
-                <div class="contact-avatar">${escape(item.name.charAt(0).toUpperCase())}</div>
+                <div class="chat-avatar">${escape(item.name.charAt(0).toUpperCase())}</div>
                 <div>
-                    <div class="contact-name">${escape(item.name)}</div>
-                    <div class="contact-phone">${escape(item.phone)}</div>
+                    <div class="chat-name">${escape(item.name)}</div>
+                    <div class="chat-phone">${escape(item.phone)}</div>
                 </div>
             `;
             div.onclick = () => openChat(item.uid, item.name);
@@ -527,91 +432,90 @@
         }
     }
     
-    // ========== BUKA CHAT ==========
-    async function openChat(contactUid, contactName) {
-        if (UNSUB_MSGS) UNSUB_MSGS();
+    // OPEN CHAT
+    async function openChat(uid, name) {
+        if (UNSUB) UNSUB();
         
-        const chatId = await getChatId(USER.uid, contactUid);
-        ACTIVE_CHAT_ID = chatId;
-        ACTIVE_CHAT_NAME = contactName;
+        const chatId = await getChatId(USER.uid, uid);
+        CHAT_ID = chatId;
+        CHAT_NAME = name;
         
-        document.getElementById('chatName').innerHTML = escape(contactName);
-        document.getElementById('chatHeaderAvatar').innerHTML = contactName.charAt(0).toUpperCase();
+        document.getElementById('chatName').innerHTML = escape(name);
+        document.getElementById('chatAvatar').innerHTML = name.charAt(0).toUpperCase();
         
-        const msgContainer = document.getElementById('messagesContainer');
-        msgContainer.innerHTML = '<div class="empty">Loading...</div>';
+        const msgDiv = document.getElementById('messagesDiv');
+        msgDiv.innerHTML = '<div class="empty">Loading...</div>';
         
         const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        UNSUB_MSGS = onSnapshot(q, (snap) => {
-            msgContainer.innerHTML = '';
+        UNSUB = onSnapshot(q, (snap) => {
+            msgDiv.innerHTML = '';
             if (snap.empty) {
-                msgContainer.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
+                msgDiv.innerHTML = '<div class="empty">Belum ada pesan. Kirim pesan pertama!</div>';
             }
             snap.forEach(d => {
                 const m = d.data();
                 const isMe = m.senderId === USER.uid;
                 const el = document.createElement('div');
-                el.className = `msg ${isMe ? 'sent' : 'received'}`;
-                const time = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                el.innerHTML = `<div class="msg-bubble">${escape(m.text)}</div><div class="msg-time">${time}</div>`;
-                msgContainer.appendChild(el);
+                el.className = `message ${isMe ? 'sent' : 'received'}`;
+                const t = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                el.innerHTML = `<div class="bubble">${escape(m.text)}</div><div class="time">${t}</div>`;
+                msgDiv.appendChild(el);
             });
-            msgContainer.scrollTop = msgContainer.scrollHeight;
+            msgDiv.scrollTop = msgDiv.scrollHeight;
         });
         
         document.getElementById('mainScreen').style.display = 'none';
-        document.getElementById('chatScreen').style.display = 'flex';
+        document.getElementById('chatView').style.display = 'flex';
     }
     
-    async function sendCurrentMessage() {
-        if (!ACTIVE_CHAT_ID) return;
-        const input = document.getElementById('chatInput');
+    async function sendNow() {
+        if (!CHAT_ID) return;
+        const input = document.getElementById('messageInput');
         const text = input.value.trim();
         if (!text) return;
-        
-        await sendMessage(ACTIVE_CHAT_ID, text);
+        await sendMsg(CHAT_ID, text);
         input.value = '';
-        input.focus();
     }
     
     function closeChat() {
-        if (UNSUB_MSGS) UNSUB_MSGS();
-        ACTIVE_CHAT_ID = null;
+        if (UNSUB) UNSUB();
+        CHAT_ID = null;
         document.getElementById('mainScreen').style.display = 'flex';
-        document.getElementById('chatScreen').style.display = 'none';
+        document.getElementById('chatView').style.display = 'none';
         renderContacts();
     }
     
-    // ========== MODAL ==========
-    function showAddContactModal() {
+    // MODAL ADD CONTACT
+    function showAddModal() {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
             <div class="modal-box">
                 <h3>Tambah Kontak</h3>
-                <input type="tel" id="phoneInput" placeholder="Nomor HP">
-                <button id="addBtn">Tambah</button>
-                <button id="cancelBtn" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
-                <div id="errMsg" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
+                <input type="tel" id="phone" placeholder="Nomor HP">
+                <button id="add">Tambah</button>
+                <button id="cancel" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
+                <div id="err" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
             </div>
         `;
         document.body.appendChild(modal);
         
-        document.getElementById('addBtn').onclick = async () => {
-            const phone = document.getElementById('phoneInput').value.trim();
+        document.getElementById('add').onclick = async () => {
+            const phone = document.getElementById('phone').value.trim();
             try {
                 await addContact(phone);
                 toast('✅ Kontak ditambahkan');
                 modal.remove();
                 renderContacts();
             } catch(e) {
-                document.getElementById('errMsg').innerText = e.message;
+                document.getElementById('err').innerText = e.message;
             }
         };
-        document.getElementById('cancelBtn').onclick = () => modal.remove();
+        document.getElementById('cancel').onclick = () => modal.remove();
     }
     
-    function showProfileModal() {
+    // SHOW PROFILE
+    function showProfile() {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.innerHTML = `
@@ -620,90 +524,89 @@
                 <h3>${escape(USER.fullName)}</h3>
                 <p style="color:#ff6b9d;margin:5px 0;">${USER.phone}</p>
                 <p style="color:#aa8a96;margin-top:10px;">${escape(USER.bio || 'Halo! Saya menggunakan PinkChat')}</p>
-                <button id="closeBtn" style="background:#ffe4ec;color:#ff6b9d">Tutup</button>
+                <button id="close" style="background:#ffe4ec;color:#ff6b9d">Tutup</button>
             </div>
         `;
         document.body.appendChild(modal);
-        document.getElementById('closeBtn').onclick = () => modal.remove();
+        document.getElementById('close').onclick = () => modal.remove();
     }
     
-    // ========== MAIN SCREEN ==========
-    async function showMainScreen() {
-        const app = document.getElementById('app');
+    // MAIN APP
+    async function mainApp() {
+        const root = document.getElementById('root');
         
-        app.innerHTML = `
-            <div id="mainScreen" class="main-screen">
-                <div class="main-header">
-                    <div class="profile-avatar" id="profileAvatar">${USER?.fullName?.charAt(0) || 'U'}</div>
-                    <div class="profile-text">
-                        <h4>${escape(USER?.fullName || 'User')}</h4>
+        root.innerHTML = `
+            <div id="mainScreen" class="screen">
+                <div class="header">
+                    <div class="avatar" id="profileBtn">${USER?.fullName?.charAt(0) || 'U'}</div>
+                    <div class="info">
+                        <h3>${escape(USER?.fullName || 'User')}</h3>
                         <p>${USER?.phone || ''}</p>
                     </div>
-                    <button class="logout-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+                    <button class="btn-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
-                <div class="contact-list" id="contactList"></div>
-                <div class="bottom-buttons">
+                <div class="chat-list" id="chatList"></div>
+                <div class="actions">
                     <button id="addContactBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-                    <button id="groupBtn" style="opacity:0.5" disabled><i class="fas fa-users"></i> Grup</button>
+                    <button id="groupBtn" disabled style="opacity:0.5"><i class="fas fa-users"></i> Grup</button>
                 </div>
             </div>
             
-            <div id="chatScreen" class="chat-screen">
-                <div class="chat-header">
+            <div id="chatView" class="chat-view">
+                <div class="header">
                     <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
-                    <div class="chat-header-avatar" id="chatHeaderAvatar">P</div>
-                    <div class="chat-header-info">
-                        <h4 id="chatName">Chat</h4>
+                    <div class="avatar" id="chatAvatar">P</div>
+                    <div class="info">
+                        <h3 id="chatName">Chat</h3>
                         <p>Online</p>
                     </div>
                 </div>
-                <div class="messages-area" id="messagesContainer"></div>
-                <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="Ketik pesan...">
-                    <button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
+                <div class="messages" id="messagesDiv"></div>
+                <div class="input-area">
+                    <input type="text" id="messageInput" placeholder="Ketik pesan...">
+                    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
         `;
         
         await renderContacts();
         
-        document.getElementById('profileAvatar').onclick = showProfileModal;
+        document.getElementById('profileBtn').onclick = showProfile;
         document.getElementById('logoutBtn').onclick = async () => {
             if (confirm('Yakin keluar?')) await signOut(auth);
         };
-        document.getElementById('addContactBtn').onclick = showAddContactModal;
+        document.getElementById('addContactBtn').onclick = showAddModal;
         document.getElementById('backBtn').onclick = closeChat;
-        document.getElementById('sendMsgBtn').onclick = sendCurrentMessage;
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendCurrentMessage();
+        document.getElementById('sendBtn').onclick = sendNow;
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendNow();
         });
     }
     
-    // ========== LOGIN ==========
-    function showLogin() {
+    // LOGIN
+    function loginPage() {
         let isLogin = false;
-        const app = document.getElementById('app');
+        const root = document.getElementById('root');
         
-        app.innerHTML = `
-            <div class="login-screen">
-                <div class="login-card">
-                    <h2>PinkChat</h2>
-                    <p>Chat real-time dengan teman</p>
-                    <input type="text" id="nameInput" placeholder="Nama lengkap">
-                    <input type="tel" id="phoneInput" placeholder="Nomor HP (812345678)">
-                    <input type="password" id="passInput" placeholder="Password">
-                    <button id="submitBtn">Daftar</button>
-                    <button id="switchBtn" class="switch-btn">Sudah punya akun? Masuk</button>
-                    <div id="errorMsg" class="error-msg"></div>
+        root.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:white;padding:20px">
+                <div style="width:100%;max-width:320px;text-align:center">
+                    <h2 style="color:#ff6b9d;margin-bottom:10px">PinkChat</h2>
+                    <p style="color:#aa8a96;margin-bottom:30px">Chat real-time dengan teman</p>
+                    <input type="text" id="name" placeholder="Nama lengkap" style="width:100%;padding:14px;margin:8px 0;background:#fef0f4;border:none;border-radius:30px">
+                    <input type="tel" id="phone" placeholder="Nomor HP (812345678)" style="width:100%;padding:14px;margin:8px 0;background:#fef0f4;border:none;border-radius:30px">
+                    <input type="password" id="pass" placeholder="Password" style="width:100%;padding:14px;margin:8px 0;background:#fef0f4;border:none;border-radius:30px">
+                    <button id="submit" style="width:100%;padding:14px;background:#ff6b9d;border:none;border-radius:30px;color:white;font-weight:bold;margin-top:15px">Daftar</button>
+                    <button id="switch" style="width:100%;padding:14px;background:#ffe4ec;border:none;border-radius:30px;color:#ff6b9d;font-weight:bold;margin-top:10px">Sudah punya akun? Masuk</button>
+                    <div id="error" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
                 </div>
             </div>
         `;
         
-        const nameInput = document.getElementById('nameInput');
-        const title = document.getElementById('title');
-        const submit = document.getElementById('submitBtn');
-        const switchBtn = document.getElementById('switchBtn');
-        const errorDiv = document.getElementById('errorMsg');
+        const nameInput = document.getElementById('name');
+        const submit = document.getElementById('submit');
+        const switchBtn = document.getElementById('switch');
+        const errorDiv = document.getElementById('error');
         
         switchBtn.onclick = () => {
             isLogin = !isLogin;
@@ -719,14 +622,14 @@
         };
         
         submit.onclick = async () => {
-            const phone = document.getElementById('phoneInput').value.trim();
-            const pass = document.getElementById('passInput').value;
+            const phone = document.getElementById('phone').value.trim();
+            const pass = document.getElementById('pass').value;
             
             try {
                 if (isLogin) {
                     await signInWithEmailAndPassword(auth, `${phone}@pinkchat.local`, pass);
                 } else {
-                    const name = document.getElementById('nameInput').value.trim();
+                    const name = document.getElementById('name').value.trim();
                     if (!name) throw new Error('Nama harus diisi');
                     if (!phone.match(/^[0-9]{5,14}$/)) throw new Error('Nomor HP 5-14 digit');
                     
@@ -750,26 +653,26 @@
         };
     }
     
-    // ========== AUTH ==========
+    // AUTH STATE
     onAuthStateChanged(auth, async (u) => {
         if (u) {
             USER = await getUser(u.uid);
             if (USER) {
-                showMainScreen();
+                mainApp();
             } else {
                 setTimeout(async () => {
                     USER = await getUser(u.uid);
-                    if (USER) showMainScreen();
-                    else showLogin();
+                    if (USER) mainApp();
+                    else loginPage();
                 }, 1000);
             }
         } else {
             USER = null;
-            showLogin();
+            loginPage();
         }
     });
     
-    showLogin();
+    loginPage();
 </script>
 </body>
 </html>

@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>PinkChat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ChatKu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -14,178 +14,101 @@
         }
 
         body {
-            background: #f8f0f4;
+            background: #f5f5f5;
             height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            position: fixed;
-        }
-
-        .page {
-            height: 100vh;
-            width: 100%;
-            background: white;
             display: flex;
             flex-direction: column;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
         /* HEADER */
-        .top-bar {
-            padding: 12px 16px;
-            background: white;
-            border-bottom: 1px solid #ffe0e8;
+        .header {
+            background: #ff6b9d;
+            padding: 16px;
+            color: white;
             display: flex;
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
         }
-
-        .avatar-circle {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #ff99c8, #ff6b9d);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
+        .header h2 {
             font-size: 18px;
-            cursor: pointer;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .avatar-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .title-box {
             flex: 1;
         }
-
-        .title-box h3 {
-            font-size: 16px;
-            color: #2d2d2d;
-        }
-
-        .title-box p {
-            font-size: 11px;
-            color: #ff6b9d;
-            margin-top: 2px;
-        }
-
-        .icon-btn {
-            background: #ffe4ec;
+        .back-btn, .logout-btn {
+            background: rgba(255,255,255,0.2);
             border: none;
-            width: 38px;
-            height: 38px;
+            color: white;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            color: #ff6b9d;
             font-size: 16px;
             cursor: pointer;
-            flex-shrink: 0;
         }
 
-        /* LIST KONTAK */
-        .contact-list {
+        /* LIST CHAT */
+        .chat-list {
             flex: 1;
             overflow-y: auto;
+            background: white;
         }
-
-        .contact-item {
+        .chat-item {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             padding: 12px 16px;
-            border-bottom: 1px solid #f0eef0;
+            border-bottom: 1px solid #eee;
             cursor: pointer;
         }
-
-        .contact-item:active {
-            background: #fff5f8;
-        }
-
-        .contact-avatar {
-            width: 48px;
-            height: 48px;
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
             background: #ffe4ec;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: bold;
             color: #ff6b9d;
-            overflow: hidden;
-            flex-shrink: 0;
         }
-
-        .contact-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .contact-name {
+        .chat-name {
             font-weight: 600;
-            color: #2d2d2d;
-            font-size: 15px;
+            font-size: 16px;
         }
-
-        .contact-phone {
-            font-size: 11px;
-            color: #aa8a96;
+        .chat-phone {
+            font-size: 12px;
+            color: #999;
             margin-top: 3px;
         }
 
-        .bottom-actions {
+        /* TOMBOL BAWAH */
+        .bottom-bar {
             padding: 10px 16px;
             display: flex;
-            gap: 12px;
-            border-top: 1px solid #ffe0e8;
+            gap: 10px;
             background: white;
+            border-top: 1px solid #eee;
             flex-shrink: 0;
         }
-
-        .bottom-actions button {
+        .bottom-bar button {
             flex: 1;
             background: #ffe4ec;
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 30px;
             color: #ff6b9d;
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        /* CHAT PAGE - INPUT PESAN PASTI ADA */
-        .chat-container {
-            display: flex;
+        /* HALAMAN CHAT */
+        .chat-screen {
+            display: none;
             flex-direction: column;
             height: 100vh;
             background: #fefafb;
         }
-
-        .back-btn {
-            background: none;
-            border: none;
-            font-size: 22px;
-            color: #ff6b9d;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0;
-        }
-
-        .messages-box {
+        .messages {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
@@ -193,67 +116,57 @@
             flex-direction: column;
             gap: 8px;
         }
-
-        .msg-item {
+        .msg {
             max-width: 75%;
             display: flex;
             flex-direction: column;
         }
-
-        .msg-item.sent {
+        .msg.sent {
             align-self: flex-end;
         }
-
-        .msg-item.received {
+        .msg.received {
             align-self: flex-start;
         }
-
-        .msg-bubble {
+        .bubble {
             padding: 10px 14px;
             border-radius: 20px;
             font-size: 14px;
         }
-
-        .sent .msg-bubble {
+        .sent .bubble {
             background: #ffd9e6;
-            color: #2d2d2d;
+            color: #333;
         }
-
-        .received .msg-bubble {
+        .received .bubble {
             background: white;
-            color: #2d2d2d;
+            color: #333;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-
-        .msg-time {
+        .time {
             font-size: 10px;
-            color: #bb9aa6;
+            color: #999;
             margin-top: 4px;
             margin-left: 10px;
         }
 
-        /* INPUT PESAN - HARUS MUNCUL */
-        .input-row {
+        /* INPUT PESAN */
+        .input-area {
             background: white;
             padding: 10px 12px;
             display: flex;
-            gap: 8px;
-            align-items: center;
-            border-top: 1px solid #ffe0e8;
+            gap: 10px;
+            border-top: 1px solid #eee;
             flex-shrink: 0;
         }
-
-        .input-row input {
+        .input-area input {
             flex: 1;
-            background: #fef0f4;
+            background: #f5f5f5;
             border: none;
-            padding: 12px 14px;
+            padding: 12px 16px;
             border-radius: 30px;
             font-size: 15px;
             outline: none;
         }
-
-        .input-row button {
+        .input-area button {
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -262,17 +175,74 @@
             color: white;
             font-size: 16px;
             cursor: pointer;
-            flex-shrink: 0;
         }
 
-        .empty-state {
+        /* HALAMAN PROFIL */
+        .profile-screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            background: white;
+        }
+        .profile-content {
+            padding: 24px;
             text-align: center;
-            padding: 40px;
-            color: #cc9aa8;
+        }
+        .big-avatar {
+            width: 100px;
+            height: 100px;
+            background: #ffe4ec;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: #ff6b9d;
+            position: relative;
+        }
+        .camera-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #ff6b9d;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+        .info-row {
+            background: #f5f5f5;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .info-row label {
+            font-size: 12px;
+            color: #ff6b9d;
+        }
+        .info-row .value {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        .edit-btn {
+            background: #ff6b9d;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
         }
 
-        /* MODAL */
-        .modal-overlay {
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -284,8 +254,7 @@
             justify-content: center;
             z-index: 1000;
         }
-
-        .modal-content {
+        .modal-box {
             background: white;
             width: 85%;
             max-width: 320px;
@@ -293,17 +262,15 @@
             border-radius: 24px;
             text-align: center;
         }
-
-        .modal-content input {
+        .modal-box input {
             width: 100%;
             padding: 12px;
-            margin: 8px 0;
-            background: #fef0f4;
+            margin: 10px 0;
+            background: #f5f5f5;
             border: none;
             border-radius: 30px;
         }
-
-        .modal-content button {
+        .modal-box button {
             width: 100%;
             padding: 12px;
             background: #ff6b9d;
@@ -314,55 +281,25 @@
             margin-top: 8px;
             cursor: pointer;
         }
-
-        .toast-msg {
+        .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: #2d2d2d;
+            background: #333;
             color: white;
             padding: 8px 20px;
             border-radius: 30px;
             font-size: 13px;
             z-index: 1100;
         }
-
-        /* PROFIL */
-        .profile-field {
-            background: #fef0f4;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .profile-field label {
-            font-size: 12px;
-            color: #ff6b9d;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .profile-field .value {
-            font-size: 16px;
-            color: #2d2d2d;
-        }
-
-        .edit-save-btn {
-            background: #ff6b9d;
-            border: none;
-            padding: 12px;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
-            cursor: pointer;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="app"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -385,64 +322,55 @@
     const storage = getStorage(app);
     
     let USER = null;
-    let ACTIVE_CHAT_ID = null;
-    let ACTIVE_CHAT_USER = null;
-    let UNSUB_MSG = null;
+    let CHAT_ID = null;
+    let CHAT_USER = null;
+    let UNSUB = null;
     
     function toast(msg) {
-        let t = document.querySelector('.toast-msg');
+        let t = document.querySelector('.toast');
         if (t) t.remove();
         t = document.createElement('div');
-        t.className = 'toast-msg';
+        t.className = 'toast';
         t.innerText = msg;
         document.body.appendChild(t);
         setTimeout(() => t.remove(), 2000);
     }
     
-    function escape(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-    }
-    
     async function getUser(uid) {
-        const snap = await getDoc(doc(db, 'users', uid));
-        return snap.exists() ? { uid, ...snap.data() } : null;
+        let s = await getDoc(doc(db, 'users', uid));
+        return s.exists() ? { uid, ...s.data() } : null;
     }
     
-    // UPDATE PROFIL
-    async function updateProfile(data) {
+    async function updateUser(data) {
         await updateDoc(doc(db, 'users', USER.uid), data);
         USER = await getUser(USER.uid);
-        toast('✅ Profil diperbarui');
+        toast('✅ Tersimpan');
         renderHome();
     }
     
     async function uploadPhoto(file) {
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            const storageRef = ref(storage, `photos/${USER.uid}`);
-            await uploadString(storageRef, ev.target.result, 'data_url');
-            const url = await getDownloadURL(storageRef);
-            await updateProfile({ photoURL: url });
-            toast('✅ Foto profil diperbarui');
+        let reader = new FileReader();
+        reader.onload = async (e) => {
+            let refStorage = ref(storage, `photos/${USER.uid}`);
+            await uploadString(refStorage, e.target.result, 'data_url');
+            let url = await getDownloadURL(refStorage);
+            await updateUser({ photoURL: url });
         };
         reader.readAsDataURL(file);
     }
     
-    // CHAT
-    async function getChatId(uid1, uid2) {
-        const chats = collection(db, 'chats');
-        const q1 = query(chats, where('participants', '==', [uid1, uid2]));
-        const q2 = query(chats, where('participants', '==', [uid2, uid1]));
+    async function getChat(uid1, uid2) {
+        let chats = collection(db, 'chats');
+        let q1 = query(chats, where('participants', '==', [uid1, uid2]));
+        let q2 = query(chats, where('participants', '==', [uid2, uid1]));
         let snap = await getDocs(q1);
         if (snap.empty) snap = await getDocs(q2);
         if (!snap.empty) return snap.docs[0].id;
-        
-        const ref = await addDoc(chats, { participants: [uid1, uid2], createdAt: serverTimestamp() });
+        let ref = await addDoc(chats, { participants: [uid1, uid2], createdAt: serverTimestamp() });
         return ref.id;
     }
     
-    async function sendMessage(chatId, text) {
+    async function sendMsg(chatId, text) {
         if (!chatId || !text) return;
         await addDoc(collection(db, 'chats', chatId, 'messages'), {
             senderId: USER.uid,
@@ -452,416 +380,318 @@
     }
     
     async function addContact(phone) {
-        const q = query(collection(db, 'users'), where('phone', '==', phone));
-        const snap = await getDocs(q);
+        let q = query(collection(db, 'users'), where('phone', '==', phone));
+        let snap = await getDocs(q);
         if (snap.empty) throw new Error('Nomor tidak terdaftar');
-        const target = snap.docs[0];
+        let target = snap.docs[0];
         if (target.id === USER.uid) throw new Error('Tidak bisa tambah sendiri');
-        
         await updateDoc(doc(db, 'users', USER.uid), { contacts: arrayUnion(target.id) });
         await updateDoc(doc(db, 'users', target.id), { contacts: arrayUnion(USER.uid) });
         return true;
     }
     
-    async function renderContacts() {
-        const container = document.getElementById('contactList');
-        if (!container) return;
+    // HOME PAGE
+    async function renderHome() {
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="header">
+                <div class="avatar-circle" id="profileBtn" style="background:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#ff6b9d; font-weight:bold; cursor:pointer">
+                    ${USER?.photoURL ? `<img src="${USER.photoURL}" style="width:36px;height:36px;border-radius:50%">` : (USER?.fullName?.charAt(0) || 'U')}
+                </div>
+                <h2>ChatKu</h2>
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <div class="chat-list" id="chatList"></div>
+            <div class="bottom-bar">
+                <button id="addBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
+                <button id="myProfileBtn"><i class="fas fa-user"></i> Profil Saya</button>
+            </div>
+        `;
         
-        const userData = await getUser(USER.uid);
-        const kontakIds = userData?.contacts || [];
-        const contacts = [];
-        
-        for (let id of kontakIds) {
-            const c = await getUser(id);
-            if (c) contacts.push(c);
+        let container = document.getElementById('chatList');
+        let contacts = USER?.contacts || [];
+        let items = [];
+        for (let id of contacts) {
+            let c = await getUser(id);
+            if (c) items.push(c);
         }
         
         container.innerHTML = '';
-        if (contacts.length === 0) {
-            container.innerHTML = '<div class="empty-state">Belum ada kontak<br>Tekan ➕ Tambah Kontak</div>';
-            return;
+        if (items.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#999">Belum ada kontak<br>Tekan Tambah Kontak</div>';
         }
-        
-        for (let c of contacts) {
-            const div = document.createElement('div');
-            div.className = 'contact-item';
+        for (let c of items) {
+            let div = document.createElement('div');
+            div.className = 'chat-item';
             div.innerHTML = `
-                <div class="contact-avatar">
-                    ${c.photoURL ? `<img src="${c.photoURL}">` : c.fullName?.charAt(0).toUpperCase()}
-                </div>
+                <div class="chat-avatar">${c.photoURL ? `<img src="${c.photoURL}" style="width:50px;height:50px;border-radius:50%">` : c.fullName?.charAt(0).toUpperCase()}</div>
                 <div>
-                    <div class="contact-name">${escape(c.fullName)}</div>
-                    <div class="contact-phone">${escape(c.phone)}</div>
+                    <div class="chat-name">${c.fullName}</div>
+                    <div class="chat-phone">${c.phone}</div>
                 </div>
             `;
             div.onclick = () => openChat(c);
             container.appendChild(div);
         }
-    }
-    
-    async function openChat(contact) {
-        if (UNSUB_MSG) UNSUB_MSG();
         
-        const chatId = await getChatId(USER.uid, contact.uid);
-        ACTIVE_CHAT_ID = chatId;
-        ACTIVE_CHAT_USER = contact;
-        
-        document.getElementById('chatName').innerHTML = escape(contact.fullName);
-        const chatAvatar = document.getElementById('chatAvatar');
-        if (contact.photoURL) {
-            chatAvatar.innerHTML = `<img src="${contact.photoURL}" style="width:44px;height:44px;border-radius:50%;object-fit:cover">`;
-        } else {
-            chatAvatar.innerHTML = contact.fullName?.charAt(0).toUpperCase();
-        }
-        
-        const msgContainer = document.getElementById('messagesContainer');
-        msgContainer.innerHTML = '<div class="empty-state">Loading...</div>';
-        
-        const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        UNSUB_MSG = onSnapshot(q, (snap) => {
-            msgContainer.innerHTML = '';
-            if (snap.empty) {
-                msgContainer.innerHTML = '<div class="empty-state">Belum ada pesan. Kirim pesan pertama!</div>';
-            }
-            snap.forEach(docMsg => {
-                const msg = docMsg.data();
-                const isMe = msg.senderId === USER.uid;
-                const el = document.createElement('div');
-                el.className = `msg-item ${isMe ? 'sent' : 'received'}`;
-                const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                el.innerHTML = `<div class="msg-bubble">${escape(msg.text)}</div><div class="msg-time">${time}</div>`;
-                msgContainer.appendChild(el);
-            });
-            msgContainer.scrollTop = msgContainer.scrollHeight;
-        });
-        
-        document.getElementById('homePage').classList.add('hidden');
-        document.getElementById('chatPage').classList.remove('hidden');
-    }
-    
-    async function sendNow() {
-        if (!ACTIVE_CHAT_ID) {
-            toast('Pilih chat dulu');
-            return;
-        }
-        const input = document.getElementById('messageInput');
-        const text = input.value.trim();
-        if (!text) return;
-        await sendMessage(ACTIVE_CHAT_ID, text);
-        input.value = '';
-        input.focus();
-    }
-    
-    function closeChat() {
-        if (UNSUB_MSG) UNSUB_MSG();
-        ACTIVE_CHAT_ID = null;
-        document.getElementById('homePage').classList.remove('hidden');
-        document.getElementById('chatPage').classList.add('hidden');
-        renderContacts();
-    }
-    
-    // ========== PROFIL PRIBADI ==========
-    function showMyProfile() {
-        document.getElementById('homePage').classList.add('hidden');
-        document.getElementById('profilePage').classList.remove('hidden');
-        document.getElementById('profileTitle').innerHTML = 'Profil Saya';
-        document.getElementById('isOtherProfile').value = 'false';
-        
-        const avatarDiv = document.getElementById('profileAvatar');
-        if (USER.photoURL) {
-            avatarDiv.innerHTML = `<img src="${USER.photoURL}" style="width:100px;height:100px;border-radius:50%;object-fit:cover">`;
-        } else {
-            avatarDiv.innerHTML = USER.fullName?.charAt(0).toUpperCase() || 'U';
-        }
-        
-        document.getElementById('profileNameDisplay').innerHTML = escape(USER.fullName);
-        document.getElementById('profilePhoneDisplay').innerHTML = `Nomor: ${USER.phone}`;
-        document.getElementById('profileBioDisplay').innerHTML = escape(USER.bio || 'Halo! Saya menggunakan PinkChat');
-        
-        document.getElementById('editProfileSection').style.display = 'block';
-        document.getElementById('cameraBtn').style.display = 'flex';
-        document.getElementById('editProfileBtn').style.display = 'block';
-        document.getElementById('saveProfileBtn').style.display = 'none';
-        document.getElementById('editNameGroup').style.display = 'none';
-        document.getElementById('editBioGroup').style.display = 'none';
-        document.getElementById('profileNameDisplay').style.display = 'block';
-        document.getElementById('profileBioDisplay').style.display = 'block';
-    }
-    
-    function editProfileMode() {
-        document.getElementById('profileNameDisplay').style.display = 'none';
-        document.getElementById('profileBioDisplay').style.display = 'none';
-        document.getElementById('editNameGroup').style.display = 'block';
-        document.getElementById('editBioGroup').style.display = 'block';
-        document.getElementById('editProfileBtn').style.display = 'none';
-        document.getElementById('saveProfileBtn').style.display = 'block';
-        
-        document.getElementById('editNameInput').value = USER.fullName || '';
-        document.getElementById('editBioInput').value = USER.bio || '';
-    }
-    
-    async function saveProfileEdit() {
-        const newName = document.getElementById('editNameInput').value.trim();
-        const newBio = document.getElementById('editBioInput').value.trim();
-        
-        if (newName && newName !== USER.fullName) {
-            await updateProfile({ fullName: newName });
-        }
-        if (newBio !== USER.bio) {
-            await updateProfile({ bio: newBio });
-        }
-        
-        showMyProfile();
-        renderContacts();
-    }
-    
-    function changeProfilePhoto() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                await uploadPhoto(file);
-                showMyProfile();
-                renderContacts();
-            }
-        };
-        input.click();
-    }
-    
-    // ========== LIHAT PROFIL ORANG LAIN ==========
-    async function showOtherProfile(userId) {
-        const other = await getUser(userId);
-        if (!other) return;
-        
-        document.getElementById('homePage').classList.add('hidden');
-        document.getElementById('profilePage').classList.remove('hidden');
-        document.getElementById('profileTitle').innerHTML = 'Info Kontak';
-        document.getElementById('isOtherProfile').value = 'true';
-        document.getElementById('editProfileSection').style.display = 'none';
-        document.getElementById('cameraBtn').style.display = 'none';
-        
-        const avatarDiv = document.getElementById('profileAvatar');
-        if (other.photoURL) {
-            avatarDiv.innerHTML = `<img src="${other.photoURL}" style="width:100px;height:100px;border-radius:50%;object-fit:cover">`;
-        } else {
-            avatarDiv.innerHTML = other.fullName?.charAt(0).toUpperCase() || '?';
-        }
-        
-        document.getElementById('profileNameDisplay').innerHTML = escape(other.fullName);
-        document.getElementById('profilePhoneDisplay').innerHTML = `Nomor: ${other.phone}`;
-        document.getElementById('profileBioDisplay').innerHTML = escape(other.bio || 'Halo! Saya menggunakan PinkChat');
-        
-        document.getElementById('profileNameDisplay').style.display = 'block';
-        document.getElementById('profileBioDisplay').style.display = 'block';
-    }
-    
-    function closeProfile() {
-        document.getElementById('profilePage').classList.add('hidden');
-        document.getElementById('homePage').classList.remove('hidden');
-        renderContacts();
-    }
-    
-    // MODAL TAMBAH KONTAK
-    function showAddContactModal() {
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <h3>Tambah Kontak</h3>
-                <input type="tel" id="phoneInput" placeholder="Nomor HP">
-                <button id="confirmAdd">Tambah</button>
-                <button id="cancelAdd" style="background:#ffe4ec;color:#ff6b9d">Batal</button>
-                <div id="errorMsg" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        document.getElementById('confirmAdd').onclick = async () => {
-            const phone = document.getElementById('phoneInput').value.trim();
-            try {
-                await addContact(phone);
-                toast('✅ Kontak ditambahkan');
-                modal.remove();
-                renderContacts();
-            } catch(e) {
-                document.getElementById('errorMsg').innerText = e.message;
-            }
-        };
-        document.getElementById('cancelAdd').onclick = () => modal.remove();
-    }
-    
-    // HOME PAGE
-    async function renderHome() {
-        const root = document.getElementById('root');
-        
-        root.innerHTML = `
-            <div id="homePage" class="page">
-                <div class="top-bar">
-                    <div class="avatar-circle" id="myProfileBtn">
-                        ${USER?.photoURL ? `<img src="${USER.photoURL}">` : (USER?.fullName?.charAt(0) || 'U')}
-                    </div>
-                    <div class="title-box">
-                        <h3>${escape(USER?.fullName || 'User')}</h3>
-                        <p>Nomor: ${USER?.phone || ''}</p>
-                    </div>
-                    <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
-                <div class="contact-list" id="contactList"></div>
-                <div class="bottom-actions">
-                    <button id="addContactBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-                    <button disabled style="opacity:0.5"><i class="fas fa-users"></i> Grup</button>
-                </div>
-            </div>
-            
-            <div id="chatPage" class="page hidden">
-                <div class="top-bar">
-                    <button class="back-btn" id="closeChatBtn"><i class="fas fa-arrow-left"></i></button>
-                    <div class="avatar-circle" id="chatAvatar" style="cursor:pointer">P</div>
-                    <div class="title-box" id="chatInfoBtn" style="cursor:pointer">
-                        <h3 id="chatName">Chat</h3>
-                        <p>Online</p>
-                    </div>
-                </div>
-                <div class="messages-box" id="messagesContainer"></div>
-                <div class="input-row">
-                    <input type="text" id="messageInput" placeholder="Ketik pesan...">
-                    <button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-            
-            <div id="profilePage" class="page hidden">
-                <div class="top-bar">
-                    <button class="back-btn" id="closeProfileBtn"><i class="fas fa-arrow-left"></i></button>
-                    <h3 id="profileTitle">Profil Saya</h3>
-                </div>
-                <div style="flex:1; overflow-y:auto; padding:20px">
-                    <div style="display:flex; justify-content:center; margin-bottom:20px; position:relative">
-                        <div class="avatar-circle" id="profileAvatar" style="width:100px;height:100px;font-size:40px"></div>
-                        <div id="cameraBtn" style="position:absolute; bottom:5px; right:calc(50% - 50px); background:#ff6b9d; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; cursor:pointer; border:2px solid white">
-                            <i class="fas fa-camera"></i>
-                        </div>
-                    </div>
-                    
-                    <div id="editProfileSection">
-                        <div class="profile-field">
-                            <label>Nama</label>
-                            <div class="value" id="profileNameDisplay"></div>
-                            <div id="editNameGroup" style="display:none">
-                                <input type="text" id="editNameInput" style="width:100%; padding:8px; border:1px solid #ffe0e8; border-radius:12px">
-                            </div>
-                        </div>
-                        <div class="profile-field">
-                            <label>Nomor HP</label>
-                            <div class="value" id="profilePhoneDisplay"></div>
-                        </div>
-                        <div class="profile-field">
-                            <label>Tentang</label>
-                            <div class="value" id="profileBioDisplay"></div>
-                            <div id="editBioGroup" style="display:none">
-                                <textarea id="editBioInput" rows="3" style="width:100%; padding:8px; border:1px solid #ffe0e8; border-radius:12px"></textarea>
-                            </div>
-                        </div>
-                        <button class="edit-save-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Edit Profil</button>
-                        <button class="edit-save-btn" id="saveProfileBtn" style="display:none; background:#25D366"><i class="fas fa-save"></i> Simpan</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        await renderContacts();
-        
+        document.getElementById('profileBtn').onclick = showMyProfile;
         document.getElementById('myProfileBtn').onclick = showMyProfile;
         document.getElementById('logoutBtn').onclick = async () => {
-            if (confirm('Yakin keluar?')) await signOut(auth);
+            if (confirm('Keluar?')) await signOut(auth);
         };
-        document.getElementById('addContactBtn').onclick = showAddContactModal;
-        document.getElementById('closeChatBtn').onclick = closeChat;
-        document.getElementById('sendMsgBtn').onclick = sendNow;
+        document.getElementById('addBtn').onclick = () => {
+            let modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <h3>Tambah Kontak</h3>
+                    <input type="tel" id="phone" placeholder="Nomor HP">
+                    <button id="ok">Tambah</button>
+                    <button id="cancel" style="background:#eee;color:#ff6b9d">Batal</button>
+                    <div id="err" style="color:red; font-size:12px; margin-top:8px"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.getElementById('ok').onclick = async () => {
+                let phone = document.getElementById('phone').value.trim();
+                try {
+                    await addContact(phone);
+                    toast('Kontak ditambahkan');
+                    modal.remove();
+                    renderHome();
+                } catch(e) {
+                    document.getElementById('err').innerText = e.message;
+                }
+            };
+            document.getElementById('cancel').onclick = () => modal.remove();
+        };
+    }
+    
+    // OPEN CHAT
+    async function openChat(contact) {
+        if (UNSUB) UNSUB();
+        let chatId = await getChat(USER.uid, contact.uid);
+        CHAT_ID = chatId;
+        CHAT_USER = contact;
         
-        const inputField = document.getElementById('messageInput');
-        if (inputField) {
-            inputField.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendNow();
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="chat-screen" style="display:flex">
+                <div class="header">
+                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                    <div class="avatar-circle" id="chatProfileBtn" style="background:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#ff6b9d; cursor:pointer">
+                        ${contact.photoURL ? `<img src="${contact.photoURL}" style="width:36px;height:36px;border-radius:50%">` : contact.fullName?.charAt(0).toUpperCase()}
+                    </div>
+                    <h2 style="flex:1; font-size:16px">${contact.fullName}</h2>
+                </div>
+                <div class="messages" id="msgContainer"></div>
+                <div class="input-area">
+                    <input type="text" id="msgInput" placeholder="Ketik pesan...">
+                    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        `;
+        
+        let msgDiv = document.getElementById('msgContainer');
+        let q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
+        UNSUB = onSnapshot(q, (snap) => {
+            msgDiv.innerHTML = '';
+            if (snap.empty) msgDiv.innerHTML = '<div style="text-align:center; padding:40px; color:#999">Belum ada pesan</div>';
+            snap.forEach(d => {
+                let m = d.data();
+                let isMe = m.senderId === USER.uid;
+                let el = document.createElement('div');
+                el.className = `msg ${isMe ? 'sent' : 'received'}`;
+                let time = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                el.innerHTML = `<div class="bubble">${m.text}</div><div class="time">${time}</div>`;
+                msgDiv.appendChild(el);
             });
-        }
+            msgDiv.scrollTop = msgDiv.scrollHeight;
+        });
         
-        document.getElementById('closeProfileBtn').onclick = closeProfile;
-        document.getElementById('editProfileBtn').onclick = editProfileMode;
-        document.getElementById('saveProfileBtn').onclick = saveProfileEdit;
-        document.getElementById('cameraBtn').onclick = changeProfilePhoto;
-        
-        const showChatProfile = async () => {
-            if (ACTIVE_CHAT_USER) {
-                showOtherProfile(ACTIVE_CHAT_USER.uid);
+        document.getElementById('backBtn').onclick = () => {
+            if (UNSUB) UNSUB();
+            renderHome();
+        };
+        document.getElementById('sendBtn').onclick = async () => {
+            let input = document.getElementById('msgInput');
+            let text = input.value.trim();
+            if (text) {
+                await sendMsg(CHAT_ID, text);
+                input.value = '';
             }
         };
-        const chatAvatar = document.getElementById('chatAvatar');
-        const chatInfoBtn = document.getElementById('chatInfoBtn');
-        if (chatAvatar) chatAvatar.onclick = showChatProfile;
-        if (chatInfoBtn) chatInfoBtn.onclick = showChatProfile;
+        document.getElementById('msgInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('sendBtn').click();
+        });
+        document.getElementById('chatProfileBtn').onclick = () => showOtherProfile(contact.uid);
+    }
+    
+    // MY PROFILE
+    function showMyProfile() {
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="profile-screen" style="display:flex">
+                <div class="header">
+                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Profil Saya</h2>
+                </div>
+                <div class="profile-content">
+                    <div class="big-avatar" id="avatar">
+                        ${USER?.photoURL ? `<img src="${USER.photoURL}" style="width:100px;height:100px;border-radius:50%">` : USER?.fullName?.charAt(0).toUpperCase()}
+                        <div class="camera-icon" id="camera"><i class="fas fa-camera"></i></div>
+                    </div>
+                    <div class="info-row">
+                        <label>Nama</label>
+                        <div class="value" id="nameValue">${USER?.fullName}</div>
+                        <input type="text" id="nameInput" style="display:none; margin-top:8px; padding:8px; border-radius:12px; border:1px solid #ddd">
+                    </div>
+                    <div class="info-row">
+                        <label>Nomor HP</label>
+                        <div class="value">${USER?.phone}</div>
+                    </div>
+                    <div class="info-row">
+                        <label>Tentang</label>
+                        <div class="value" id="bioValue">${USER?.bio || 'Halo!'}</div>
+                        <textarea id="bioInput" rows="2" style="display:none; margin-top:8px; padding:8px; border-radius:12px; border:1px solid #ddd"></textarea>
+                    </div>
+                    <button class="edit-btn" id="editBtn"><i class="fas fa-pen"></i> Edit Profil</button>
+                    <button class="edit-btn" id="saveBtn" style="display:none; background:#25D366"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('backBtn').onclick = () => renderHome();
+        document.getElementById('camera').onclick = () => {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                let file = e.target.files[0];
+                if (file) await uploadPhoto(file);
+                showMyProfile();
+            };
+            input.click();
+        };
+        
+        let editing = false;
+        document.getElementById('editBtn').onclick = () => {
+            if (editing) return;
+            editing = true;
+            document.getElementById('nameValue').style.display = 'none';
+            document.getElementById('bioValue').style.display = 'none';
+            document.getElementById('nameInput').style.display = 'block';
+            document.getElementById('bioInput').style.display = 'block';
+            document.getElementById('nameInput').value = USER?.fullName || '';
+            document.getElementById('bioInput').value = USER?.bio || '';
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'block';
+        };
+        
+        document.getElementById('saveBtn').onclick = async () => {
+            let newName = document.getElementById('nameInput').value.trim();
+            let newBio = document.getElementById('bioInput').value.trim();
+            if (newName) {
+                await updateUser({ fullName: newName, bio: newBio });
+            }
+            showMyProfile();
+        };
+    }
+    
+    // OTHER PROFILE
+    async function showOtherProfile(uid) {
+        let other = await getUser(uid);
+        if (!other) return;
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="profile-screen" style="display:flex">
+                <div class="header">
+                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Info Kontak</h2>
+                </div>
+                <div class="profile-content">
+                    <div class="big-avatar">
+                        ${other.photoURL ? `<img src="${other.photoURL}" style="width:100px;height:100px;border-radius:50%">` : other.fullName?.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="info-row">
+                        <label>Nama</label>
+                        <div class="value">${other.fullName}</div>
+                    </div>
+                    <div class="info-row">
+                        <label>Nomor HP</label>
+                        <div class="value">${other.phone}</div>
+                    </div>
+                    <div class="info-row">
+                        <label>Tentang</label>
+                        <div class="value">${other.bio || 'Halo!'}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('backBtn').onclick = () => {
+            if (CHAT_ID) {
+                openChat(CHAT_USER);
+            } else {
+                renderHome();
+            }
+        };
     }
     
     // LOGIN
     function renderLogin() {
         let isLogin = false;
-        const root = document.getElementById('root');
-        
+        let root = document.getElementById('app');
         root.innerHTML = `
             <div style="display:flex; align-items:center; justify-content:center; height:100vh; background:white; padding:20px">
                 <div style="width:100%; max-width:320px; text-align:center">
-                    <h2 style="color:#ff6b9d; margin-bottom:10px">PinkChat</h2>
-                    <p style="color:#aa8a96; margin-bottom:30px">Chat real-time dengan teman</p>
-                    <input type="text" id="nameInput" placeholder="Nama lengkap" style="width:100%; padding:14px; margin:8px 0; background:#fef0f4; border:none; border-radius:30px">
-                    <input type="tel" id="phoneInput" placeholder="Nomor HP (812345678)" style="width:100%; padding:14px; margin:8px 0; background:#fef0f4; border:none; border-radius:30px">
-                    <input type="password" id="passInput" placeholder="Password" style="width:100%; padding:14px; margin:8px 0; background:#fef0f4; border:none; border-radius:30px">
-                    <button id="submitBtn" style="width:100%; padding:14px; background:#ff6b9d; border:none; border-radius:30px; color:white; font-weight:bold; margin-top:15px">Daftar</button>
-                    <button id="switchBtn" style="width:100%; padding:14px; background:#ffe4ec; border:none; border-radius:30px; color:#ff6b9d; font-weight:bold; margin-top:10px">Sudah punya akun? Masuk</button>
-                    <div id="errorMsg" style="color:#ff6b9d; font-size:12px; margin-top:10px"></div>
+                    <h2 style="color:#ff6b9d">ChatKu</h2>
+                    <p style="color:#999; margin-bottom:30px">Chat real-time</p>
+                    <input type="text" id="name" placeholder="Nama lengkap" style="width:100%; padding:14px; margin:8px 0; background:#f5f5f5; border:none; border-radius:30px">
+                    <input type="tel" id="phone" placeholder="Nomor HP (812345678)" style="width:100%; padding:14px; margin:8px 0; background:#f5f5f5; border:none; border-radius:30px">
+                    <input type="password" id="pass" placeholder="Password" style="width:100%; padding:14px; margin:8px 0; background:#f5f5f5; border:none; border-radius:30px">
+                    <button id="submit" style="width:100%; padding:14px; background:#ff6b9d; border:none; border-radius:30px; color:white; font-weight:bold; margin-top:15px">Daftar</button>
+                    <button id="switch" style="width:100%; padding:14px; background:#eee; border:none; border-radius:30px; color:#ff6b9d; font-weight:bold; margin-top:10px">Sudah punya akun? Masuk</button>
+                    <div id="error" style="color:red; font-size:12px; margin-top:10px"></div>
                 </div>
             </div>
         `;
         
-        const nameInput = document.getElementById('nameInput');
-        const submit = document.getElementById('submitBtn');
-        const switchBtn = document.getElementById('switchBtn');
-        const errorDiv = document.getElementById('errorMsg');
+        let nameInp = document.getElementById('name');
+        let submit = document.getElementById('submit');
+        let switchBtn = document.getElementById('switch');
+        let errorDiv = document.getElementById('error');
         
         switchBtn.onclick = () => {
             isLogin = !isLogin;
             if (isLogin) {
                 submit.innerText = 'Masuk';
                 switchBtn.innerText = 'Belum punya akun? Daftar';
-                nameInput.style.display = 'none';
+                nameInp.style.display = 'none';
             } else {
                 submit.innerText = 'Daftar';
                 switchBtn.innerText = 'Sudah punya akun? Masuk';
-                nameInput.style.display = 'block';
+                nameInp.style.display = 'block';
             }
         };
         
         submit.onclick = async () => {
-            const phone = document.getElementById('phoneInput').value.trim();
-            const pass = document.getElementById('passInput').value;
-            
+            let phone = document.getElementById('phone').value.trim();
+            let pass = document.getElementById('pass').value;
             try {
                 if (isLogin) {
-                    await signInWithEmailAndPassword(auth, `${phone}@pinkchat.local`, pass);
+                    await signInWithEmailAndPassword(auth, `${phone}@chatku.local`, pass);
                 } else {
-                    const name = document.getElementById('nameInput').value.trim();
+                    let name = document.getElementById('name').value.trim();
                     if (!name) throw new Error('Nama harus diisi');
                     if (!phone.match(/^[0-9]{5,14}$/)) throw new Error('Nomor HP 5-14 digit');
-                    
-                    const q = query(collection(db, 'users'), where('phone', '==', phone));
-                    const snap = await getDocs(q);
+                    let q = query(collection(db, 'users'), where('phone', '==', phone));
+                    let snap = await getDocs(q);
                     if (!snap.empty) throw new Error('Nomor sudah terdaftar');
-                    
-                    const userCred = await createUserWithEmailAndPassword(auth, `${phone}@pinkchat.local`, pass);
-                    await setDoc(doc(db, 'users', userCred.user.uid), {
+                    let uc = await createUserWithEmailAndPassword(auth, `${phone}@chatku.local`, pass);
+                    await setDoc(doc(db, 'users', uc.user.uid), {
                         fullName: name,
                         phone: phone,
-                        bio: 'Halo! Saya menggunakan PinkChat',
+                        bio: 'Halo!',
                         contacts: [],
                         createdAt: serverTimestamp()
                     });
@@ -873,25 +703,16 @@
         };
     }
     
-    // AUTH
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             USER = await getUser(user.uid);
-            if (USER) {
-                renderHome();
-            } else {
-                setTimeout(async () => {
-                    USER = await getUser(user.uid);
-                    if (USER) renderHome();
-                    else renderLogin();
-                }, 1000);
-            }
+            if (USER) renderHome();
+            else setTimeout(async () => { USER = await getUser(user.uid); if (USER) renderHome(); else renderLogin(); }, 1000);
         } else {
             USER = null;
             renderLogin();
         }
     });
-    
     renderLogin();
 </script>
 </body>

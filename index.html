@@ -2,10 +2,32 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PinkChat — Real-time Messenger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>PinkChat - Chat Real-time</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
+            authDomain: "simplechat-85cd8.firebaseapp.com",
+            projectId: "simplechat-85cd8",
+            storageBucket: "simplechat-85cd8.firebasestorage.app",
+            messagingSenderId: "244789873168",
+            appId: "1:244789873168:web:4cba5481f689ab3103d895",
+            measurementId: "G-KR9MJP5QKM"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        window.db = db;
+        window.auth = auth;
+    </script>
     <style>
         * {
             margin: 0;
@@ -16,296 +38,57 @@
 
         body {
             background: #fdf2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
         }
 
-        .app-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            height: 100%;
-            max-height: 100%;
-            background: #ffffff;
+        /* Container utama */
+        .app {
             display: flex;
-            overflow: hidden;
-            position: relative;
+            height: 100vh;
+            width: 100%;
+            background: white;
         }
 
         /* Sidebar */
         .sidebar {
             width: 320px;
-            background: #ffffff;
+            background: white;
             border-right: 1px solid #ffe4ec;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-            z-index: 100;
+            height: 100%;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                transform: translateX(-100%);
-                width: 85%;
-                box-shadow: 2px 0 20px rgba(0,0,0,0.15);
-                background: white;
-                z-index: 200;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .chat-main {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-            }
-            .mobile-menu-btn {
-                display: flex !important;
-            }
-            .mobile-back-btn {
-                display: flex !important;
-            }
-            .chat-header-pink {
-                padding: 12px 16px !important;
-            }
-            .messages-container {
-                padding: 16px !important;
-                flex: 1 !important;
-                overflow-y: auto !important;
-            }
-            .input-pink-area {
-                padding: 10px 12px !important;
-                background: #ffffff;
-                border-top: 1px solid #ffe4ec;
-                display: flex !important;
-                gap: 10px !important;
-            }
-            .input-pink-area input {
-                padding: 10px 16px !important;
-                font-size: 14px !important;
-            }
-            .icon-btn {
-                width: 38px !important;
-                height: 38px !important;
-            }
-            .send-pink {
-                width: 38px !important;
-                height: 38px !important;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .mobile-menu-btn, .mobile-back-btn {
-                display: none !important;
-            }
-        }
-
-        .mobile-menu-btn, .mobile-back-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #ff6b9d;
-            cursor: pointer;
-            margin-right: 10px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mobile-menu-btn:hover, .mobile-back-btn:hover {
-            background: #ffe4ec;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px 16px 20px;
-            background: #ffffff;
-            border-bottom: 1px solid #ffe4ec;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .avatar-pink {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, #ff99c8, #ff6b9d);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
-        }
-
-        .user-text {
+        /* Main Chat */
+        .chat-area {
             flex: 1;
-        }
-
-        .user-text h4 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2d2d2d;
-        }
-
-        .user-text p {
-            font-size: 12px;
-            color: #ff6b9d;
             display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 4px;
+            flex-direction: column;
+            height: 100%;
+            background: #fefafb;
         }
 
-        .logout-btn {
-            background: #ffe4ec;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #ff6b9d;
-            transition: 0.2s;
-        }
-
-        .logout-btn:hover {
-            background: #ffd0de;
-            color: #ff5588;
-        }
-
-        .search-section {
-            background: #fef0f4;
-            border-radius: 28px;
-            padding: 10px 18px;
+        /* Header */
+        .chat-header {
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #ffe4ec;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .search-section i {
-            color: #ff99c8;
-            font-size: 16px;
-        }
-
-        .search-section input {
-            background: transparent;
-            border: none;
-            flex: 1;
-            outline: none;
-            font-size: 14px;
-            color: #2d2d2d;
-        }
-
-        .chat-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 0;
-        }
-
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid #ffe4ec;
-        }
-
-        .chat-item:hover {
-            background: #fff5f8;
-        }
-
-        .chat-item.active {
-            background: #ffeef3;
-            border-left: 4px solid #ff6b9d;
-        }
-
-        .chat-avatar-pink {
-            width: 48px;
-            height: 48px;
-            background: #ffe4ec;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 18px;
-            color: #ff6b9d;
-        }
-
-        .chat-details {
-            flex: 1;
-        }
-
-        .chat-name {
-            font-weight: 600;
-            color: #2d2d2d;
-            font-size: 15px;
-        }
-
-        .chat-preview {
-            font-size: 12px;
-            color: #aa8a96;
-            margin-top: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #ffffff;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .chat-header-pink {
-            padding: 18px 24px;
-            background: #ffffff;
-            border-bottom: 1px solid #ffe4ec;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-shrink: 0;
-        }
-
         .chat-header-avatar {
-            width: 46px;
-            height: 46px;
-            background: #ffe4ec;
+            width: 45px;
+            height: 45px;
+            background: #ff6b9d;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            color: #ff6b9d;
+            color: white;
+            font-weight: bold;
             font-size: 18px;
         }
 
@@ -314,8 +97,7 @@
         }
 
         .chat-header-info h3 {
-            font-size: 17px;
-            font-weight: 600;
+            font-size: 16px;
             color: #2d2d2d;
         }
 
@@ -325,28 +107,21 @@
             margin-top: 3px;
         }
 
-        .chat-actions i {
-            font-size: 20px;
-            color: #cc9aa8;
-            margin-left: 18px;
-            cursor: pointer;
-        }
-
-        .messages-container {
+        /* Messages Container - BISA SCROLL */
+        .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 24px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: #fefafb;
+            gap: 10px;
         }
 
+        /* Bubble chat */
         .message {
+            max-width: 75%;
             display: flex;
             flex-direction: column;
-            max-width: 75%;
-            animation: fadeInUp 0.2s ease;
         }
 
         .message.sent {
@@ -357,613 +132,405 @@
             align-self: flex-start;
         }
 
-        .bubble-pink {
-            padding: 10px 16px;
-            border-radius: 22px;
+        .bubble {
+            padding: 10px 14px;
+            border-radius: 20px;
             font-size: 14px;
-            line-height: 1.4;
             word-wrap: break-word;
         }
 
-        .sent .bubble-pink {
+        .sent .bubble {
             background: #ffd9e6;
             color: #2d2d2d;
-            border-bottom-right-radius: 6px;
+            border-bottom-right-radius: 5px;
         }
 
-        .received .bubble-pink {
-            background: #f0f0f0;
-            color: #2d2d2d;
-            border-bottom-left-radius: 6px;
-        }
-
-        .message-footer {
-            font-size: 10px;
-            margin-top: 5px;
-            display: flex;
-            gap: 10px;
-            color: #bb9aa6;
-        }
-
-        .sent .message-footer {
-            justify-content: flex-end;
-        }
-
-        .typing-badge {
-            padding: 8px 24px;
-            font-size: 12px;
-            color: #ff99c8;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .received .bubble {
             background: white;
-            flex-shrink: 0;
+            color: #2d2d2d;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        .input-pink-area {
-            background: #ffffff;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .message-time {
+            font-size: 10px;
+            color: #bb9aa6;
+            margin-top: 4px;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+
+        .sent .message-time {
+            text-align: right;
+        }
+
+        /* INPUT AREA - PASTI MUNCUL */
+        .input-wrapper {
+            background: white;
+            padding: 12px 16px;
             border-top: 1px solid #ffe4ec;
-            flex-shrink: 0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
-        .input-pink-area input {
+        .input-wrapper input {
             flex: 1;
             background: #fef0f4;
             border: none;
-            padding: 12px 20px;
-            border-radius: 32px;
-            color: #2d2d2d;
-            font-size: 14px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-size: 15px;
             outline: none;
         }
 
-        .input-pink-area input:focus {
-            background: #ffe8f0;
+        .input-wrapper button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #ff6b9d;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
 
         .icon-btn {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ffe4ec;
+            border: none;
+            color: #ff6b9d;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Chat List Item */
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #ffe4ec;
+        }
+
+        .chat-item:hover {
+            background: #fff5f8;
+        }
+
+        .chat-item.active {
+            background: #ffeef3;
+            border-left: 3px solid #ff6b9d;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
             background: #ffe4ec;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            color: #ff6b9d;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .chat-lastmsg {
+            font-size: 12px;
+            color: #aa8a96;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #ffe4ec;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff99c8, #ff6b9d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-name {
+            flex: 1;
+        }
+
+        .user-name h4 {
+            color: #2d2d2d;
+        }
+
+        .user-name p {
+            font-size: 11px;
+            color: #ff6b9d;
+        }
+
+        .logout-icon {
+            background: #ffe4ec;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             cursor: pointer;
             color: #ff6b9d;
-            transition: 0.2s;
-            flex-shrink: 0;
         }
 
-        .icon-btn:hover {
-            background: #ffd0de;
+        .search-box {
+            background: #fef0f4;
+            border-radius: 25px;
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
         }
 
-        .send-pink {
-            background: #ff6b9d;
-            color: white;
+        .search-box input {
+            background: none;
+            border: none;
+            flex: 1;
+            outline: none;
         }
 
-        .send-pink:hover {
-            background: #ff5588;
+        .action-buttons {
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid #ffe4ec;
         }
 
-        .modal-overlay {
+        .action-btn {
+            flex: 1;
+            background: #ffe4ec;
+            border: none;
+            padding: 10px;
+            border-radius: 25px;
+            color: #ff6b9d;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
 
-        .modal-card-pink {
+        .modal-content {
             background: white;
-            width: 420px;
+            width: 350px;
             max-width: 90%;
-            border-radius: 32px;
-            padding: 32px 28px;
-            box-shadow: 0 20px 35px rgba(255, 105, 180, 0.15);
+            padding: 28px;
+            border-radius: 28px;
             text-align: center;
         }
 
-        .modal-card-pink h3 {
-            color: #2d2d2d;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .modal-card-pink p {
-            color: #aa8a96;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        .modal-card-pink input {
-            width: 100%;
-            padding: 14px;
-            background: #fef0f4;
-            border: none;
-            border-radius: 40px;
-            margin-bottom: 16px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .modal-card-pink button {
-            background: #ff6b9d;
+        .modal-content input {
             width: 100%;
             padding: 12px;
+            margin: 10px 0;
+            background: #fef0f4;
             border: none;
-            border-radius: 40px;
-            font-weight: 600;
+            border-radius: 30px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 12px;
+            background: #ff6b9d;
+            border: none;
+            border-radius: 30px;
             color: white;
+            font-weight: bold;
+            margin-top: 10px;
             cursor: pointer;
-            font-size: 15px;
-            margin-top: 6px;
-            transition: 0.2s;
-        }
-
-        .modal-card-pink button:hover {
-            background: #ff5588;
-        }
-
-        .modal-card-pink button.secondary {
-            background: #ffe4ec;
-            color: #ff6b9d;
-            margin-top: 12px;
-        }
-
-        .modal-card-pink button.secondary:hover {
-            background: #ffd9e6;
-        }
-
-        .contact-checkbox-list {
-            max-height: 200px;
-            overflow-y: auto;
-            margin: 15px 0;
-            text-align: left;
-            background: #fefafb;
-            border-radius: 24px;
-            padding: 8px;
-        }
-
-        .contact-check-item {
-            padding: 10px 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #ffe4ec;
-            cursor: pointer;
-        }
-
-        .contact-check-item:hover {
-            background: #fff0f5;
-        }
-
-        .contact-check-item input {
-            width: 18px;
-            height: 18px;
-            margin: 0;
-            cursor: pointer;
-        }
-
-        .contact-check-item label {
-            cursor: pointer;
-            flex: 1;
-            color: #2d2d2d;
-        }
-
-        .error-text {
-            color: #ff6b9d;
-            font-size: 12px;
-            margin-top: 8px;
         }
 
         .hidden {
             display: none;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                z-index: 200;
+                transition: left 0.3s;
+                width: 280px;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .menu-btn {
+                display: block !important;
+            }
+            .back-btn {
+                display: block !important;
+            }
         }
 
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #ffe4ec;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ff99c8;
-            border-radius: 10px;
+        @media (min-width: 769px) {
+            .menu-btn, .back-btn {
+                display: none;
+            }
         }
 
-        .toast-message {
+        .menu-btn, .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #ff6b9d;
+            cursor: pointer;
+        }
+
+        .toast {
             position: fixed;
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: #2d2d2d;
             color: white;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-size: 14px;
-            z-index: 2000;
-            animation: fadeInUp 0.3s ease;
-            white-space: nowrap;
-        }
-
-        /* Overlay untuk mobile saat sidebar terbuka */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 150;
-        }
-        .sidebar-overlay.active {
-            display: block;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-
-<div class="app-wrapper" id="appWrapper" style="display: none;">
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <div class="avatar-pink" id="profileAvatar">U</div>
-                <div class="user-text">
-                    <h4 id="profileName">Pengguna</h4>
-                    <p><i class="fas fa-circle" style="font-size: 8px;"></i> <span id="userPhoneDisplay"></span></p>
-                </div>
-                <button class="logout-btn" id="logoutBtn" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
-            <div class="search-section">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchChat" placeholder="Cari chat...">
-            </div>
-        </div>
-        <div class="chat-list" id="chatListContainer">
-            <div style="text-align: center; padding: 40px; color: #cc9aa8;">Belum ada percakapan</div>
-        </div>
-        <div style="padding: 16px; display: flex; gap: 12px; border-top: 1px solid #ffe4ec;">
-            <button id="newGroupBtn" style="flex:1; background:#ffe4ec; border:none; padding: 12px; border-radius: 40px; font-weight:500; color:#ff6b9d; cursor:pointer; transition:0.2s;"><i class="fas fa-users"></i> Grup Baru</button>
-            <button id="newContactBtn" style="flex:1; background:#ffe4ec; border:none; padding: 12px; border-radius: 40px; font-weight:500; color:#ff6b9d; cursor:pointer; transition:0.2s;"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-        </div>
-    </div>
-
-    <div class="chat-main">
-        <div class="chat-header-pink">
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <button class="mobile-back-btn" id="mobileBackBtn">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="chat-header-avatar" id="chatAvatar">P</div>
-            <div class="chat-header-info">
-                <h3 id="chatTitle">PinkChat</h3>
-                <p id="chatSubtitle">Pilih percakapan</p>
-            </div>
-            <div class="chat-actions">
-                <i class="fas fa-phone-alt"></i>
-                <i class="fas fa-info-circle"></i>
-            </div>
-        </div>
-        <div class="messages-container" id="messagesContainer">
-            <div style="text-align: center; padding: 40px; color: #cc9aa8;">Pilih chat untuk mulai mengobrol</div>
-        </div>
-        <div id="typingArea" class="typing-badge hidden"></div>
-        <div class="input-pink-area">
-            <div class="icon-btn" id="emojiPickerBtn"><i class="far fa-smile-wink"></i></div>
-            <div class="icon-btn" id="attachImageBtn"><i class="fas fa-paperclip"></i></div>
-            <input type="text" id="messageInputText" placeholder="Ketik pesan...">
-            <div class="icon-btn send-pink" id="sendMessageBtn"><i class="fas fa-paper-plane"></i></div>
-        </div>
-        <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
-    </div>
-</div>
-
-<div id="registerModal" class="modal-overlay">
-    <div class="modal-card-pink">
-        <h3>Daftar Akun Baru</h3>
-        <p>Buat akun dengan nama dan nomor HP unik</p>
-        <input type="text" id="regFullName" placeholder="Nama lengkap">
-        <input type="tel" id="regPhoneNumber" placeholder="Nomor HP (contoh: 812345678)">
-        <input type="password" id="regPassword" placeholder="Password">
-        <button id="registerBtn">Daftar Sekarang</button>
-        <button class="secondary" id="goToLoginBtn">Sudah punya akun? Masuk</button>
-        <div id="registerError" class="error-text"></div>
-    </div>
-</div>
-
-<div id="loginModal" class="modal-overlay hidden">
-    <div class="modal-card-pink">
-        <h3>Masuk ke Akun</h3>
-        <p>Masukkan nomor HP dan password</p>
-        <input type="tel" id="loginPhone" placeholder="Nomor HP (contoh: 812345678)">
-        <input type="password" id="loginPassword" placeholder="Password">
-        <button id="loginBtn">Masuk</button>
-        <button class="secondary" id="goToRegisterBtn">Belum punya akun? Daftar</button>
-        <div id="loginError" class="error-text"></div>
-    </div>
-</div>
-
-<div id="contactModal" class="modal-overlay hidden">
-    <div class="modal-card-pink">
-        <h3>Tambah Kontak Baru</h3>
-        <p>Masukkan nomor HP pengguna lain</p>
-        <input type="tel" id="contactPhoneInput" placeholder="812345678">
-        <button id="confirmContactBtn">Tambahkan</button>
-        <button class="secondary" id="closeContactModal">Batal</button>
-        <div id="contactErrorMsg" class="error-text"></div>
-    </div>
-</div>
-
-<div id="groupModal" class="modal-overlay hidden">
-    <div class="modal-card-pink">
-        <h3>Buat Grup Baru</h3>
-        <input type="text" id="groupNameInput" placeholder="Nama Grup">
-        <p style="margin: 12px 0 8px; text-align: left;">Pilih anggota grup:</p>
-        <div id="groupContactsChecklist" class="contact-checkbox-list"></div>
-        <button id="createGroupConfirmBtn">Buat Grup</button>
-        <button class="secondary" id="closeGroupModalBtn">Batal</button>
-        <div id="groupErrorMsg" class="error-text"></div>
-    </div>
-</div>
+<div id="app"></div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, onSnapshot, orderBy, serverTimestamp, arrayUnion, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    const db = window.db;
+    const auth = window.auth;
     
-    const firebaseConfig = {
-        apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
-        authDomain: "simplechat-85cd8.firebaseapp.com",
-        projectId: "simplechat-85cd8",
-        storageBucket: "simplechat-85cd8.firebasestorage.app",
-        messagingSenderId: "244789873168",
-        appId: "1:244789873168:web:4cba5481f689ab3103d895",
-        measurementId: "G-KR9MJP5QKM"
-    };
-    
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    
-    console.log("Firebase connected!");
-    
-    let currentUserData = null;
+    let currentUser = null;
     let currentChatId = null;
-    let currentChatInfo = null;
-    let messagesUnsubscribe = null;
+    let currentChatName = null;
+    let unsubscribeMessages = null;
     
-    function isValidPhone(phone) {
-        return phone && /^[0-9]{5,14}$/.test(phone);
-    }
-    
-    async function isPhoneRegistered(phone) {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("phone", "==", phone));
-        const snap = await getDocs(q);
-        return !snap.empty;
-    }
-    
-    async function registerUser(fullName, phone, password) {
-        if (!fullName.trim()) throw new Error("Nama harus diisi");
-        if (!isValidPhone(phone)) throw new Error("Nomor HP harus 5-14 digit angka");
-        const exists = await isPhoneRegistered(phone);
-        if (exists) throw new Error("Nomor HP sudah terdaftar");
-        
-        const email = `${phone}@pinkchat.local`;
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", userCred.user.uid), {
-            fullName: fullName.trim(),
-            phone: phone,
-            contacts: [],
-            groups: [],
-            createdAt: serverTimestamp()
-        });
-        return userCred.user;
-    }
-    
-    async function loginUser(phone, password) {
-        if (!isValidPhone(phone)) throw new Error("Nomor HP harus 5-14 digit angka");
-        const email = `${phone}@pinkchat.local`;
-        const userCred = await signInWithEmailAndPassword(auth, email, password);
-        return userCred.user;
-    }
-    
-    async function logoutUser() {
-        await signOut(auth);
-        if (messagesUnsubscribe) {
-            messagesUnsubscribe();
-            messagesUnsubscribe = null;
-        }
-        currentChatId = null;
-        currentChatInfo = null;
-        currentUserData = null;
-    }
-    
-    async function fetchUserData(uid) {
-        const docSnap = await getDoc(doc(db, "users", uid));
-        if (docSnap.exists()) return { uid, ...docSnap.data() };
-        return null;
-    }
-    
-    // TWO-WAY CONTACT
-    async function addContactByPhone(currentUid, phoneNumber) {
-        if (!isValidPhone(phoneNumber)) throw new Error("Nomor HP harus 5-14 digit angka");
-        
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("phone", "==", phoneNumber));
-        const snap = await getDocs(q);
-        if (snap.empty) throw new Error("Nomor HP tidak terdaftar");
-        const targetUser = snap.docs[0];
-        if (targetUser.id === currentUid) throw new Error("Tidak bisa menambah diri sendiri");
-        
-        const currentUserRef = doc(db, "users", currentUid);
-        const targetUserRef = doc(db, "users", targetUser.id);
-        
-        await updateDoc(currentUserRef, { contacts: arrayUnion(targetUser.id) });
-        await updateDoc(targetUserRef, { contacts: arrayUnion(currentUid) });
-        
-        return true;
-    }
-    
-    async function getOrCreatePrivateChat(uid1, uid2) {
-        const chatsRef = collection(db, "chats");
-        const q1 = query(chatsRef, where("participants", "==", [uid1, uid2]));
-        const q2 = query(chatsRef, where("participants", "==", [uid2, uid1]));
-        let snap = await getDocs(q1);
-        if (snap.empty) snap = await getDocs(q2);
-        if (!snap.empty) return { id: snap.docs[0].id, ...snap.docs[0].data() };
-        
-        const newChat = {
-            type: "private",
-            participants: [uid1, uid2],
-            createdAt: serverTimestamp(),
-            lastMessage: ""
-        };
-        const ref = await addDoc(chatsRef, newChat);
-        return { id: ref.id, ...newChat };
-    }
-    
-    async function createGroup(creatorId, groupName, memberIds) {
-        if (memberIds.length === 0) throw new Error("Pilih minimal satu anggota");
-        const allMembers = [creatorId, ...memberIds];
-        const newGroup = {
-            type: "group",
-            name: groupName,
-            participants: allMembers,
-            createdBy: creatorId,
-            createdAt: serverTimestamp(),
-            lastMessage: ""
-        };
-        const docRef = await addDoc(collection(db, "chats"), newGroup);
-        for (let uid of allMembers) {
-            const userRef = doc(db, "users", uid);
-            await updateDoc(userRef, { groups: arrayUnion(docRef.id) });
-        }
-        return { id: docRef.id, ...newGroup };
-    }
-    
-    async function sendMessageToChat(chatId, senderId, text, type = "text", imageUrl = null) {
-        const msgRef = collection(db, "chats", chatId, "messages");
-        await addDoc(msgRef, {
-            senderId, text, type, imageUrl,
-            timestamp: serverTimestamp()
-        });
-        const chatRef = doc(db, "chats", chatId);
-        await updateDoc(chatRef, {
-            lastMessage: text.length > 50 ? text.substring(0, 50) + "..." : text,
-            lastMessageTime: serverTimestamp()
-        });
-    }
-    
-    async function renderChatList(uid, userData) {
-        const contacts = userData?.contacts || [];
-        const groups = userData?.groups || [];
-        let chatItems = [];
-        
-        for (let contactId of contacts) {
-            const chat = await getOrCreatePrivateChat(uid, contactId);
-            const partnerSnap = await getDoc(doc(db, "users", contactId));
-            const partnerName = partnerSnap.exists() ? partnerSnap.data().fullName : "Unknown";
-            chatItems.push({ id: chat.id, type: "private", name: partnerName, partnerId: contactId, lastMessage: chat.lastMessage || "" });
-        }
-        for (let groupId of groups) {
-            const groupSnap = await getDoc(doc(db, "chats", groupId));
-            if (groupSnap.exists()) {
-                chatItems.push({ id: groupId, type: "group", name: groupSnap.data().name, lastMessage: groupSnap.data().lastMessage || "" });
-            }
-        }
-        
-        const container = document.getElementById("chatListContainer");
-        container.innerHTML = "";
-        if (chatItems.length === 0) {
-            container.innerHTML = "<div style='text-align: center; padding: 40px; color: #cc9aa8;'>Belum ada percakapan<br>Tekan ➕ Tambah Kontak</div>";
+    // Render app
+    function renderApp() {
+        const appDiv = document.getElementById('app');
+        if (!currentUser) {
+            appDiv.innerHTML = `
+                <div class="modal" id="authModal" style="display:flex">
+                    <div class="modal-content">
+                        <h3 id="authTitle">Daftar Akun</h3>
+                        <input type="text" id="fullName" placeholder="Nama lengkap">
+                        <input type="tel" id="phone" placeholder="Nomor HP (812345678)">
+                        <input type="password" id="password" placeholder="Password">
+                        <button id="submitBtn">Daftar</button>
+                        <button id="switchBtn" style="background:#ffe4ec;color:#ff6b9d;margin-top:8px">Sudah punya akun? Masuk</button>
+                        <div id="authMsg" style="color:#ff6b9d;font-size:12px;margin-top:10px"></div>
+                    </div>
+                </div>
+            `;
+            attachAuthEvents();
             return;
         }
         
-        chatItems.forEach(chat => {
-            const div = document.createElement("div");
-            div.className = `chat-item ${currentChatId === chat.id ? 'active' : ''}`;
-            div.innerHTML = `
-                <div class="chat-avatar-pink">${escapeHtml(chat.name.charAt(0).toUpperCase())}</div>
-                <div class="chat-details">
-                    <div class="chat-name">${escapeHtml(chat.name)}</div>
-                    <div class="chat-preview">${escapeHtml(chat.lastMessage) || "Ketik pesan..."}</div>
+        // Main app UI
+        appDiv.innerHTML = `
+            <div class="app">
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-header">
+                        <div class="user-info">
+                            <div class="user-avatar" id="userAvatar">${currentUser.fullName?.charAt(0) || 'U'}</div>
+                            <div class="user-name">
+                                <h4 id="userFullName">${escapeHtml(currentUser.fullName || 'User')}</h4>
+                                <p><i class="fas fa-circle" style="font-size:8px"></i> ${currentUser.phone}</p>
+                            </div>
+                            <button class="logout-icon" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+                        </div>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchChat" placeholder="Cari chat...">
+                        </div>
+                    </div>
+                    <div class="chat-list" id="chatList"></div>
+                    <div class="action-buttons">
+                        <button class="action-btn" id="newGroupBtn"><i class="fas fa-users"></i> Grup Baru</button>
+                        <button class="action-btn" id="newContactBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
+                    </div>
                 </div>
-            `;
-            div.onclick = () => openChat(chat.id, chat);
-            container.appendChild(div);
-        });
+                
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <button class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+                        <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                        <div class="chat-header-avatar" id="chatAvatar">P</div>
+                        <div class="chat-header-info">
+                            <h3 id="chatTitle">PinkChat</h3>
+                            <p id="chatStatus">Pilih percakapan</p>
+                        </div>
+                    </div>
+                    <div class="messages" id="messages"></div>
+                    <div class="input-wrapper">
+                        <button class="icon-btn" id="emojiBtn"><i class="far fa-smile-wink"></i></button>
+                        <button class="icon-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
+                        <input type="text" id="messageInput" placeholder="Ketik pesan...">
+                        <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" style="display:none">
+        `;
+        
+        attachMainEvents();
+        loadChats();
     }
     
-    function openChat(chatId, chatInfo) {
-        if (messagesUnsubscribe) messagesUnsubscribe();
-        currentChatId = chatId;
-        currentChatInfo = chatInfo;
-        document.getElementById("chatTitle").innerHTML = escapeHtml(chatInfo.name);
-        document.getElementById("chatAvatar").innerHTML = chatInfo.name.charAt(0).toUpperCase();
-        document.getElementById("chatSubtitle").innerHTML = chatInfo.type === "group" ? "Grup • Anggota" : "Online";
-        
-        // Tutup sidebar di mobile
-        if (window.innerWidth <= 768) {
-            document.getElementById("sidebar").classList.remove("open");
-            document.getElementById("sidebarOverlay").classList.remove("active");
-        }
-        
-        const msgContainer = document.getElementById("messagesContainer");
-        msgContainer.innerHTML = "<div style='padding:20px;text-align:center;color:#cc9aa8'>Memuat pesan...</div>";
-        
-        const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
-        messagesUnsubscribe = onSnapshot(q, (snap) => {
-            msgContainer.innerHTML = "";
-            if (snap.empty) {
-                msgContainer.innerHTML = "<div style='padding:20px;text-align:center;color:#cc9aa8'>Belum ada pesan. Kirim pesan pertama!</div>";
-            }
-            snap.forEach(docMsg => {
-                const msg = docMsg.data();
-                const isSent = msg.senderId === currentUserData.uid;
-                const msgDiv = document.createElement("div");
-                msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-                let content = "";
-                if (msg.type === "image" && msg.imageUrl) {
-                    content = `<div class="bubble-pink"><img src="${msg.imageUrl}" style="max-width:180px; border-radius:20px;"></div>`;
-                } else {
-                    content = `<div class="bubble-pink">${escapeHtml(msg.text)}</div>`;
-                }
-                const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
-                msgDiv.innerHTML = content + `<div class="message-footer"><span>${time}</span></div>`;
-                msgContainer.appendChild(msgDiv);
-            });
-            msgContainer.scrollTop = msgContainer.scrollHeight;
-        });
-        renderChatList(currentUserData.uid, currentUserData);
-    }
-    
-    function escapeHtml(str) { 
-        if (!str) return ''; 
+    function escapeHtml(str) {
+        if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
             if (m === '<') return '&lt;';
@@ -972,263 +539,328 @@
         });
     }
     
-    function showToast(message) {
-        const toast = document.createElement("div");
-        toast.className = "toast-message";
-        toast.innerHTML = message;
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = msg;
         document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.remove();
-        }, 2000);
+        setTimeout(() => toast.remove(), 2000);
     }
     
-    // Mobile menu handlers
-    const sidebar = document.getElementById("sidebar");
-    const sidebarOverlay = document.getElementById("sidebarOverlay");
-    
-    document.getElementById("mobileMenuBtn").onclick = () => {
-        sidebar.classList.add("open");
-        sidebarOverlay.classList.add("active");
-    };
-    
-    function closeSidebar() {
-        sidebar.classList.remove("open");
-        sidebarOverlay.classList.remove("active");
-    }
-    
-    sidebarOverlay.onclick = closeSidebar;
-    
-    document.getElementById("mobileBackBtn").onclick = () => {
-        if (messagesUnsubscribe) messagesUnsubscribe();
-        currentChatId = null;
-        currentChatInfo = null;
-        document.getElementById("chatTitle").innerHTML = "PinkChat";
-        document.getElementById("chatAvatar").innerHTML = "P";
-        document.getElementById("chatSubtitle").innerHTML = "Pilih percakapan";
-        document.getElementById("messagesContainer").innerHTML = "<div style='padding:20px;text-align:center;color:#cc9aa8'>Pilih chat untuk mulai mengobrol</div>";
-        renderChatList(currentUserData.uid, currentUserData);
-    };
-    
-    // Event Listeners
-    document.getElementById("sendMessageBtn").onclick = async () => {
-        if (!currentChatId) {
-            showToast("❗ Pilih chat terlebih dahulu");
-            return;
-        }
-        const input = document.getElementById("messageInputText");
-        const text = input.value.trim();
-        if (text) {
-            await sendMessageToChat(currentChatId, currentUserData.uid, text);
-            input.value = "";
-        }
-    };
-    
-    document.getElementById("messageInputText").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            document.getElementById("sendMessageBtn").click();
-        }
-    });
-    
-    document.getElementById("emojiPickerBtn").onclick = () => {
-        const input = document.getElementById("messageInputText");
-        input.value += "🌸";
-        input.focus();
-    };
-    
-    document.getElementById("attachImageBtn").onclick = () => {
-        if (!currentChatId) {
-            showToast("❗ Pilih chat terlebih dahulu");
-            return;
-        }
-        document.getElementById("imageUploadInput").click();
-    };
-    
-    document.getElementById("imageUploadInput").onchange = async (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.startsWith("image/") && currentChatId) {
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-                await sendMessageToChat(currentChatId, currentUserData.uid, "Gambar", "image", ev.target.result);
-                showToast("📷 Gambar terkirim");
-            };
-            reader.readAsDataURL(file);
-        }
-        e.target.value = "";
-    };
-    
-    document.getElementById("logoutBtn").onclick = async () => {
-        const confirmLogout = confirm("Apakah Anda yakin ingin keluar?");
-        if (confirmLogout) {
-            await logoutUser();
-            closeSidebar();
-            showToast("👋 Anda telah logout");
-        }
-    };
-    
-    document.getElementById("newContactBtn").onclick = () => {
-        document.getElementById("contactModal").classList.remove("hidden");
-        closeSidebar();
-    };
-    
-    document.getElementById("closeContactModal").onclick = () => {
-        document.getElementById("contactModal").classList.add("hidden");
-        document.getElementById("contactPhoneInput").value = "";
-        document.getElementById("contactErrorMsg").innerText = "";
-    };
-    
-    document.getElementById("confirmContactBtn").onclick = async () => {
-        const phone = document.getElementById("contactPhoneInput").value.trim();
-        try {
-            await addContactByPhone(currentUserData.uid, phone);
-            showToast("✅ Kontak berhasil ditambahkan");
-            document.getElementById("contactModal").classList.add("hidden");
-            document.getElementById("contactPhoneInput").value = "";
-            document.getElementById("contactErrorMsg").innerText = "";
-            currentUserData = await fetchUserData(currentUserData.uid);
-            renderChatList(currentUserData.uid, currentUserData);
-        } catch (e) {
-            document.getElementById("contactErrorMsg").innerText = e.message;
-        }
-    };
-    
-    document.getElementById("newGroupBtn").onclick = async () => {
-        closeSidebar();
-        const userDoc = await getDoc(doc(db, "users", currentUserData.uid));
-        const contacts = userDoc.data()?.contacts || [];
-        const container = document.getElementById("groupContactsChecklist");
-        container.innerHTML = "";
-        let selected = [];
+    // Auth events
+    let isLogin = false;
+    function attachAuthEvents() {
+        const submitBtn = document.getElementById('submitBtn');
+        const switchBtn = document.getElementById('switchBtn');
+        const authTitle = document.getElementById('authTitle');
         
-        if (contacts.length === 0) {
-            container.innerHTML = "<div style='padding:20px;text-align:center;color:#aa8a96'>Belum ada kontak. Tambahkan kontak terlebih dahulu.</div>";
-        }
-        
-        for (let cid of contacts) {
-            const userSnap = await getDoc(doc(db, "users", cid));
-            if (userSnap.exists()) {
-                const div = document.createElement("div");
-                div.className = "contact-check-item";
-                const phone = userSnap.data().phone;
-                const name = userSnap.data().fullName;
-                div.innerHTML = `<input type="checkbox" value="${cid}" id="chk_${cid}"> <label for="chk_${cid}">${escapeHtml(name)} (${phone})</label>`;
-                const chk = div.querySelector("input");
-                chk.onchange = () => {
-                    if (chk.checked) selected.push(cid);
-                    else selected = selected.filter(id => id !== cid);
-                };
-                container.appendChild(div);
-            }
-        }
-        document.getElementById("groupModal").classList.remove("hidden");
-        
-        document.getElementById("createGroupConfirmBtn").onclick = async () => {
-            const groupName = document.getElementById("groupNameInput").value.trim();
-            if (!groupName) {
-                alert("Nama grup harus diisi");
-                return;
-            }
-            if (selected.length === 0) {
-                alert("Pilih minimal satu anggota");
-                return;
-            }
-            await createGroup(currentUserData.uid, groupName, selected);
-            showToast("🎉 Grup berhasil dibuat");
-            document.getElementById("groupModal").classList.add("hidden");
-            document.getElementById("groupNameInput").value = "";
-            document.getElementById("groupErrorMsg").innerText = "";
-            currentUserData = await fetchUserData(currentUserData.uid);
-            renderChatList(currentUserData.uid, currentUserData);
-        };
-    };
-    
-    document.getElementById("closeGroupModalBtn").onclick = () => {
-        document.getElementById("groupModal").classList.add("hidden");
-        document.getElementById("groupNameInput").value = "";
-        document.getElementById("groupErrorMsg").innerText = "";
-    };
-    
-    // Auth State
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUserData = await fetchUserData(user.uid);
-            if (currentUserData) {
-                document.getElementById("profileName").innerHTML = escapeHtml(currentUserData.fullName);
-                document.getElementById("profileAvatar").innerHTML = currentUserData.fullName.charAt(0).toUpperCase();
-                document.getElementById("userPhoneDisplay").innerHTML = currentUserData.phone;
-                document.getElementById("appWrapper").style.display = "flex";
-                document.getElementById("registerModal").classList.add("hidden");
-                document.getElementById("loginModal").classList.add("hidden");
-                await renderChatList(currentUserData.uid, currentUserData);
-            }
-        } else {
-            document.getElementById("appWrapper").style.display = "none";
-            document.getElementById("registerModal").classList.remove("hidden");
-            document.getElementById("loginModal").classList.add("hidden");
-        }
-    });
-    
-    // Register & Login Buttons
-    document.getElementById("registerBtn").onclick = async () => {
-        const name = document.getElementById("regFullName").value.trim();
-        const phone = document.getElementById("regPhoneNumber").value.trim();
-        const pwd = document.getElementById("regPassword").value;
-        try {
-            await registerUser(name, phone, pwd);
-            document.getElementById("registerError").innerText = "";
-        } catch (e) {
-            document.getElementById("registerError").innerText = e.message;
-        }
-    };
-    
-    document.getElementById("loginBtn").onclick = async () => {
-        const phone = document.getElementById("loginPhone").value.trim();
-        const pwd = document.getElementById("loginPassword").value;
-        try {
-            await loginUser(phone, pwd);
-            document.getElementById("loginError").innerText = "";
-        } catch (e) {
-            document.getElementById("loginError").innerText = "Nomor HP atau password salah";
-        }
-    };
-    
-    document.getElementById("goToLoginBtn").onclick = () => {
-        document.getElementById("registerModal").classList.add("hidden");
-        document.getElementById("loginModal").classList.remove("hidden");
-        document.getElementById("registerError").innerText = "";
-        document.getElementById("regFullName").value = "";
-        document.getElementById("regPhoneNumber").value = "";
-        document.getElementById("regPassword").value = "";
-    };
-    
-    document.getElementById("goToRegisterBtn").onclick = () => {
-        document.getElementById("loginModal").classList.add("hidden");
-        document.getElementById("registerModal").classList.remove("hidden");
-        document.getElementById("loginError").innerText = "";
-        document.getElementById("loginPhone").value = "";
-        document.getElementById("loginPassword").value = "";
-    };
-    
-    // Search chat
-    document.getElementById("searchChat").addEventListener("input", (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const chatItems = document.querySelectorAll(".chat-item");
-        chatItems.forEach(item => {
-            const name = item.querySelector(".chat-name")?.innerText.toLowerCase() || "";
-            if (name.includes(searchTerm)) {
-                item.style.display = "flex";
+        switchBtn.onclick = () => {
+            isLogin = !isLogin;
+            if (isLogin) {
+                authTitle.innerText = 'Masuk Akun';
+                submitBtn.innerText = 'Masuk';
+                switchBtn.innerText = 'Belum punya akun? Daftar';
+                document.getElementById('fullName').style.display = 'none';
             } else {
-                item.style.display = "none";
+                authTitle.innerText = 'Daftar Akun';
+                submitBtn.innerText = 'Daftar';
+                switchBtn.innerText = 'Sudah punya akun? Masuk';
+                document.getElementById('fullName').style.display = 'block';
+            }
+        };
+        
+        submitBtn.onclick = async () => {
+            const phone = document.getElementById('phone').value.trim();
+            const pwd = document.getElementById('password').value;
+            const msgDiv = document.getElementById('authMsg');
+            
+            try {
+                if (isLogin) {
+                    const email = `${phone}@pinkchat.local`;
+                    await signInWithEmailAndPassword(auth, email, pwd);
+                } else {
+                    const fullName = document.getElementById('fullName').value.trim();
+                    if (!fullName) throw new Error('Nama harus diisi');
+                    if (!phone.match(/^[0-9]{5,14}$/)) throw new Error('Nomor HP 5-14 digit');
+                    
+                    const usersRef = collection(db, 'users');
+                    const q = query(usersRef, where('phone', '==', phone));
+                    const snap = await getDocs(q);
+                    if (!snap.empty) throw new Error('Nomor HP sudah terdaftar');
+                    
+                    const email = `${phone}@pinkchat.local`;
+                    const userCred = await createUserWithEmailAndPassword(auth, email, pwd);
+                    await setDoc(doc(db, 'users', userCred.user.uid), {
+                        fullName: fullName,
+                        phone: phone,
+                        contacts: [],
+                        groups: [],
+                        createdAt: serverTimestamp()
+                    });
+                }
+                msgDiv.innerText = '';
+            } catch(e) {
+                msgDiv.innerText = e.message;
+            }
+        };
+    }
+    
+    async function loadChats() {
+        if (!currentUser) return;
+        
+        const contacts = currentUser.contacts || [];
+        const groups = currentUser.groups || [];
+        const chatItems = [];
+        
+        for (let contactId of contacts) {
+            const userSnap = await getDoc(doc(db, 'users', contactId));
+            if (userSnap.exists()) {
+                chatItems.push({
+                    id: contactId,
+                    type: 'contact',
+                    name: userSnap.data().fullName,
+                    phone: userSnap.data().phone
+                });
+            }
+        }
+        
+        const container = document.getElementById('chatList');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        if (chatItems.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;color:#cc9aa8">Belum ada kontak<br>Tekan ➕ Tambah Kontak</div>';
+        }
+        
+        for (let chat of chatItems) {
+            const div = document.createElement('div');
+            div.className = `chat-item ${currentChatId === chat.id ? 'active' : ''}`;
+            div.innerHTML = `
+                <div class="chat-avatar">${chat.name.charAt(0).toUpperCase()}</div>
+                <div class="chat-info">
+                    <div class="chat-name">${escapeHtml(chat.name)}</div>
+                    <div class="chat-lastmsg">${chat.phone}</div>
+                </div>
+            `;
+            div.onclick = () => openChat(chat.id, chat.name);
+            container.appendChild(div);
+        }
+    }
+    
+    async function openChat(userId, userName) {
+        if (unsubscribeMessages) unsubscribeMessages();
+        currentChatId = userId;
+        currentChatName = userName;
+        
+        document.getElementById('chatTitle').innerHTML = escapeHtml(userName);
+        document.getElementById('chatAvatar').innerHTML = userName.charAt(0).toUpperCase();
+        document.getElementById('chatStatus').innerHTML = 'Online';
+        
+        // Tutup sidebar di mobile
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('open');
+        }
+        
+        // Load messages
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML = '<div style="text-align:center;padding:20px">Memuat...</div>';
+        
+        const chatId = [currentUser.uid, userId].sort().join('_');
+        const messagesRef = collection(db, 'chats', chatId, 'messages');
+        const q = query(messagesRef, orderBy('timestamp', 'asc'));
+        
+        unsubscribeMessages = onSnapshot(q, (snap) => {
+            messagesDiv.innerHTML = '';
+            if (snap.empty) {
+                messagesDiv.innerHTML = '<div style="text-align:center;padding:20px;color:#cc9aa8">Belum ada pesan. Kirim pesan pertama!</div>';
+            }
+            snap.forEach(docMsg => {
+                const msg = docMsg.data();
+                const isSent = msg.senderId === currentUser.uid;
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+                let content = '';
+                if (msg.type === 'image' && msg.imageUrl) {
+                    content = `<div class="bubble"><img src="${msg.imageUrl}" style="max-width:180px;border-radius:16px"></div>`;
+                } else {
+                    content = `<div class="bubble">${escapeHtml(msg.text)}</div>`;
+                }
+                const time = msg.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                msgDiv.innerHTML = content + `<div class="message-time">${time}</div>`;
+                messagesDiv.appendChild(msgDiv);
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+        
+        loadChats();
+    }
+    
+    async function sendMessage() {
+        if (!currentChatId) {
+            showToast('Pilih chat terlebih dahulu');
+            return;
+        }
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        const chatId = [currentUser.uid, currentChatId].sort().join('_');
+        const messagesRef = collection(db, 'chats', chatId, 'messages');
+        await addDoc(messagesRef, {
+            senderId: currentUser.uid,
+            text: text,
+            type: 'text',
+            timestamp: serverTimestamp()
+        });
+        input.value = '';
+    }
+    
+    async function addContact() {
+        const phone = prompt('Masukkan nomor HP pengguna yang ingin ditambahkan:', '');
+        if (!phone) return;
+        
+        try {
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where('phone', '==', phone));
+            const snap = await getDocs(q);
+            if (snap.empty) throw new Error('Nomor HP tidak terdaftar');
+            const targetUser = snap.docs[0];
+            if (targetUser.id === currentUser.uid) throw new Error('Tidak bisa menambah diri sendiri');
+            
+            // Two-way contact
+            const userRef = doc(db, 'users', currentUser.uid);
+            const targetRef = doc(db, 'users', targetUser.id);
+            await updateDoc(userRef, { contacts: arrayUnion(targetUser.id) });
+            await updateDoc(targetRef, { contacts: arrayUnion(currentUser.uid) });
+            
+            showToast('✅ Kontak berhasil ditambahkan');
+            currentUser = await getUserData(currentUser.uid);
+            loadChats();
+        } catch(e) {
+            alert(e.message);
+        }
+    }
+    
+    async function getUserData(uid) {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) return { uid, ...snap.data() };
+        return null;
+    }
+    
+    function attachMainEvents() {
+        // Send message
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        // Emoji
+        document.getElementById('emojiBtn').onclick = () => {
+            const input = document.getElementById('messageInput');
+            input.value += '🌸';
+            input.focus();
+        };
+        
+        // Attach image
+        document.getElementById('attachBtn').onclick = () => {
+            if (!currentChatId) {
+                showToast('Pilih chat dulu');
+                return;
+            }
+            document.getElementById('fileInput').click();
+        };
+        
+        document.getElementById('fileInput').onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/') && currentChatId) {
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    const chatId = [currentUser.uid, currentChatId].sort().join('_');
+                    const messagesRef = collection(db, 'chats', chatId, 'messages');
+                    await addDoc(messagesRef, {
+                        senderId: currentUser.uid,
+                        text: 'Gambar',
+                        type: 'image',
+                        imageUrl: ev.target.result,
+                        timestamp: serverTimestamp()
+                    });
+                    showToast('📷 Gambar terkirim');
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = '';
+        };
+        
+        // New contact
+        document.getElementById('newContactBtn').onclick = addContact;
+        
+        // Logout
+        document.getElementById('logoutBtn').onclick = async () => {
+            if (confirm('Yakin ingin keluar?')) {
+                await signOut(auth);
+            }
+        };
+        
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const backBtn = document.getElementById('backBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (menuBtn) {
+            menuBtn.onclick = () => sidebar.classList.add('open');
+        }
+        if (backBtn) {
+            backBtn.onclick = () => {
+                if (unsubscribeMessages) unsubscribeMessages();
+                currentChatId = null;
+                document.getElementById('chatTitle').innerHTML = 'PinkChat';
+                document.getElementById('chatAvatar').innerHTML = 'P';
+                document.getElementById('chatStatus').innerHTML = 'Pilih percakapan';
+                document.getElementById('messages').innerHTML = '<div style="text-align:center;padding:20px;color:#cc9aa8">Pilih chat untuk mulai mengobrol</div>';
+            };
+        }
+        
+        // Close sidebar on click outside
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(e.target) && e.target !== menuBtn) {
+                    sidebar.classList.remove('open');
+                }
             }
         });
-    });
+        
+        // New group
+        document.getElementById('newGroupBtn').onclick = () => {
+            alert('Fitur grup akan segera hadir!');
+        };
+        
+        // Search
+        document.getElementById('searchChat').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.chat-item');
+            items.forEach(item => {
+                const name = item.querySelector('.chat-name')?.innerText.toLowerCase() || '';
+                if (name.includes(term)) item.style.display = 'flex';
+                else item.style.display = 'none';
+            });
+        });
+    }
     
-    // Close sidebar on resize to desktop
-    window.addEventListener("resize", () => {
-        if (window.innerWidth > 768) {
-            closeSidebar();
+    // Auth state listener
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = await getUserData(user.uid);
+            if (currentUser) {
+                renderApp();
+            }
+        } else {
+            currentUser = null;
+            renderApp();
         }
     });
+    
+    // Initial render
+    renderApp();
 </script>
 </body>
 </html>

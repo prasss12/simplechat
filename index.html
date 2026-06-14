@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChatKu - Simple</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>ChatKu - Realtime</title>
     <style>
         * {
             margin: 0;
@@ -41,25 +40,6 @@
             font-size: 16px;
             cursor: pointer;
         }
-        .avatar-small {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff6b9d;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        .avatar-small img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
         .chat-list {
             flex: 1;
             overflow-y: auto;
@@ -87,23 +67,10 @@
             font-size: 20px;
             font-weight: bold;
             color: #ff6b9d;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .chat-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .chat-info {
-            flex: 1;
         }
         .chat-name {
             font-weight: 600;
             font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .chat-phone {
             font-size: 12px;
@@ -114,10 +81,6 @@
             font-size: 13px;
             color: #888;
             margin-top: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
         }
         .unread-badge {
             background: #ff6b9d;
@@ -131,6 +94,7 @@
             align-items: center;
             justify-content: center;
             padding: 0 6px;
+            margin-left: 8px;
         }
         .bottom-bar {
             padding: 10px 16px;
@@ -244,14 +208,6 @@
             font-size: 40px;
             font-weight: bold;
             color: #ff6b9d;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .big-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
         .info-row {
             background: #f5f5f5;
@@ -361,8 +317,8 @@
     let USER = null;
     let CHAT_ID = null;
     let CHAT_USER = null;
-    let UNSUB = null;
-    let MAIN_UNSUB = null;
+    let UNSUB_MSG = null;
+    let UNSUB_USER = null;
     
     function toast(msg) {
         let t = document.querySelector('.toast');
@@ -379,23 +335,6 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
     
-    function compressImage(file, callback) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const img = new Image();
-            img.src = e.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 200;
-                canvas.height = 200;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, 200, 200);
-                callback(canvas.toDataURL('image/jpeg', 0.7));
-            };
-        };
-    }
-    
     async function getUser(uid) {
         let s = await getDoc(doc(db, 'users', uid));
         return s.exists() ? { uid, ...s.data() } : null;
@@ -403,16 +342,7 @@
     
     async function updateUser(data) {
         await updateDoc(doc(db, 'users', USER.uid), data);
-        USER = await getUser(USER.uid);
         toast('✅ Profil diperbarui');
-        renderHome();
-    }
-    
-    function uploadPhoto(file) {
-        compressImage(file, async (base64) => {
-            await updateUser({ photoURL: base64 });
-            toast('✅ Foto profil tersimpan');
-        });
     }
     
     async function getChat(uid1, uid2) {
@@ -456,28 +386,20 @@
         }
     }
     
-    // MAIN RENDER HOME
-    async function renderHome() {
-        if (MAIN_UNSUB) MAIN_UNSUB();
+    // REALTIME RENDER CHAT LIST
+    function startRealtimeChatList() {
+        if (UNSUB_USER) UNSUB_USER();
         
-        let root = document.getElementById('app');
-        root.innerHTML = `
-            <div class="header">
-                <div class="avatar-small" id="profileBtn">
-                    ${USER?.photoURL ? `<img src="${USER.photoURL}">` : (USER?.fullName?.charAt(0) || 'U')}
-                </div>
-                <h2>ChatKu</h2>
-                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-            <div class="chat-list" id="chatList"></div>
-            <div class="bottom-bar">
-                <button id="addBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
-                <button id="myProfileBtn"><i class="fas fa-user"></i> Profil Saya</button>
-            </div>
-        `;
-        
+        const userRef = doc(db, 'users', USER.uid);
+        UNSUB_USER = onSnapshot(userRef, async () => {
+            USER = await getUser(USER.uid);
+            await renderChatList();
+        });
+    }
+    
+    async function renderChatList() {
         let container = document.getElementById('chatList');
-        container.innerHTML = '<div class="loading">Memuat kontak...</div>';
+        if (!container) return;
         
         let contacts = USER?.contacts || [];
         let contactsData = [];
@@ -489,64 +411,141 @@
         
         if (contactsData.length === 0) {
             container.innerHTML = '<div class="loading">Belum ada kontak<br>Tekan Tambah Kontak</div>';
-        } else {
-            container.innerHTML = '';
-            for (let c of contactsData) {
-                let chatId = await getChat(USER.uid, c.uid);
+            return;
+        }
+        
+        container.innerHTML = '';
+        for (let c of contactsData) {
+            let chatId = await getChat(USER.uid, c.uid);
+            
+            // Subscribe ke pesan untuk update realtime
+            let msgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'));
+            let unsubPreview = onSnapshot(msgQuery, (snap) => {
+                let lastMsg = '';
+                let unread = 0;
+                snap.forEach(d => {
+                    let msg = d.data();
+                    if (lastMsg === '') lastMsg = msg.text;
+                    if (msg.senderId === c.uid && !msg.read) unread++;
+                });
                 
-                let div = document.createElement('div');
-                div.className = 'chat-item';
-                div.setAttribute('data-chatid', chatId);
-                div.setAttribute('data-contactid', c.uid);
-                div.innerHTML = `
-                    <div class="chat-avatar">
-                        ${c.photoURL ? `<img src="${c.photoURL}">` : c.fullName?.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="chat-info">
-                        <div class="chat-name">
-                            ${escapeHtml(c.fullName)}
-                            <span class="unread-badge" style="display:none">0</span>
-                        </div>
-                        <div class="chat-phone">${c.phone}</div>
-                        <div class="chat-preview">...</div>
-                    </div>
-                `;
-                div.onclick = async () => {
-                    await markAsRead(chatId, c.uid);
-                    await openChat(c, chatId);
-                };
-                container.appendChild(div);
-                
-                // Subscribe ke pesan untuk update badge
-                let msgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'));
-                let unsubMsg = onSnapshot(msgQuery, (snap) => {
-                    let lastMsg = '';
-                    let unread = 0;
-                    snap.forEach(d => {
-                        let msg = d.data();
-                        if (lastMsg === '') lastMsg = msg.text;
-                        if (msg.senderId === c.uid && !msg.read) unread++;
-                    });
-                    
-                    // Update preview
+                let div = document.getElementById(`chat_${chatId}`);
+                if (div) {
                     let previewSpan = div.querySelector('.chat-preview');
-                    if (previewSpan) {
-                        previewSpan.innerText = lastMsg ? (lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg) : 'Ketik pesan...';
-                    }
+                    if (previewSpan) previewSpan.innerText = lastMsg ? (lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg) : 'Ketik pesan...';
                     
-                    // Update badge
                     let badgeSpan = div.querySelector('.unread-badge');
                     if (unread > 0) {
-                        if (badgeSpan) {
-                            badgeSpan.style.display = 'inline-flex';
+                        if (!badgeSpan) {
+                            let nameSpan = div.querySelector('.chat-name span:first-child');
+                            if (nameSpan) nameSpan.innerHTML = `${escapeHtml(c.fullName)} <span class="unread-badge">${unread}</span>`;
+                        } else {
                             badgeSpan.innerText = unread;
+                            badgeSpan.style.display = 'inline-flex';
                         }
-                    } else {
-                        if (badgeSpan) badgeSpan.style.display = 'none';
+                    } else if (badgeSpan) {
+                        let nameSpan = div.querySelector('.chat-name span:first-child');
+                        if (nameSpan) nameSpan.innerHTML = escapeHtml(c.fullName);
                     }
-                });
-            }
+                }
+            });
+            
+            let div = document.createElement('div');
+            div.className = 'chat-item';
+            div.id = `chat_${chatId}`;
+            div.innerHTML = `
+                <div class="chat-avatar">${c.fullName?.charAt(0).toUpperCase()}</div>
+                <div style="flex:1">
+                    <div class="chat-name">
+                        <span>${escapeHtml(c.fullName)}</span>
+                    </div>
+                    <div class="chat-phone">${c.phone}</div>
+                    <div class="chat-preview">Loading...</div>
+                </div>
+            `;
+            div.onclick = async () => {
+                await markAsRead(chatId, c.uid);
+                await openChat(c, chatId);
+            };
+            container.appendChild(div);
         }
+    }
+    
+    // OPEN CHAT
+    async function openChat(contact, chatId) {
+        if (UNSUB_MSG) UNSUB_MSG();
+        CHAT_ID = chatId;
+        CHAT_USER = contact;
+        
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="chat-screen" style="display:flex">
+                <div class="header">
+                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                    <h2 style="flex:1; font-size:16px">${escapeHtml(contact.fullName)}</h2>
+                </div>
+                <div class="messages" id="msgContainer"></div>
+                <div class="input-area">
+                    <input type="text" id="msgInput" placeholder="Ketik pesan...">
+                    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        `;
+        
+        let msgDiv = document.getElementById('msgContainer');
+        let q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
+        UNSUB_MSG = onSnapshot(q, (snap) => {
+            msgDiv.innerHTML = '';
+            if (snap.empty) msgDiv.innerHTML = '<div class="loading">Belum ada pesan</div>';
+            snap.forEach(d => {
+                let m = d.data();
+                let isMe = m.senderId === USER.uid;
+                let el = document.createElement('div');
+                el.className = `msg ${isMe ? 'sent' : 'received'}`;
+                let time = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
+                el.innerHTML = `<div class="bubble">${escapeHtml(m.text)}</div><div class="time">${time}</div>`;
+                msgDiv.appendChild(el);
+            });
+            msgDiv.scrollTop = msgDiv.scrollHeight;
+        });
+        
+        document.getElementById('backBtn').onclick = () => {
+            if (UNSUB_MSG) UNSUB_MSG();
+            renderMainScreen();
+        };
+        document.getElementById('sendBtn').onclick = async () => {
+            let input = document.getElementById('msgInput');
+            let text = input.value.trim();
+            if (text) {
+                await sendMsg(CHAT_ID, text);
+                input.value = '';
+            }
+        };
+        document.getElementById('msgInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('sendBtn').click();
+        });
+    }
+    
+    // MAIN SCREEN
+    async function renderMainScreen() {
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="header">
+                <div class="avatar-small" id="profileBtn" style="background:white; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#ff6b9d; font-weight:bold">
+                    ${USER?.fullName?.charAt(0) || 'U'}
+                </div>
+                <h2>ChatKu</h2>
+                <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            <div class="chat-list" id="chatList"></div>
+            <div class="bottom-bar">
+                <button id="addBtn"><i class="fas fa-user-plus"></i> Tambah Kontak</button>
+                <button id="myProfileBtn"><i class="fas fa-user"></i> Profil Saya</button>
+            </div>
+        `;
+        
+        await renderChatList();
+        startRealtimeChatList();
         
         document.getElementById('profileBtn').onclick = showMyProfile;
         document.getElementById('myProfileBtn').onclick = showMyProfile;
@@ -572,7 +571,6 @@
                     await addContact(phone);
                     toast('✅ Kontak ditambahkan');
                     modal.remove();
-                    renderHome();
                 } catch(e) {
                     document.getElementById('err').innerText = e.message;
                 }
@@ -581,68 +579,9 @@
         };
     }
     
-    // OPEN CHAT
-    async function openChat(contact, chatId) {
-        if (UNSUB) UNSUB();
-        CHAT_ID = chatId;
-        CHAT_USER = contact;
-        
-        let root = document.getElementById('app');
-        root.innerHTML = `
-            <div class="chat-screen" style="display:flex">
-                <div class="header">
-                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
-                    <div class="avatar-small" id="chatProfileBtn">
-                        ${contact.photoURL ? `<img src="${contact.photoURL}">` : contact.fullName?.charAt(0).toUpperCase()}
-                    </div>
-                    <h2 style="flex:1; font-size:16px">${escapeHtml(contact.fullName)}</h2>
-                </div>
-                <div class="messages" id="msgContainer"></div>
-                <div class="input-area">
-                    <input type="text" id="msgInput" placeholder="Ketik pesan...">
-                    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        `;
-        
-        let msgDiv = document.getElementById('msgContainer');
-        let q = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-        UNSUB = onSnapshot(q, (snap) => {
-            msgDiv.innerHTML = '';
-            if (snap.empty) msgDiv.innerHTML = '<div class="loading">Belum ada pesan</div>';
-            snap.forEach(d => {
-                let m = d.data();
-                let isMe = m.senderId === USER.uid;
-                let el = document.createElement('div');
-                el.className = `msg ${isMe ? 'sent' : 'received'}`;
-                let time = m.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '';
-                el.innerHTML = `<div class="bubble">${escapeHtml(m.text)}</div><div class="time">${time}</div>`;
-                msgDiv.appendChild(el);
-            });
-            msgDiv.scrollTop = msgDiv.scrollHeight;
-        });
-        
-        document.getElementById('backBtn').onclick = () => {
-            if (UNSUB) UNSUB();
-            renderHome();
-        };
-        document.getElementById('sendBtn').onclick = async () => {
-            let input = document.getElementById('msgInput');
-            let text = input.value.trim();
-            if (text) {
-                await sendMsg(CHAT_ID, text);
-                input.value = '';
-            }
-        };
-        document.getElementById('msgInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('sendBtn').click();
-        });
-        document.getElementById('chatProfileBtn').onclick = () => showOtherProfile(contact.uid);
-    }
-    
     // MY PROFILE
     function showMyProfile() {
-        if (UNSUB) UNSUB();
+        if (UNSUB_MSG) UNSUB_MSG();
         let root = document.getElementById('app');
         root.innerHTML = `
             <div class="profile-screen" style="display:flex">
@@ -651,9 +590,7 @@
                     <h2>Profil Saya</h2>
                 </div>
                 <div class="profile-content">
-                    <div class="big-avatar" id="avatarBtn">
-                        ${USER?.photoURL ? `<img src="${USER.photoURL}">` : USER?.fullName?.charAt(0).toUpperCase()}
-                    </div>
+                    <div class="big-avatar">${USER?.fullName?.charAt(0).toUpperCase() || 'U'}</div>
                     <div class="info-row">
                         <label>Nama</label>
                         <div class="value" id="nameValue">${escapeHtml(USER?.fullName)}</div>
@@ -674,17 +611,7 @@
             </div>
         `;
         
-        document.getElementById('backBtn').onclick = () => renderHome();
-        document.getElementById('avatarBtn').onclick = () => {
-            let input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                let file = e.target.files[0];
-                if (file) uploadPhoto(file);
-            };
-            input.click();
-        };
+        document.getElementById('backBtn').onclick = () => renderMainScreen();
         
         let editing = false;
         document.getElementById('editBtn').onclick = () => {
@@ -706,43 +633,7 @@
             if (newName) {
                 await updateUser({ fullName: newName, bio: newBio });
             }
-            showMyProfile();
-        };
-    }
-    
-    // OTHER PROFILE
-    async function showOtherProfile(uid) {
-        let other = await getUser(uid);
-        if (!other) return;
-        let root = document.getElementById('app');
-        root.innerHTML = `
-            <div class="profile-screen" style="display:flex">
-                <div class="header">
-                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
-                    <h2>Info Kontak</h2>
-                </div>
-                <div class="profile-content">
-                    <div class="big-avatar">
-                        ${other.photoURL ? `<img src="${other.photoURL}">` : other.fullName?.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="info-row">
-                        <label>Nama</label>
-                        <div class="value">${escapeHtml(other.fullName)}</div>
-                    </div>
-                    <div class="info-row">
-                        <label>Nomor HP</label>
-                        <div class="value">${other.phone}</div>
-                    </div>
-                    <div class="info-row">
-                        <label>Tentang</label>
-                        <div class="value">${escapeHtml(other.bio || 'Halo!')}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.getElementById('backBtn').onclick = () => {
-            if (CHAT_ID) openChat(CHAT_USER, CHAT_ID);
-            else renderHome();
+            renderMainScreen();
         };
     }
     
@@ -801,7 +692,6 @@
                         fullName: name,
                         phone: phone,
                         bio: 'Halo!',
-                        photoURL: null,
                         contacts: [],
                         createdAt: serverTimestamp()
                     });
@@ -817,11 +707,11 @@
         if (user) {
             USER = await getUser(user.uid);
             if (USER) {
-                renderHome();
+                renderMainScreen();
             } else {
                 setTimeout(async () => {
                     USER = await getUser(user.uid);
-                    if (USER) renderHome();
+                    if (USER) renderMainScreen();
                     else renderLogin();
                 }, 1000);
             }

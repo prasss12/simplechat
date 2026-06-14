@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChatKu - Fix Read</title>
+    <title>ChatKu - Lengkap</title>
     <style>
         * {
             margin: 0;
@@ -40,6 +40,25 @@
             font-size: 16px;
             cursor: pointer;
         }
+        .avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6b9d;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .avatar-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         .chat-list {
             flex: 1;
             overflow-y: auto;
@@ -67,6 +86,12 @@
             font-size: 20px;
             font-weight: bold;
             color: #ff6b9d;
+            overflow: hidden;
+        }
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .chat-name {
             font-weight: 600;
@@ -74,6 +99,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .chat-phone {
             font-size: 12px;
@@ -210,6 +236,14 @@
             font-size: 40px;
             font-weight: bold;
             color: #ff6b9d;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .big-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .info-row {
             background: #f5f5f5;
@@ -293,6 +327,20 @@
             padding: 40px;
             color: #999;
         }
+        .camera-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #ff6b9d;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -321,6 +369,8 @@
     let CHAT_USER = null;
     let UNSUB_MSG = null;
     let UNSUB_USER = null;
+    let NOTIF_PERMISSION = false;
+    let previewUnsubs = [];
     
     function toast(msg) {
         let t = document.querySelector('.toast');
@@ -337,6 +387,23 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
     
+    function compressImage(file, callback) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, 200, 200);
+                callback(canvas.toDataURL('image/jpeg', 0.7));
+            };
+        };
+    }
+    
     async function getUser(uid) {
         let s = await getDoc(doc(db, 'users', uid));
         return s.exists() ? { uid, ...s.data() } : null;
@@ -344,7 +411,15 @@
     
     async function updateUser(data) {
         await updateDoc(doc(db, 'users', USER.uid), data);
+        USER = await getUser(USER.uid);
         toast('✅ Profil diperbarui');
+        renderMainScreen();
+    }
+    
+    function uploadPhoto(file) {
+        compressImage(file, async (base64) => {
+            await updateUser({ photoURL: base64 });
+        });
     }
     
     async function getChat(uid1, uid2) {
@@ -366,6 +441,11 @@
             timestamp: serverTimestamp(),
             read: false
         });
+        
+        // Notifikasi jika tab tidak aktif
+        if (document.hidden && NOTIF_PERMISSION) {
+            new Notification('Pesan baru', { body: text });
+        }
     }
     
     async function addContact(phone) {
@@ -379,23 +459,19 @@
         return true;
     }
     
-    // MARK ALL MESSAGES AS READ
     async function markAllAsRead(chatId, otherId) {
         if (!chatId) return;
         let msgsRef = collection(db, 'chats', chatId, 'messages');
         let q = query(msgsRef, where('senderId', '==', otherId), where('read', '==', false));
         let snap = await getDocs(q);
-        
         for (let docMsg of snap.docs) {
             await updateDoc(docMsg.ref, { read: true });
         }
-        return snap.size;
     }
     
-    // REALTIME RENDER CHAT LIST
-    function startRealtimeChatList() {
+    // REALTIME CHAT LIST
+    function startRealtimeUser() {
         if (UNSUB_USER) UNSUB_USER();
-        
         const userRef = doc(db, 'users', USER.uid);
         UNSUB_USER = onSnapshot(userRef, async () => {
             USER = await getUser(USER.uid);
@@ -403,17 +479,11 @@
         });
     }
     
-    // Store unsubscribe functions for each chat preview
-    let previewUnsubs = [];
-    
     async function renderChatList() {
         let container = document.getElementById('chatList');
         if (!container) return;
         
-        // Cleanup previous preview listeners
-        for (let unsub of previewUnsubs) {
-            if (unsub) unsub();
-        }
+        for (let unsub of previewUnsubs) if (unsub) unsub();
         previewUnsubs = [];
         
         let contacts = USER?.contacts || [];
@@ -438,7 +508,9 @@
             div.className = 'chat-item';
             div.id = `chat_${chatId}`;
             div.innerHTML = `
-                <div class="chat-avatar">${c.fullName?.charAt(0).toUpperCase()}</div>
+                <div class="chat-avatar">
+                    ${c.photoURL ? `<img src="${c.photoURL}">` : c.fullName?.charAt(0).toUpperCase()}
+                </div>
                 <div style="flex:1">
                     <div class="chat-name">
                         <span>${escapeHtml(c.fullName)}</span>
@@ -448,15 +520,13 @@
                     <div class="chat-preview">Loading...</div>
                 </div>
             `;
-            
             div.onclick = async () => {
-                // Mark as read when opening chat
                 await markAllAsRead(chatId, c.uid);
                 await openChat(c, chatId);
             };
             container.appendChild(div);
             
-            // Subscribe ke pesan untuk update realtime
+            // Realtime preview & unread
             let msgQuery = query(collection(db, 'chats', chatId, 'messages'), orderBy('timestamp', 'desc'));
             let unsub = onSnapshot(msgQuery, (snap) => {
                 let lastMsg = '';
@@ -478,8 +548,8 @@
                             badgeSpan.innerText = unread;
                             badgeSpan.style.display = 'inline-flex';
                         }
-                    } else {
-                        if (badgeSpan) badgeSpan.style.display = 'none';
+                    } else if (badgeSpan) {
+                        badgeSpan.style.display = 'none';
                     }
                 }
             });
@@ -498,6 +568,9 @@
             <div class="chat-screen" style="display:flex">
                 <div class="header">
                     <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                    <div class="avatar-small" id="chatProfileBtn">
+                        ${contact.photoURL ? `<img src="${contact.photoURL}">` : contact.fullName?.charAt(0).toUpperCase()}
+                    </div>
                     <h2 style="flex:1; font-size:16px">${escapeHtml(contact.fullName)}</h2>
                 </div>
                 <div class="messages" id="msgContainer"></div>
@@ -540,6 +613,7 @@
         document.getElementById('msgInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') document.getElementById('sendBtn').click();
         });
+        document.getElementById('chatProfileBtn').onclick = () => showOtherProfile(contact.uid);
     }
     
     // MAIN SCREEN
@@ -547,8 +621,8 @@
         let root = document.getElementById('app');
         root.innerHTML = `
             <div class="header">
-                <div class="avatar-small" id="profileBtn" style="background:white; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#ff6b9d; font-weight:bold">
-                    ${USER?.fullName?.charAt(0) || 'U'}
+                <div class="avatar-small" id="profileBtn">
+                    ${USER?.photoURL ? `<img src="${USER.photoURL}">` : (USER?.fullName?.charAt(0) || 'U')}
                 </div>
                 <h2>ChatKu</h2>
                 <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
@@ -561,7 +635,7 @@
         `;
         
         await renderChatList();
-        startRealtimeChatList();
+        startRealtimeUser();
         
         document.getElementById('profileBtn').onclick = showMyProfile;
         document.getElementById('myProfileBtn').onclick = showMyProfile;
@@ -593,9 +667,14 @@
             };
             document.getElementById('cancel').onclick = () => modal.remove();
         };
+        
+        // Minta izin notifikasi
+        if ('Notification' in window && !NOTIF_PERMISSION && Notification.permission !== 'denied') {
+            Notification.requestPermission().then(perm => NOTIF_PERMISSION = perm === 'granted');
+        }
     }
     
-    // MY PROFILE
+    // MY PROFILE (LENGKAP DENGAN FOTO)
     function showMyProfile() {
         if (UNSUB_MSG) UNSUB_MSG();
         let root = document.getElementById('app');
@@ -606,7 +685,10 @@
                     <h2>Profil Saya</h2>
                 </div>
                 <div class="profile-content">
-                    <div class="big-avatar">${USER?.fullName?.charAt(0).toUpperCase() || 'U'}</div>
+                    <div class="big-avatar" id="avatarBtn">
+                        ${USER?.photoURL ? `<img src="${USER.photoURL}">` : USER?.fullName?.charAt(0).toUpperCase()}
+                        <div class="camera-icon"><i class="fas fa-camera"></i></div>
+                    </div>
                     <div class="info-row">
                         <label>Nama</label>
                         <div class="value" id="nameValue">${escapeHtml(USER?.fullName)}</div>
@@ -628,6 +710,16 @@
         `;
         
         document.getElementById('backBtn').onclick = () => renderMainScreen();
+        document.getElementById('avatarBtn').onclick = () => {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                let file = e.target.files[0];
+                if (file) uploadPhoto(file);
+            };
+            input.click();
+        };
         
         let editing = false;
         document.getElementById('editBtn').onclick = () => {
@@ -650,6 +742,42 @@
                 await updateUser({ fullName: newName, bio: newBio });
             }
             renderMainScreen();
+        };
+    }
+    
+    // OTHER PROFILE
+    async function showOtherProfile(uid) {
+        let other = await getUser(uid);
+        if (!other) return;
+        let root = document.getElementById('app');
+        root.innerHTML = `
+            <div class="profile-screen" style="display:flex">
+                <div class="header">
+                    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Info Kontak</h2>
+                </div>
+                <div class="profile-content">
+                    <div class="big-avatar">
+                        ${other.photoURL ? `<img src="${other.photoURL}">` : other.fullName?.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="info-row">
+                        <label>Nama</label>
+                        <div class="value">${escapeHtml(other.fullName)}</div>
+                    </div>
+                    <div class="info-row">
+                        <label>Nomor HP</label>
+                        <div class="value">${other.phone}</div>
+                    </div>
+                    <div class="info-row">
+                        <label>Tentang</label>
+                        <div class="value">${escapeHtml(other.bio || 'Halo!')}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('backBtn').onclick = () => {
+            if (CHAT_ID) openChat(CHAT_USER, CHAT_ID);
+            else renderMainScreen();
         };
     }
     
@@ -708,6 +836,7 @@
                         fullName: name,
                         phone: phone,
                         bio: 'Halo!',
+                        photoURL: null,
                         contacts: [],
                         createdAt: serverTimestamp()
                     });

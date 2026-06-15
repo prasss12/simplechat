@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace - Jual Beli Online</title>
+    <title>Marketplace Pro - Jual Beli Online</title>
     <style>
         * {
             margin: 0;
@@ -13,8 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #f5f5f5;
         }
 
         /* Navbar */
@@ -33,51 +32,74 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #667eea;
+            color: #ff6b6b;
+            cursor: pointer;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
             text-decoration: none;
             color: #333;
             cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b6b;
         }
 
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.2rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
+            font-weight: 500;
         }
 
         .btn-primary {
-            background: #667eea;
+            background: #ff6b6b;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #5a67d8;
+            background: #ff5252;
+            transform: translateY(-2px);
         }
 
-        .btn-danger {
-            background: #e53e3e;
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .btn-outline:hover {
+            background: #ff6b6b;
             color: white;
         }
 
-        .btn-danger:hover {
-            background: #c53030;
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
         }
 
         /* Container */
@@ -97,14 +119,16 @@
 
         .product-card {
             background: white;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
 
         .product-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
 
         .product-image {
@@ -124,16 +148,15 @@
         }
 
         .product-price {
-            color: #667eea;
-            font-size: 1.2rem;
+            color: #ff6b6b;
+            font-size: 1.3rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
         }
 
-        .product-seller {
+        .product-stock {
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
         }
 
         /* Modal */
@@ -153,7 +176,7 @@
         .modal-content {
             background: white;
             padding: 2rem;
-            border-radius: 10px;
+            border-radius: 12px;
             width: 90%;
             max-width: 500px;
             max-height: 90vh;
@@ -164,12 +187,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .close {
             cursor: pointer;
             font-size: 1.5rem;
+            color: #999;
         }
 
         .form-group {
@@ -179,17 +203,103 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: bold;
+            font-weight: 500;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 1rem;
+        }
+
+        /* Profile Page */
+        .profile-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .profile-info h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        /* Cart */
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-quantity {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .cart-quantity button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         /* Alert */
@@ -198,185 +308,109 @@
             top: 20px;
             right: 20px;
             padding: 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
             color: white;
             z-index: 3000;
             animation: slideIn 0.3s ease;
         }
 
-        .alert-success {
-            background: #48bb78;
-        }
-
-        .alert-error {
-            background: #e53e3e;
-        }
+        .alert-success { background: #28a745; }
+        .alert-error { background: #dc3545; }
+        .alert-info { background: #17a2b8; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(0);
-            }
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: white;
+        /* Badge */
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: bold;
         }
 
-        /* Form Section */
-        .form-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .form-section h2 {
-            margin-bottom: 1rem;
-        }
+        .badge-admin { background: #dc3545; color: white; }
+        .badge-business { background: #ffc107; color: #333; }
+        .badge-user { background: #28a745; color: white; }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
+            .nav-container { flex-direction: column; }
+            .profile-header { flex-direction: column; align-items: center; text-align: center; }
+            .profile-stats { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">Marketplace</div>
-            <div class="nav-links">
-                <a onclick="showProducts()">Produk</a>
-                <a onclick="showMyProducts()">Produk Saya</a>
-                <a onclick="showOrders()">Pesanan Saya</a>
-                <div id="authButtons">
-                    <button class="btn btn-primary" onclick="showLoginModal()">Login</button>
-                    <button class="btn btn-primary" onclick="showRegisterModal()">Register</button>
-                </div>
-                <div id="userInfo" style="display: none;">
-                    <span id="userName"></span>
-                    <button class="btn btn-danger" onclick="logout()">Logout</button>
-                </div>
+            <div class="logo" onclick="showProducts()">🏪 Marketplace Pro</div>
+            <div class="nav-links" id="navLinks">
+                <!-- Dynamic nav links -->
             </div>
         </div>
     </nav>
 
-    <div class="container" id="mainContent">
-        <!-- Content will be loaded here -->
-    </div>
+    <div class="container" id="mainContent"></div>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Login</h2>
-                <span class="close" onclick="closeModal('loginModal')">&times;</span>
-            </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-        </div>
-    </div>
+    <!-- Modals -->
+    <div id="loginModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Login</h2><span class="close" onclick="closeModal('loginModal')">&times;</span></div>
+        <form id="loginForm"><div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Login</button></form>
+        <div style="text-align:center; margin-top:1rem"><button class="btn btn-outline" onclick="googleLogin()" style="width:100%">🔐 Login dengan Google</button></div>
+        <div style="text-align:center; margin-top:1rem">Belum punya akun? <a onclick="showRegisterModal()" style="color:#ff6b6b;cursor:pointer">Daftar</a></div>
+    </div></div>
 
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Register</h2>
-                <span class="close" onclick="closeModal('registerModal')">&times;</span>
-            </div>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label>Nama</label>
-                    <input type="text" id="registerName" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="registerEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="registerPassword" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        </div>
-    </div>
+    <div id="registerModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Daftar Akun</h2><span class="close" onclick="closeModal('registerModal')">&times;</span></div>
+        <form id="registerForm"><div class="form-group"><label>Nama Lengkap</label><input type="text" id="registerName" required></div>
+        <div class="form-group"><label>Email</label><input type="email" id="registerEmail" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="registerPassword" required></div>
+        <div class="form-group"><label>Tipe Akun</label><select id="registerRole"><option value="user">Pembeli Biasa</option><option value="business">Bisnis/Penjual</option></select></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Daftar</button></form>
+    </div></div>
 
-    <!-- Add Product Modal -->
-    <div id="addProductModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Tambah Produk</h2>
-                <span class="close" onclick="closeModal('addProductModal')">&times;</span>
-            </div>
-            <form id="addProductForm">
-                <div class="form-group">
-                    <label>Nama Produk</label>
-                    <input type="text" id="productName" required>
-                </div>
-                <div class="form-group">
-                    <label>Harga</label>
-                    <input type="number" id="productPrice" required>
-                </div>
-                <div class="form-group">
-                    <label>Deskripsi</label>
-                    <textarea id="productDescription" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>URL Gambar</label>
-                    <input type="url" id="productImage" placeholder="https://via.placeholder.com/300">
-                </div>
-                <button type="submit" class="btn btn-primary">Tambah Produk</button>
-            </form>
-        </div>
-    </div>
+    <div id="addProductModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Tambah Produk</h2><span class="close" onclick="closeModal('addProductModal')">&times;</span></div>
+        <form id="addProductForm"><div class="form-group"><label>Nama Produk</label><input type="text" id="productName" required></div>
+        <div class="form-group"><label>Harga (Rp)</label><input type="number" id="productPrice" required></div>
+        <div class="form-group"><label>Stok</label><input type="number" id="productStock" required value="1"></div>
+        <div class="form-group"><label>Deskripsi</label><textarea id="productDescription" rows="3" required></textarea></div>
+        <div class="form-group"><label>URL Gambar</label><input type="url" id="productImage" placeholder="https://via.placeholder.com/300"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Tambah Produk</button></form>
+    </div></div>
 
-    <!-- Firebase SDK -->
+    <div id="addressModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Alamat Pengiriman</h2><span class="close" onclick="closeModal('addressModal')">&times;</span></div>
+        <form id="addressForm"><div class="form-group"><label>Alamat Lengkap</label><textarea id="address" rows="3" required></textarea></div>
+        <div class="form-group"><label>Kota</label><input type="text" id="city" required></div>
+        <div class="form-group"><label>Kode Pos</label><input type="text" id="postalCode" required></div>
+        <div class="form-group"><label>No. Telepon</label><input type="tel" id="phone" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Simpan Alamat</button></form>
+    </div></div>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
             authDomain: "simplechat-85cd8.firebaseapp.com",
             projectId: "simplechat-85cd8",
             storageBucket: "simplechat-85cd8.firebasestorage.app",
             messagingSenderId: "244789873168",
-            appId: "1:244789873168:web:4cba5481f689ab3103d895",
-            measurementId: "G-KR9MJP5QKM"
+            appId: "1:244789873168:web:4cba5481f689ab3103d895"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         let currentUser = null;
+        let currentUserData = null;
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-        // Show alert message
         function showAlert(message, type = 'success') {
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
@@ -385,313 +419,363 @@
             setTimeout(() => alert.remove(), 3000);
         }
 
-        // Close modal
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // Show login modal
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        // Show register modal
-        function showRegisterModal() {
-            document.getElementById('registerModal').style.display = 'flex';
-        }
-
-        // Show add product modal
-        function showAddProductModal() {
-            if (!currentUser) {
-                showAlert('Silakan login terlebih dahulu', 'error');
+        function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+        function showRegisterModal() { document.getElementById('registerModal').style.display = 'flex'; }
+        function showAddProductModal() { 
+            if (!currentUser) { showAlert('Login dulu ya!', 'error'); return; }
+            if (currentUserData?.role !== 'business' && currentUserData?.role !== 'admin') {
+                showAlert('Hanya akun bisnis yang bisa tambah produk!', 'error');
                 return;
             }
             document.getElementById('addProductModal').style.display = 'flex';
         }
+        function showAddressModal() { document.getElementById('addressModal').style.display = 'flex'; }
 
-        // Login form handler
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
+        // Login with Google
+        async function googleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                const result = await auth.signInWithPopup(provider);
+                const userRef = db.collection('users').doc(result.user.uid);
+                const userDoc = await userRef.get();
+                if (!userDoc.exists) {
+                    await userRef.set({
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        role: 'user',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                showAlert('Login Google berhasil!');
+                closeModal('loginModal');
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
+
+        // Login form
+        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await auth.signInWithEmailAndPassword(
+                    document.getElementById('loginEmail').value,
+                    document.getElementById('loginPassword').value
+                );
                 showAlert('Login berhasil!');
                 closeModal('loginModal');
-                updateAuthUI();
-                showProducts();
             } catch (error) {
                 showAlert(error.message, 'error');
             }
         });
 
-        // Register form handler
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        // Register form
+        document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
+            const role = document.getElementById('registerRole').value;
             
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 await db.collection('users').doc(userCredential.user.uid).set({
-                    name: name,
-                    email: email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showAlert('Registrasi berhasil!');
-                closeModal('registerModal');
-                updateAuthUI();
-                showProducts();
-            } catch (error) {
-                showAlert(error.message, 'error');
-            }
-        });
-
-        // Add product form handler
-        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('productName').value;
-            const price = parseInt(document.getElementById('productPrice').value);
-            const description = document.getElementById('productDescription').value;
-            const imageUrl = document.getElementById('productImage').value || 'https://via.placeholder.com/300';
-            
-            try {
-                await db.collection('products').add({
-                    name: name,
-                    price: price,
-                    description: description,
-                    imageUrl: imageUrl,
-                    sellerId: currentUser.uid,
-                    sellerName: currentUser.displayName || currentUser.email,
+                    name, email, role,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'available'
+                    address: '', city: '', postalCode: '', phone: ''
                 });
-                showAlert('Produk berhasil ditambahkan!');
-                closeModal('addProductModal');
-                document.getElementById('addProductForm').reset();
-                showMyProducts();
+                showAlert('Daftar berhasil!');
+                closeModal('registerModal');
             } catch (error) {
                 showAlert(error.message, 'error');
             }
         });
 
-        // Logout
-        async function logout() {
-            await auth.signOut();
-            showAlert('Logout berhasil!');
-            updateAuthUI();
-            showProducts();
-        }
+        // Add product
+        document.getElementById('addProductForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await db.collection('products').add({
+                name: document.getElementById('productName').value,
+                price: parseInt(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                description: document.getElementById('productDescription').value,
+                imageUrl: document.getElementById('productImage').value || 'https://via.placeholder.com/300',
+                sellerId: currentUser.uid,
+                sellerName: currentUserData?.name,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'available'
+            });
+            showAlert('Produk ditambahkan!');
+            closeModal('addProductModal');
+            document.getElementById('addProductForm').reset();
+            showMyProducts();
+        });
 
-        // Update UI based on auth state
-        function updateAuthUI() {
-            currentUser = auth.currentUser;
-            if (currentUser) {
-                document.getElementById('authButtons').style.display = 'none';
-                document.getElementById('userInfo').style.display = 'flex';
-                document.getElementById('userName').textContent = currentUser.email;
+        // Save address
+        document.getElementById('addressForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await db.collection('users').doc(currentUser.uid).update({
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                postalCode: document.getElementById('postalCode').value,
+                phone: document.getElementById('phone').value
+            });
+            showAlert('Alamat disimpan!');
+            closeModal('addressModal');
+            showProfile();
+        });
+
+        // Cart functions
+        function addToCart(product) {
+            const existing = cart.find(item => item.id === product.id);
+            if (existing) {
+                if (existing.quantity < product.stock) existing.quantity++;
+                else { showAlert('Stok tidak cukup!', 'error'); return; }
             } else {
-                document.getElementById('authButtons').style.display = 'flex';
-                document.getElementById('userInfo').style.display = 'none';
+                cart.push({ ...product, quantity: 1 });
             }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            showAlert(`${product.name} ditambahkan ke keranjang!`);
+            updateCartCount();
         }
 
-        // Show all products
-        async function showProducts() {
-            const content = document.getElementById('mainContent');
-            content.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1 style="color: white;">Semua Produk</h1>
-                    ${currentUser ? '<button class="btn btn-primary" onclick="showAddProductModal()">+ Tambah Produk</button>' : ''}
-                </div>
-                <div class="products-grid" id="productsGrid">
-                    <div class="loading">Loading...</div>
-                </div>
-            `;
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartBtn = document.getElementById('cartCount');
+            if (cartBtn) cartBtn.textContent = count;
+        }
+
+        async function checkout() {
+            if (!currentUser) { showAlert('Login dulu!', 'error'); return; }
+            if (cart.length === 0) { showAlert('Keranjang kosong!', 'error'); return; }
             
-            const productsRef = db.collection('products').where('status', '==', 'available').orderBy('createdAt', 'desc');
-            productsRef.onSnapshot((snapshot) => {
-                const productsGrid = document.getElementById('productsGrid');
-                if (snapshot.empty) {
-                    productsGrid.innerHTML = '<div class="loading">Belum ada produk</div>';
+            const userData = await db.collection('users').doc(currentUser.uid).get();
+            const address = userData.data();
+            if (!address.address) { showAddressModal(); showAlert('Isi alamat dulu!', 'info'); return; }
+
+            for (const item of cart) {
+                const productRef = db.collection('products').doc(item.id);
+                const productDoc = await productRef.get();
+                if (productDoc.data().stock < item.quantity) {
+                    showAlert(`Stok ${item.name} tidak cukup!`, 'error');
                     return;
                 }
-                
-                productsGrid.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const product = doc.data();
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    productCard.innerHTML = `
-                        <img src="${product.imageUrl}" class="product-image" alt="${product.name}">
-                        <div class="product-info">
-                            <div class="product-title">${product.name}</div>
-                            <div class="product-price">Rp ${product.price.toLocaleString()}</div>
-                            <div class="product-seller">Penjual: ${product.sellerName}</div>
-                            <p style="color: #666; margin-bottom: 1rem;">${product.description.substring(0, 100)}${product.description.length > 100 ? '...' : ''}</p>
-                            ${currentUser && currentUser.uid !== product.sellerId ? `<button class="btn btn-primary" onclick="buyProduct('${doc.id}', ${product.price})">Beli</button>` : ''}
-                        </div>
-                    `;
-                    productsGrid.appendChild(productCard);
-                });
-            });
-        }
-
-        // Show my products
-        async function showMyProducts() {
-            if (!currentUser) {
-                showAlert('Silakan login terlebih dahulu', 'error');
-                return;
             }
-            
-            const content = document.getElementById('mainContent');
-            content.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h1 style="color: white;">Produk Saya</h1>
-                    <button class="btn btn-primary" onclick="showAddProductModal()">+ Tambah Produk</button>
-                </div>
-                <div class="products-grid" id="myProductsGrid">
-                    <div class="loading">Loading...</div>
-                </div>
-            `;
-            
-            const productsRef = db.collection('products').where('sellerId', '==', currentUser.uid).orderBy('createdAt', 'desc');
-            productsRef.onSnapshot((snapshot) => {
-                const productsGrid = document.getElementById('myProductsGrid');
-                if (snapshot.empty) {
-                    productsGrid.innerHTML = '<div class="loading">Anda belum memiliki produk</div>';
-                    return;
-                }
-                
-                productsGrid.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const product = doc.data();
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    productCard.innerHTML = `
-                        <img src="${product.imageUrl}" class="product-image" alt="${product.name}">
-                        <div class="product-info">
-                            <div class="product-title">${product.name}</div>
-                            <div class="product-price">Rp ${product.price.toLocaleString()}</div>
-                            <div class="product-seller">Status: ${product.status === 'available' ? 'Tersedia' : 'Terjual'}</div>
-                            <p style="color: #666; margin-bottom: 1rem;">${product.description.substring(0, 100)}${product.description.length > 100 ? '...' : ''}</p>
-                            ${product.status === 'available' ? `<button class="btn btn-danger" onclick="deleteProduct('${doc.id}')">Hapus</button>` : ''}
-                        </div>
-                    `;
-                    productsGrid.appendChild(productCard);
-                });
-            });
-        }
 
-        // Buy product
-        async function buyProduct(productId, price) {
-            if (!currentUser) {
-                showAlert('Silakan login terlebih dahulu', 'error');
-                return;
-            }
-            
-            try {
+            for (const item of cart) {
                 await db.runTransaction(async (transaction) => {
-                    const productRef = db.collection('products').doc(productId);
+                    const productRef = db.collection('products').doc(item.id);
                     const productDoc = await transaction.get(productRef);
-                    
-                    if (!productDoc.exists) {
-                        throw new Error('Produk tidak ditemukan');
-                    }
-                    
-                    if (productDoc.data().status !== 'available') {
-                        throw new Error('Produk sudah terjual');
-                    }
-                    
-                    transaction.update(productRef, { status: 'sold' });
-                    
+                    transaction.update(productRef, { stock: productDoc.data().stock - item.quantity });
                     transaction.set(db.collection('orders').doc(), {
-                        productId: productId,
-                        productName: productDoc.data().name,
-                        productPrice: price,
-                        buyerId: currentUser.uid,
-                        buyerName: currentUser.email,
-                        sellerId: productDoc.data().sellerId,
-                        sellerName: productDoc.data().sellerName,
+                        productId: item.id, productName: item.name, price: item.price,
+                        quantity: item.quantity, total: item.price * item.quantity,
+                        buyerId: currentUser.uid, buyerName: currentUserData?.name,
+                        sellerId: item.sellerId, sellerName: item.sellerName,
+                        address: address.address, city: address.city,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        status: 'completed'
+                        status: 'paid'
                     });
                 });
-                
-                showAlert('Pembelian berhasil!');
-                showProducts();
-            } catch (error) {
-                showAlert(error.message, 'error');
             }
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showAlert('Checkout berhasil! Pesanan diproses.');
+            showOrders();
         }
 
-        // Delete product
-        async function deleteProduct(productId) {
-            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-                try {
-                    await db.collection('products').doc(productId).delete();
-                    showAlert('Produk berhasil dihapus!');
-                } catch (error) {
-                    showAlert(error.message, 'error');
-                }
-            }
-        }
-
-        // Show orders
-        async function showOrders() {
+        // Navigation & Display
+        function updateNav() {
+            const nav = document.getElementById('navLinks');
             if (!currentUser) {
-                showAlert('Silakan login terlebih dahulu', 'error');
+                nav.innerHTML = `<a onclick="showProducts()">🏠 Produk</a>
+                                <button class="btn btn-outline" onclick="showLoginModal()">Login</button>
+                                <button class="btn btn-primary" onclick="showRegisterModal()">Daftar</button>`;
                 return;
             }
-            
+            const role = currentUserData?.role;
+            const roleBadge = role === 'admin' ? '👑 Admin' : role === 'business' ? '🏢 Bisnis' : '👤 User';
+            nav.innerHTML = `<a onclick="showProducts()">🏠 Produk</a>
+                            ${role === 'business' || role === 'admin' ? '<a onclick="showMyProducts()">📦 Produk Saya</a>' : ''}
+                            <a onclick="showCart()">🛒 Keranjang (<span id="cartCount">0</span>)</a>
+                            <a onclick="showOrders()">📋 Pesanan</a>
+                            <a onclick="showProfile()">👤 Profile</a>
+                            <span class="badge ${role === 'admin' ? 'badge-admin' : role === 'business' ? 'badge-business' : 'badge-user'}">${roleBadge}</span>
+                            <button class="btn btn-danger" onclick="logout()">Logout</button>`;
+            updateCartCount();
+        }
+
+        async function showProducts() {
             const content = document.getElementById('mainContent');
-            content.innerHTML = `
-                <h1 style="color: white; margin-bottom: 2rem;">Pesanan Saya</h1>
-                <div id="ordersList"></div>
-            `;
+            content.innerHTML = `<h2 style="margin-bottom:1rem">🛍️ Semua Produk</h2><div class="products-grid" id="productsGrid"><div class="loading">Loading...</div></div>`;
             
-            const ordersRef = db.collection('orders')
-                .where('buyerId', '==', currentUser.uid)
-                .orderBy('createdAt', 'desc');
-            
-            ordersRef.onSnapshot((snapshot) => {
-                const ordersList = document.getElementById('ordersList');
-                if (snapshot.empty) {
-                    ordersList.innerHTML = '<div class="loading">Belum ada pesanan</div>';
-                    return;
-                }
-                
-                ordersList.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const order = doc.data();
-                    const orderCard = document.createElement('div');
-                    orderCard.className = 'product-card';
-                    orderCard.style.marginBottom = '1rem';
-                    orderCard.innerHTML = `
+            db.collection('products').where('status', '==', 'available').where('stock', '>', 0).orderBy('createdAt', 'desc').onSnapshot((snap) => {
+                const grid = document.getElementById('productsGrid');
+                if (snap.empty) { grid.innerHTML = '<div>Tidak ada produk</div>'; return; }
+                grid.innerHTML = '';
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    grid.innerHTML += `<div class="product-card">
+                        <img src="${p.imageUrl}" class="product-image">
                         <div class="product-info">
-                            <div class="product-title">${order.productName}</div>
-                            <div class="product-price">Rp ${order.productPrice.toLocaleString()}</div>
-                            <div class="product-seller">Penjual: ${order.sellerName}</div>
-                            <div class="product-seller">Status: ${order.status === 'completed' ? 'Selesai' : 'Diproses'}</div>
-                            <div class="product-seller">Tanggal: ${order.createdAt?.toDate().toLocaleDateString()}</div>
+                            <div class="product-title">${p.name}</div>
+                            <div class="product-price">Rp ${p.price.toLocaleString()}</div>
+                            <div class="product-stock">Stok: ${p.stock}</div>
+                            <div>👤 ${p.sellerName}</div>
+                            ${currentUser && currentUser.uid !== p.sellerId ? `<button class="btn btn-primary" style="margin-top:0.5rem" onclick='addToCart({id:"${doc.id}",name:"${p.name}",price:${p.price},stock:${p.stock},sellerId:"${p.sellerId}",sellerName:"${p.sellerName}",image:"${p.imageUrl}"})'>🛒 Tambah ke Keranjang</button>` : ''}
                         </div>
-                    `;
-                    ordersList.appendChild(orderCard);
+                    </div>`;
                 });
             });
         }
 
-        // Auth state observer
-        auth.onAuthStateChanged((user) => {
+        async function showMyProducts() {
+            if (!currentUser || (currentUserData?.role !== 'business' && currentUserData?.role !== 'admin')) {
+                showAlert('Hanya akun bisnis!', 'error');
+                return;
+            }
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:1rem"><h2>📦 Produk Saya</h2><button class="btn btn-primary" onclick="showAddProductModal()">+ Tambah</button></div>
+                                <div class="products-grid" id="myProductsGrid"><div>Loading...</div></div>`;
+            
+            db.collection('products').where('sellerId', '==', currentUser.uid).onSnapshot((snap) => {
+                const grid = document.getElementById('myProductsGrid');
+                if (snap.empty) { grid.innerHTML = '<div>Belum ada produk</div>'; return; }
+                grid.innerHTML = '';
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    grid.innerHTML += `<div class="product-card">
+                        <img src="${p.imageUrl}" class="product-image">
+                        <div class="product-info">
+                            <div class="product-title">${p.name}</div>
+                            <div class="product-price">Rp ${p.price.toLocaleString()}</div>
+                            <div class="product-stock">Stok: ${p.stock}</div>
+                            <button class="btn btn-danger" onclick="deleteProduct('${doc.id}')">Hapus</button>
+                        </div>
+                    </div>`;
+                });
+            });
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Hapus produk?')) {
+                await db.collection('products').doc(id).delete();
+                showAlert('Produk dihapus');
+            }
+        }
+
+        function showCart() {
+            const content = document.getElementById('mainContent');
+            if (cart.length === 0) {
+                content.innerHTML = '<div style="text-align:center;padding:3rem"><h3>🛒 Keranjang kosong</h3><button class="btn btn-primary" onclick="showProducts()">Belanja Yuk!</button></div>';
+                return;
+            }
+            let total = 0;
+            content.innerHTML = `<h2>🛒 Keranjang Belanja</h2>
+                <div id="cartItems"></div>
+                <div style="background:white;padding:1rem;border-radius:8px;margin-top:1rem">
+                    <h3>Total: Rp <span id="cartTotal">0</span></h3>
+                    <button class="btn btn-success" onclick="checkout()">✅ Checkout</button>
+                </div>`;
+            const container = document.getElementById('cartItems');
+            cart.forEach((item, idx) => {
+                total += item.price * item.quantity;
+                container.innerHTML += `<div class="cart-item">
+                    <img src="${item.image}" class="cart-item-image">
+                    <div class="cart-item-info"><strong>${item.name}</strong><br>Rp ${item.price.toLocaleString()}</div>
+                    <div class="cart-quantity">
+                        <button onclick="updateQuantity(${idx}, -1)">-</button>
+                        <span style="margin:0 10px">${item.quantity}</span>
+                        <button onclick="updateQuantity(${idx}, 1)">+</button>
+                    </div>
+                    <div>Rp ${(item.price * item.quantity).toLocaleString()}</div>
+                    <button class="btn btn-danger" onclick="removeFromCart(${idx})">🗑️</button>
+                </div>`;
+            });
+            document.getElementById('cartTotal').innerText = total.toLocaleString();
+        }
+
+        function updateQuantity(idx, delta) {
+            const newQty = cart[idx].quantity + delta;
+            if (newQty < 1) cart.splice(idx, 1);
+            else if (newQty <= cart[idx].stock) cart[idx].quantity = newQty;
+            else { showAlert('Stok habis!', 'error'); return; }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showCart();
+        }
+        function removeFromCart(idx) { cart.splice(idx, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartCount(); showCart(); }
+
+        async function showOrders() {
+            if (!currentUser) return;
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `<h2>📋 Pesanan Saya</h2><div id="ordersList"><div>Loading...</div></div>`;
+            db.collection('orders').where('buyerId', '==', currentUser.uid).orderBy('createdAt', 'desc').onSnapshot((snap) => {
+                const list = document.getElementById('ordersList');
+                if (snap.empty) { list.innerHTML = '<div>Belum ada pesanan</div>'; return; }
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const o = doc.data();
+                    list.innerHTML += `<div class="product-card" style="margin-bottom:1rem">
+                        <div class="product-info">
+                            <strong>${o.productName}</strong><br>
+                            ${o.quantity} x Rp ${o.price.toLocaleString()} = Rp ${o.total.toLocaleString()}<br>
+                            <span class="badge ${o.status === 'paid' ? 'badge-success' : 'badge-info'}">${o.status === 'paid' ? '✅ Dibayar' : 'Diproses'}</span><br>
+                            📍 ${o.address}, ${o.city}
+                        </div>
+                    </div>`;
+                });
+            });
+        }
+
+        async function showProfile() {
+            if (!currentUser) return;
+            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+            const data = userDoc.data();
+            const productsCount = (await db.collection('products').where('sellerId', '==', currentUser.uid).get()).size;
+            const ordersCount = (await db.collection('orders').where('buyerId', '==', currentUser.uid).get()).size;
+            
+            document.getElementById('mainContent').innerHTML = `
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">${data.name?.charAt(0) || '👤'}</div>
+                        <div class="profile-info">
+                            <h2>${data.name}</h2>
+                            <p>📧 ${data.email}</p>
+                            <p>🏷️ Role: ${data.role === 'admin' ? 'Administrator' : data.role === 'business' ? 'Akun Bisnis' : 'Pembeli'}</p>
+                            <button class="btn btn-outline" onclick="showAddressModal()">✏️ Edit Alamat</button>
+                        </div>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat-card"><div class="stat-number">${productsCount}</div><div>Produk</div></div>
+                        <div class="stat-card"><div class="stat-number">${ordersCount}</div><div>Pesanan</div></div>
+                        <div class="stat-card"><div class="stat-number">${cart.length}</div><div>Keranjang</div></div>
+                    </div>
+                    <div><strong>📍 Alamat:</strong><br>${data.address || 'Belum diisi'} ${data.city || ''} ${data.postalCode || ''}<br>📞 ${data.phone || '-'}</div>
+                </div>`;
+        }
+
+        async function logout() { await auth.signOut(); cart = []; localStorage.removeItem('cart'); showAlert('Logout!'); }
+
+        auth.onAuthStateChanged(async (user) => {
             currentUser = user;
-            updateAuthUI();
+            if (user) {
+                const doc = await db.collection('users').doc(user.uid).get();
+                currentUserData = doc.data();
+                if (!currentUserData) {
+                    await db.collection('users').doc(user.uid).set({ name: user.email, email: user.email, role: 'user', createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    currentUserData = { name: user.email, email: user.email, role: 'user' };
+                }
+            } else {
+                currentUserData = null;
+            }
+            updateNav();
             showProducts();
         });
-
-        // Initial load
-        showProducts();
     </script>
 </body>
 </html>

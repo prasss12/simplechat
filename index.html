@@ -508,6 +508,12 @@
             cursor: pointer;
         }
         #recordingTimer { font-size: 2rem; margin: 20px; }
+        .error-msg {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -524,6 +530,7 @@
                 <h1>Real-Time Chat</h1>
                 <p>Connect with friends instantly</p>
             </div>
+            <div id="loginError" class="error-msg"></div>
             <form id="loginForm">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
@@ -547,6 +554,7 @@
                 <i class="fab fa-whatsapp"></i>
                 <h2>Create Account</h2>
             </div>
+            <div id="registerError" class="error-msg"></div>
             <form id="registerFormElement">
                 <div class="input-group">
                     <i class="fas fa-user"></i>
@@ -682,9 +690,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     
     <script>
-        // ============================================
-        // FIREBASE CONFIG - SUDAH DIISI DENGAN KREDENSIAL ANDA
-        // ============================================
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
             authDomain: "simplechat-85cd8.firebaseapp.com",
@@ -729,7 +735,8 @@
         }
 
         function showLoading(show) {
-            document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.toggle('hidden', !show);
         }
 
         function compressImage(file, maxSizeMB = 0.5, maxWidthOrHeight = 800) {
@@ -794,6 +801,7 @@
 
         // ============ AUTHENTICATION ============
         auth.onAuthStateChanged(async (user) => {
+            console.log("Auth state changed:", user ? user.email : "null");
             if (user) {
                 currentUser = user;
                 await setupUserPresence(user.uid);
@@ -813,69 +821,151 @@
         });
 
         async function setupUserPresence(uid) {
-            await db.collection('users').doc(uid).set({
-                uid: uid,
-                email: currentUser.email,
-                displayName: currentUser.displayName || currentUser.email.split('@')[0],
-                photoURL: currentUser.photoURL || null,
-                lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                online: true
-            }, { merge: true });
-            const presenceRef = db.collection('presence').doc(uid);
-            presenceRef.set({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
-            presenceRef.onDisconnect().set({ online: false, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+            try {
+                await db.collection('users').doc(uid).set({
+                    uid: uid,
+                    email: currentUser.email,
+                    displayName: currentUser.displayName || currentUser.email.split('@')[0],
+                    photoURL: currentUser.photoURL || null,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    online: true
+                }, { merge: true });
+                const presenceRef = db.collection('presence').doc(uid);
+                presenceRef.set({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+                presenceRef.onDisconnect().set({ online: false, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+            } catch (err) {
+                console.error("Setup presence error:", err);
+            }
         }
 
         async function loadUserProfile(uid) {
-            const userDoc = await db.collection('users').doc(uid).get();
-            const userData = userDoc.data();
-            document.getElementById('currentUserName').textContent = userData?.displayName || currentUser.email.split('@')[0];
-            document.getElementById('profileName').value = userData?.displayName || '';
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            const defaultAvatar = 'https://ui-avatars.com/api/?background=25D366&color=fff&name=' + encodeURIComponent(userData?.displayName || 'User');
-            document.getElementById('userAvatarImg').src = userData?.photoURL || defaultAvatar;
-            document.getElementById('profileAvatarImg').src = userData?.photoURL || defaultAvatar;
+            try {
+                const userDoc = await db.collection('users').doc(uid).get();
+                const userData = userDoc.data();
+                document.getElementById('currentUserName').textContent = userData?.displayName || currentUser.email.split('@')[0];
+                document.getElementById('profileName').value = userData?.displayName || '';
+                document.getElementById('profileEmail').textContent = currentUser.email;
+                const defaultAvatar = 'https://ui-avatars.com/api/?background=25D366&color=fff&name=' + encodeURIComponent(userData?.displayName || 'User');
+                document.getElementById('userAvatarImg').src = userData?.photoURL || defaultAvatar;
+                document.getElementById('profileAvatarImg').src = userData?.photoURL || defaultAvatar;
+            } catch (err) {
+                console.error("Load profile error:", err);
+            }
         }
 
-        // Login handlers
-        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoading(true);
-            try {
-                await auth.signInWithEmailAndPassword(
-                    document.getElementById('loginEmail').value,
-                    document.getElementById('loginPassword').value
-                );
-            } catch (error) { alert(error.message); showLoading(false); }
-        });
-
+        // REGISTER - FIXED
         document.getElementById('registerFormElement')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             showLoading(true);
+            
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            
+            // Clear previous error
+            document.getElementById('registerError').innerHTML = '';
+            
+            // Validation
+            if (!name) {
+                document.getElementById('registerError').innerHTML = 'Please enter your name';
+                showLoading(false);
+                return;
+            }
+            
+            if (password.length < 6) {
+                document.getElementById('registerError').innerHTML = 'Password must be at least 6 characters';
+                showLoading(false);
+                return;
+            }
+            
             try {
-                const userCred = await auth.createUserWithEmailAndPassword(
-                    document.getElementById('registerEmail').value,
-                    document.getElementById('registerPassword').value
-                );
-                await db.collection('users').doc(userCred.user.uid).set({
-                    displayName: document.getElementById('registerName').value,
-                    email: document.getElementById('registerEmail').value
+                console.log("Creating user with email:", email);
+                // Create user in Firebase Auth
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                console.log("User created:", user.uid);
+                
+                // Update profile with display name
+                await user.updateProfile({
+                    displayName: name
                 });
-            } catch (error) { alert(error.message); showLoading(false); }
+                
+                // Save user data to Firestore
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    email: email,
+                    displayName: name,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log("User data saved to Firestore");
+                showToast('Registration successful!');
+                // Auto redirect will happen via onAuthStateChanged
+                
+            } catch (error) {
+                console.error("Registration error:", error);
+                let errorMsg = error.message;
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMsg = 'Email already registered. Please login.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMsg = 'Invalid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMsg = 'Password is too weak. Use at least 6 characters.';
+                }
+                document.getElementById('registerError').innerHTML = errorMsg;
+                showLoading(false);
+            }
         });
 
+        // LOGIN
+        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(true);
+            document.getElementById('loginError').innerHTML = '';
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showToast('Login successful!');
+            } catch (error) {
+                console.error("Login error:", error);
+                let errorMsg = error.message;
+                if (error.code === 'auth/user-not-found') {
+                    errorMsg = 'User not found. Please register first.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMsg = 'Wrong password.';
+                }
+                document.getElementById('loginError').innerHTML = errorMsg;
+                showLoading(false);
+            }
+        });
+
+        // Google Login
         document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
             showLoading(true);
             try {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await auth.signInWithPopup(provider);
-            } catch (error) { alert(error.message); showLoading(false); }
+                showToast('Google login successful!');
+            } catch (error) {
+                console.error("Google login error:", error);
+                alert('Google login failed: ' + error.message);
+                showLoading(false);
+            }
         });
 
         document.getElementById('logoutBtn')?.addEventListener('click', () => auth.signOut());
         
         document.getElementById('profileName')?.addEventListener('change', async (e) => {
-            if (currentUser) await db.collection('users').doc(currentUser.uid).update({ displayName: e.target.value });
+            if (currentUser) {
+                await db.collection('users').doc(currentUser.uid).update({ displayName: e.target.value });
+                await currentUser.updateProfile({ displayName: e.target.value });
+                document.getElementById('currentUserName').textContent = e.target.value;
+                showToast('Name updated!');
+            }
         });
 
         // Dark mode
@@ -904,11 +994,6 @@
             });
         });
 
-        document.getElementById('backToChatsBtn')?.addEventListener('click', () => {
-            document.querySelector('.chat-area').classList.remove('show');
-            document.querySelector('.sidebar').classList.add('show');
-        });
-
         document.getElementById('showRegister')?.addEventListener('click', (e) => {
             e.preventDefault();
             document.querySelector('.login-card').classList.add('hidden');
@@ -921,12 +1006,20 @@
             document.querySelector('.login-card').classList.remove('hidden');
         });
 
+        document.getElementById('backToChatsBtn')?.addEventListener('click', () => {
+            document.querySelector('.chat-area').classList.remove('show');
+            document.querySelector('.sidebar').classList.add('show');
+        });
+
         // ============ CHAT FUNCTIONS ============
-        async function initializeChats() { loadChatsList(); }
+        async function initializeChats() { 
+            if (currentUser) loadChatsList(); 
+        }
 
         async function loadChatsList() {
             const chatsList = document.getElementById('chatsList');
-            if (!chatsList) return;
+            if (!chatsList || !currentUser) return;
+            
             const chatsRef = db.collection('chats')
                 .where('participants', 'array-contains', currentUser.uid)
                 .orderBy('lastMessageTime', 'desc');
@@ -935,7 +1028,7 @@
                 chatsList.innerHTML = '';
                 for (const doc of snapshot.docs) {
                     const chat = doc.data();
-                    const otherId = chat.participants.find(p => p !== currentUser.uid);
+                    const otherId = chat.participants?.find(p => p !== currentUser.uid);
                     let chatName = chat.isGroup ? chat.groupName : 'Loading...';
                     let chatAvatar = null;
                     if (!chat.isGroup && otherId) {
@@ -987,7 +1080,8 @@
                 const messages = [];
                 snapshot.forEach(doc => messages.unshift({ id: doc.id, ...doc.data() }));
                 messages.forEach(msg => displayMessage(msg));
-                document.getElementById('messagesContainer').scrollTop = document.getElementById('messagesContainer').scrollHeight;
+                const container = document.getElementById('messagesContainer');
+                if (container) container.scrollTop = container.scrollHeight;
             });
         }
 
@@ -1020,12 +1114,6 @@
                 </div>
             `;
             messagesList.appendChild(div);
-            
-            if (message.viewOnce && !message.viewed && !isOutgoing) {
-                setTimeout(async () => {
-                    await db.collection('messages').doc(message.id).update({ viewed: true, mediaBase64: firebase.firestore.FieldValue.delete() });
-                }, 5000);
-            }
         }
 
         function formatMessageText(text) {
@@ -1037,6 +1125,11 @@
         }
 
         async function sendMessage() {
+            if (!currentChatId) {
+                showToast('Please select a chat first');
+                return;
+            }
+            
             const input = document.getElementById('messageInput');
             const content = input.value.trim();
             if (!content && !currentMediaToSend) return;
@@ -1058,16 +1151,22 @@
                 if (currentMediaToSend.viewOnce) { message.viewOnce = true; message.viewed = false; }
             }
             
-            await db.collection('messages').add(message);
-            await db.collection('chats').doc(currentChatId).update({
-                lastMessage: content || `[${currentMediaToSend?.type || 'Media'}]`,
-                lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            input.value = '';
-            currentReplyTo = null;
-            currentMediaToSend = null;
-            document.getElementById('replyPreview')?.classList.add('hidden');
+            try {
+                await db.collection('messages').add(message);
+                await db.collection('chats').doc(currentChatId).update({
+                    lastMessage: content || `[${currentMediaToSend?.type || 'Media'}]`,
+                    lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                input.value = '';
+                currentReplyTo = null;
+                currentMediaToSend = null;
+                document.getElementById('replyPreview')?.classList.add('hidden');
+                input.style.height = 'auto';
+            } catch (err) {
+                console.error("Send message error:", err);
+                showToast('Failed to send message');
+            }
         }
 
         window.replyToMsg = function(id, content) {
@@ -1090,8 +1189,17 @@
             if (confirm('Delete this message?')) await db.collection('messages').doc(id).delete();
         };
         
-        window.copyMsg = function(t) { navigator.clipboard.writeText(t); showToast('Copied!'); };
-        window.downloadDoc = function(url, name) { const a = document.createElement('a'); a.href = url; a.download = name; a.click(); };
+        window.copyMsg = function(t) { 
+            navigator.clipboard.writeText(t); 
+            showToast('Copied!'); 
+        };
+        
+        window.downloadDoc = function(url, name) { 
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = name; 
+            a.click(); 
+        };
 
         // Media upload
         window.uploadImage = () => {
@@ -1102,9 +1210,11 @@
                 const file = e.target.files[0];
                 const viewOnce = confirm('Send as view once?');
                 showLoading(true);
-                const compressed = await compressImage(file, 0.5, 800);
-                currentMediaToSend = { base64: compressed, type: 'image', name: file.name, size: compressed.length, viewOnce: viewOnce };
-                sendMessage();
+                try {
+                    const compressed = await compressImage(file, 0.5, 800);
+                    currentMediaToSend = { base64: compressed, type: 'image', name: file.name, size: compressed.length, viewOnce: viewOnce };
+                    sendMessage();
+                } catch (err) { alert('Failed to process image'); }
                 showLoading(false);
                 closeBottomSheet();
             };
@@ -1162,12 +1272,19 @@
             input.click();
         };
 
-        function closeBottomSheet() { document.getElementById('bottomSheet').classList.remove('show'); }
-        document.getElementById('attachBtn')?.addEventListener('click', () => document.getElementById('bottomSheet').classList.add('show'));
+        function closeBottomSheet() { 
+            document.getElementById('bottomSheet').classList.remove('show'); 
+        }
+        
+        document.getElementById('attachBtn')?.addEventListener('click', () => {
+            document.getElementById('bottomSheet').classList.add('show');
+        });
 
         // Voice recording
         let mediaRecorder, audioChunks = [];
-        document.getElementById('recordVoiceBtn')?.addEventListener('click', () => document.getElementById('voiceRecorderModal')?.classList.remove('hidden'));
+        document.getElementById('recordVoiceBtn')?.addEventListener('click', () => {
+            document.getElementById('voiceRecorderModal').classList.remove('hidden');
+        });
         
         async function startRecording() {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1176,7 +1293,7 @@
             mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
             mediaRecorder.onstop = async () => {
                 const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                if (blob.size > 500000) { alert('Voice note too long!'); return; }
+                if (blob.size > 500000) { alert('Voice note too long! Max 30 seconds.'); return; }
                 const base64 = await blobToBase64(blob);
                 currentMediaToSend = { base64: base64, type: 'audio', size: blob.size };
                 sendMessage();
@@ -1186,14 +1303,16 @@
             let sec = 0;
             const timer = setInterval(() => {
                 sec++;
-                document.getElementById('recordingTimer').textContent = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
+                const timerElem = document.getElementById('recordingTimer');
+                if (timerElem) timerElem.textContent = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
                 if (sec >= 30) { clearInterval(timer); stopRecording(); }
             }, 1000);
             document.getElementById('startRecordBtn').classList.add('hidden');
             document.getElementById('stopRecordBtn').classList.remove('hidden');
+            
             window.stopRecording = () => {
                 clearInterval(timer);
-                mediaRecorder.stop();
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
                 document.getElementById('voiceRecorderModal').classList.add('hidden');
                 document.getElementById('startRecordBtn').classList.remove('hidden');
                 document.getElementById('stopRecordBtn').classList.add('hidden');
@@ -1201,7 +1320,9 @@
         }
         
         document.getElementById('startRecordBtn')?.addEventListener('click', startRecording);
-        document.getElementById('stopRecordBtn')?.addEventListener('click', () => window.stopRecording?.());
+        document.getElementById('stopRecordBtn')?.addEventListener('click', () => {
+            if (window.stopRecording) window.stopRecording();
+        });
 
         // Typing indicator
         let typingTimeout;
@@ -1217,14 +1338,25 @@
                 const data = doc.data();
                 if (data) {
                     const isTyping = Object.entries(data).some(([uid, t]) => t && uid !== currentUser.uid);
-                    document.getElementById('chatTyping').classList.toggle('hidden', !isTyping);
+                    const typingElem = document.getElementById('chatTyping');
+                    if (typingElem) typingElem.classList.toggle('hidden', !isTyping);
                 }
             });
         }
 
         document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
         document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            if (e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                sendMessage(); 
+            }
+        });
+
+        // Auto-resize textarea
+        const msgInput = document.getElementById('messageInput');
+        msgInput?.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
 
         // Create Group
@@ -1276,6 +1408,7 @@
         };
 
         function initializeStatus() {
+            if (!currentUser) return;
             db.collection('status').where('expiresAt', '>', firebase.firestore.Timestamp.now()).orderBy('timestamp', 'desc').onSnapshot(async (snapshot) => {
                 const list = document.getElementById('statusList');
                 if (!list) return;
@@ -1318,7 +1451,8 @@
 
         // Calls
         function initializeCalls() {
-            db.collection('calls').where('participants', 'array-contains', currentUser?.uid).orderBy('startedAt', 'desc').limit(50).onSnapshot((snapshot) => {
+            if (!currentUser) return;
+            db.collection('calls').where('participants', 'array-contains', currentUser.uid).orderBy('startedAt', 'desc').limit(50).onSnapshot((snapshot) => {
                 const list = document.getElementById('callsList');
                 if (!list) return;
                 list.innerHTML = '';
@@ -1374,8 +1508,8 @@
                 const file = e.target.files[0];
                 showLoading(true);
                 const compressed = await compressImage(file, 0.5, 200);
-                // Store as base64 in Firestore (or use storage)
                 await db.collection('users').doc(currentUser.uid).update({ photoURL: compressed });
+                await currentUser.updateProfile({ photoURL: compressed });
                 document.getElementById('userAvatarImg').src = compressed;
                 document.getElementById('profileAvatarImg').src = compressed;
                 showLoading(false);
@@ -1383,6 +1517,8 @@
             };
             input.click();
         };
+        
+        console.log("App initialized");
     </script>
 </body>
 </html>

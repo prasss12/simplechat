@@ -10,7 +10,6 @@
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
-            --secondary: #64748b;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -19,488 +18,79 @@
             --light: #f8fafc;
             --border: #e2e8f0;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f1f5f9;
-            color: var(--dark);
-            line-height: 1.5;
-        }
-
-        .navbar {
-            background: white;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark);
-            cursor: pointer;
-        }
-
-        .logo span {
-            color: var(--primary);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--gray);
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.2s;
-            font-size: 0.9rem;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-            border: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--gray);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .hero {
-            background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
-            border-radius: 1rem;
-            padding: 3rem;
-            color: white;
-            margin-bottom: 2rem;
-        }
-
-        .hero h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .hero p {
-            color: #94a3b8;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: all 0.2s;
-            border: 1px solid var(--border);
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: var(--light);
-        }
-
-        .product-info {
-            padding: 1rem;
-        }
-
-        .product-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .product-price {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin: 0.5rem 0;
-        }
-
-        .product-stock {
-            font-size: 0.75rem;
-            color: var(--gray);
-            margin-bottom: 0.75rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 1rem;
-            width: 90%;
-            max-width: 500px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: modalIn 0.2s ease;
-        }
-
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            cursor: pointer;
-            font-size: 1.25rem;
-            color: var(--gray);
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.625rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .profile-container {
-            background: white;
-            border-radius: 1rem;
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .profile-header {
-            padding: 2rem;
-            background: var(--light);
-            display: flex;
-            gap: 2rem;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .profile-info h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .profile-info p {
-            color: var(--gray);
-            font-size: 0.875rem;
-        }
-
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 1rem;
-            background: var(--light);
-            border-radius: 0.75rem;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--gray);
-            margin-top: 0.25rem;
-        }
-
-        .profile-address {
-            padding: 1.5rem;
-        }
-
-        .become-seller-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            margin: 1rem;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .cart-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: white;
-            border-radius: 0.75rem;
-            border: 1px solid var(--border);
-            margin-bottom: 0.75rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .cart-item-image {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-        }
-
-        .cart-item-info {
-            flex: 1;
-        }
-
-        .cart-quantity {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .cart-quantity button {
-            width: 28px;
-            height: 28px;
-            border: 1px solid var(--border);
-            background: white;
-            border-radius: 0.375rem;
-            cursor: pointer;
-        }
-
-        .cart-total {
-            background: white;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .alert {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.5rem;
-            color: white;
-            font-size: 0.875rem;
-            z-index: 1000;
-            animation: slideIn 0.2s ease;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--dark); }
+        .navbar { background: white; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--dark); cursor: pointer; }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--primary); }
+        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--gray); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+        .hero { background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%); border-radius: 1rem; padding: 3rem; color: white; margin-bottom: 2rem; }
+        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero p { color: #94a3b8; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .section-header h2 { font-size: 1.25rem; font-weight: 600; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .product-card { background: white; border-radius: 1rem; overflow: hidden; transition: all 0.2s; border: 1px solid var(--border); }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15); }
+        .product-image { width: 100%; height: 200px; object-fit: cover; background: var(--light); }
+        .product-info { padding: 1rem; }
+        .product-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .product-price { font-weight: 700; font-size: 1.1rem; color: var(--primary); margin: 0.5rem 0; }
+        .product-stock { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.75rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; border-radius: 1rem; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; animation: modalIn 0.2s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1.125rem; font-weight: 600; }
+        .modal-close { cursor: pointer; font-size: 1.25rem; color: var(--gray); }
+        .modal-body { padding: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.625rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .profile-container { background: white; border-radius: 1rem; border: 1px solid var(--border); overflow: hidden; }
+        .profile-header { padding: 2rem; background: var(--light); display: flex; gap: 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 600; color: white; }
+        .profile-info h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .profile-info p { color: var(--gray); font-size: 0.875rem; }
+        .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem; border-bottom: 1px solid var(--border); }
+        .stat-card { text-align: center; padding: 1rem; background: var(--light); border-radius: 0.75rem; }
+        .stat-number { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.75rem; color: var(--gray); margin-top: 0.25rem; }
+        .profile-address { padding: 1.5rem; }
+        .become-seller-card { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); margin: 1rem; padding: 1rem; border-radius: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .cart-item { display: flex; gap: 1rem; padding: 1rem; background: white; border-radius: 0.75rem; border: 1px solid var(--border); margin-bottom: 0.75rem; align-items: center; flex-wrap: wrap; }
+        .cart-item-image { width: 70px; height: 70px; object-fit: cover; border-radius: 0.5rem; }
+        .cart-item-info { flex: 1; }
+        .cart-quantity { display: flex; align-items: center; gap: 0.5rem; }
+        .cart-quantity button { width: 28px; height: 28px; border: 1px solid var(--border); background: white; border-radius: 0.375rem; cursor: pointer; }
+        .cart-total { background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 1rem; }
+        .alert { position: fixed; top: 80px; right: 20px; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: white; font-size: 0.875rem; z-index: 1000; animation: slideIn 0.2s ease; }
         .alert-success { background: var(--success); }
         .alert-error { background: var(--danger); }
         .alert-info { background: var(--primary); }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.7rem; font-weight: 600; }
         .badge-admin { background: #ef4444; color: white; }
         .badge-business { background: #f59e0b; color: white; }
         .badge-user { background: #10b981; color: white; }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 1rem;
-            border: 1px solid var(--border);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: var(--gray);
-        }
-
-        .divider {
-            text-align: center;
-            padding: 1rem 0;
-            color: var(--gray);
-            font-size: 0.75rem;
-            position: relative;
-        }
-
-        @media (max-width: 768px) {
-            .nav-container { flex-direction: column; }
-            .hero { padding: 1.5rem; }
-            .hero h1 { font-size: 1.25rem; }
-            .profile-header { flex-direction: column; align-items: center; text-align: center; }
-            .products-grid { grid-template-columns: 1fr; }
-        }
+        .empty-state { text-align: center; padding: 3rem; background: white; border-radius: 1rem; border: 1px solid var(--border); }
+        .loading { text-align: center; padding: 3rem; color: var(--gray); }
+        .divider { text-align: center; padding: 1rem 0; color: var(--gray); font-size: 0.75rem; position: relative; }
+        @media (max-width: 768px) { .nav-container { flex-direction: column; } .hero { padding: 1.5rem; } .hero h1 { font-size: 1.25rem; } .profile-header { flex-direction: column; align-items: center; text-align: center; } .products-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -535,12 +125,8 @@
                     <button type="submit" class="btn btn-primary" style="width:100%">Masuk</button>
                 </form>
                 <div class="divider">atau</div>
-                <button class="btn btn-outline" onclick="googleLogin()" style="width:100%">
-                    <i class="fab fa-google"></i> Google
-                </button>
-                <p style="text-align:center; margin-top:1rem; font-size:0.75rem; color:var(--gray)">
-                    Belum punya akun? <a onclick="showRegisterModal()" style="color:var(--primary); cursor:pointer">Daftar</a>
-                </p>
+                <button class="btn btn-outline" onclick="googleLogin()" style="width:100%"><i class="fab fa-google"></i> Google</button>
+                <p style="text-align:center; margin-top:1rem; font-size:0.75rem; color:var(--gray)">Belum punya akun? <a onclick="showRegisterModal()" style="color:var(--primary); cursor:pointer">Daftar</a></p>
             </div>
         </div>
     </div>
@@ -669,7 +255,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
             authDomain: "simplechat-85cd8.firebaseapp.com",
@@ -679,7 +264,6 @@
             appId: "1:244789873168:web:4cba5481f689ab3103d895"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -753,13 +337,13 @@
             }
         }
 
-        // Login handler
         document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
             try {
-                await auth.signInWithEmailAndPassword(email, password);
+                await auth.signInWithEmailAndPassword(
+                    document.getElementById('loginEmail').value,
+                    document.getElementById('loginPassword').value
+                );
                 showAlert('Login berhasil', 'success');
                 closeModal('loginModal');
             } catch (error) {
@@ -767,7 +351,6 @@
             }
         });
 
-        // Register handler
         document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
@@ -788,7 +371,6 @@
             }
         });
 
-        // Add product handler
         document.getElementById('addProductForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -812,7 +394,6 @@
             }
         });
 
-        // Address handler
         document.getElementById('addressForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -868,7 +449,7 @@
             for (const item of cart) {
                 const productRef = db.collection('products').doc(item.id);
                 const productDoc = await productRef.get();
-                if (productDoc.data().stock < item.quantity) {
+                if (productDoc.exists && productDoc.data().stock < item.quantity) {
                     showAlert(`Stok ${item.name} habis`, 'error');
                     return;
                 }
@@ -878,6 +459,7 @@
                 await db.runTransaction(async (transaction) => {
                     const productRef = db.collection('products').doc(item.id);
                     const productDoc = await transaction.get(productRef);
+                    if (!productDoc.exists) throw new Error('Produk tidak ditemukan');
                     transaction.update(productRef, { stock: productDoc.data().stock - item.quantity });
                     transaction.set(db.collection('orders').doc(), {
                         productId: item.id, productName: item.name, price: item.price,
@@ -900,17 +482,12 @@
         function updateNav() {
             const nav = document.getElementById('navLinks');
             if (!currentUser) {
-                nav.innerHTML = `
-                    <a onclick="showProducts()">Beranda</a>
-                    <button class="btn btn-outline btn-sm" onclick="showLoginModal()">Masuk</button>
-                    <button class="btn btn-primary btn-sm" onclick="showRegisterModal()">Daftar</button>
-                `;
+                nav.innerHTML = `<a onclick="showProducts()">Beranda</a><button class="btn btn-outline btn-sm" onclick="showLoginModal()">Masuk</button><button class="btn btn-primary btn-sm" onclick="showRegisterModal()">Daftar</button>`;
                 return;
             }
             const role = currentUserData?.role;
             const roleText = role === 'admin' ? 'Admin' : role === 'business' ? 'Penjual' : 'Pembeli';
             const roleClass = role === 'admin' ? 'badge-admin' : role === 'business' ? 'badge-business' : 'badge-user';
-            
             nav.innerHTML = `
                 <a onclick="showProducts()">Beranda</a>
                 ${role === 'business' || role === 'admin' ? '<a onclick="showMyProducts()">Produk Saya</a>' : ''}
@@ -923,12 +500,13 @@
             updateCartCount();
         }
 
+        // TAMPILAN BERANDA - FIXED
         function showProducts() {
             const content = document.getElementById('mainContent');
             content.innerHTML = `
                 <div class="hero">
                     <h1>Belanja Kebutuhan Anda</h1>
-                    <p>Temukan berbagai produk berkualitas</p>
+                    <p>Temukan berbagai produk berkualitas dari penjual terpercaya</p>
                 </div>
                 <div class="section-header">
                     <h2>Semua Produk</h2>
@@ -937,12 +515,17 @@
                 </div>
                 <div class="products-grid" id="productsGrid"><div class="loading">Memuat produk...</div></div>`;
             
-            db.collection('products').where('status', '==', 'available').where('stock', '>', 0).orderBy('createdAt', 'desc').onSnapshot((snap) => {
+            // Query tanpa where dulu biar muncul
+            db.collection('products').orderBy('createdAt', 'desc').get().then((snap) => {
                 const grid = document.getElementById('productsGrid');
                 if (!grid) return;
-                if (snap.empty) { 
-                    grid.innerHTML = '<div class="empty-state"><p>Belum ada produk</p></div>'; 
-                    return; 
+                if (snap.empty) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <p>Belum ada produk</p>
+                            ${currentUser ? '<button class="btn btn-primary btn-sm" onclick="showAddProductModal()" style="margin-top:1rem">+ Tambah Produk</button>' : '<button class="btn btn-primary btn-sm" onclick="showLoginModal()" style="margin-top:1rem">Login untuk Jualan</button>'}
+                        </div>`;
+                    return;
                 }
                 grid.innerHTML = '';
                 snap.forEach(doc => {
@@ -950,16 +533,22 @@
                     const isOwner = currentUser && currentUser.uid === p.sellerId;
                     grid.innerHTML += `
                         <div class="product-card">
-                            <img src="${p.imageUrl}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
+                            <img src="${p.imageUrl || 'https://placehold.co/400x300'}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
                             <div class="product-info">
-                                <div class="product-title">${p.name}</div>
-                                <div class="product-price">Rp ${p.price.toLocaleString()}</div>
-                                <div class="product-stock">Stok: ${p.stock}</div>
-                                ${!isOwner && currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%" onclick='addToCart({id:"${doc.id}",name:"${p.name}",price:${p.price},stock:${p.stock},sellerId:"${p.sellerId}",sellerName:"${p.sellerName}",image:"${p.imageUrl}"})'>Beli</button>` : ''}
-                                ${!currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%" onclick="showLoginModal()">Login</button>` : ''}
+                                <div class="product-title">${p.name || 'Produk'}</div>
+                                <div class="product-price">Rp ${(p.price || 0).toLocaleString()}</div>
+                                <div class="product-stock">Stok: ${p.stock || 0}</div>
+                                <div class="product-seller"><i class="fas fa-store"></i> ${p.sellerName || 'Penjual'}</div>
+                                ${!isOwner && currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" onclick='addToCart({id:"${doc.id}",name:"${p.name}",price:${p.price},stock:${p.stock},sellerId:"${p.sellerId}",sellerName:"${p.sellerName}",image:"${p.imageUrl}"})'>Tambah ke Keranjang</button>` : ''}
+                                ${!currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" onclick="showLoginModal()">Login untuk Beli</button>` : ''}
+                                ${isOwner ? `<button class="btn btn-outline btn-sm" style="width:100%; margin-top:0.5rem" disabled>Produk Anda</button>` : ''}
                             </div>
                         </div>`;
                 });
+            }).catch(err => {
+                console.error(err);
+                const grid = document.getElementById('productsGrid');
+                if (grid) grid.innerHTML = `<div class="empty-state"><p>Error loading products: ${err.message}</p></div>`;
             });
         }
 
@@ -976,11 +565,11 @@
                 </div>
                 <div class="products-grid" id="myProductsGrid"><div class="loading">Memuat...</div></div>`;
             
-            db.collection('products').where('sellerId', '==', currentUser.uid).onSnapshot((snap) => {
+            db.collection('products').where('sellerId', '==', currentUser.uid).get().then((snap) => {
                 const grid = document.getElementById('myProductsGrid');
                 if (!grid) return;
                 if (snap.empty) { 
-                    grid.innerHTML = '<div class="empty-state"><p>Belum ada produk</p><button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah</button></div>'; 
+                    grid.innerHTML = '<div class="empty-state"><p>Belum ada produk</p><button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk</button></div>'; 
                     return; 
                 }
                 grid.innerHTML = '';
@@ -988,12 +577,12 @@
                     const p = doc.data();
                     grid.innerHTML += `
                         <div class="product-card">
-                            <img src="${p.imageUrl}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
+                            <img src="${p.imageUrl || 'https://placehold.co/400x300'}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
                             <div class="product-info">
                                 <div class="product-title">${p.name}</div>
                                 <div class="product-price">Rp ${p.price.toLocaleString()}</div>
                                 <div class="product-stock">Stok: ${p.stock}</div>
-                                <button class="btn btn-danger btn-sm" style="width:100%" onclick="deleteProduct('${doc.id}')">Hapus</button>
+                                <button class="btn btn-danger btn-sm" style="width:100%; margin-top:0.5rem" onclick="deleteProduct('${doc.id}')">Hapus</button>
                             </div>
                         </div>`;
                 });
@@ -1004,23 +593,24 @@
             if (confirm('Hapus produk ini?')) {
                 await db.collection('products').doc(id).delete();
                 showAlert('Produk dihapus', 'success');
+                showMyProducts();
             }
         }
 
         function showCart() {
             const content = document.getElementById('mainContent');
             if (cart.length === 0) {
-                content.innerHTML = '<div class="empty-state"><p>Keranjang kosong</p><button class="btn btn-primary" onclick="showProducts()">Belanja</button></div>';
+                content.innerHTML = '<div class="empty-state"><p>Keranjang kosong</p><button class="btn btn-primary" onclick="showProducts()">Belanja Sekarang</button></div>';
                 return;
             }
             let total = 0;
-            content.innerHTML = `<div class="section-header"><h2>Keranjang</h2></div><div id="cartItems"></div><div class="cart-total"><span>Total</span><span style="font-size:1.25rem; font-weight:700; color:var(--primary)" id="cartTotal">0</span><button class="btn btn-success" onclick="checkout()">Checkout</button></div>`;
+            content.innerHTML = `<div class="section-header"><h2>Keranjang Belanja</h2></div><div id="cartItems"></div><div class="cart-total"><span><strong>Total</strong></span><span style="font-size:1.25rem; font-weight:700; color:var(--primary)" id="cartTotal">0</span><button class="btn btn-success" onclick="checkout()">Checkout</button></div>`;
             const container = document.getElementById('cartItems');
             cart.forEach((item, idx) => {
                 total += item.price * item.quantity;
                 container.innerHTML += `
                     <div class="cart-item">
-                        <img src="${item.image}" class="cart-item-image">
+                        <img src="${item.image}" class="cart-item-image" onerror="this.src='https://placehold.co/70x70'">
                         <div class="cart-item-info"><strong>${item.name}</strong><br>Rp ${item.price.toLocaleString()}</div>
                         <div class="cart-quantity">
                             <button onclick="updateQuantity(${idx}, -1)">-</button>
@@ -1055,7 +645,7 @@
             if (!currentUser) return;
             const content = document.getElementById('mainContent');
             content.innerHTML = `<div class="section-header"><h2>Pesanan Saya</h2></div><div id="ordersList"><div class="loading">Memuat...</div></div>`;
-            db.collection('orders').where('buyerId', '==', currentUser.uid).orderBy('createdAt', 'desc').onSnapshot((snap) => {
+            db.collection('orders').where('buyerId', '==', currentUser.uid).orderBy('createdAt', 'desc').get().then((snap) => {
                 const list = document.getElementById('ordersList');
                 if (!list) return;
                 if (snap.empty) { list.innerHTML = '<div class="empty-state"><p>Belum ada pesanan</p></div>'; return; }
@@ -1066,8 +656,8 @@
                         <div class="product-card" style="margin-bottom:1rem">
                             <div class="product-info">
                                 <strong>${o.productName}</strong><br>
-                                ${o.quantity} x Rp ${o.price.toLocaleString()} = Rp ${o.total.toLocaleString()}<br>
-                                📍 ${o.address}, ${o.city}
+                                ${o.quantity} x Rp ${o.price.toLocaleString()} = <strong>Rp ${o.total.toLocaleString()}</strong><br>
+                                <i class="fas fa-map-marker-alt"></i> ${o.address}, ${o.city}
                             </div>
                         </div>`;
                 });
@@ -1078,16 +668,18 @@
             if (!currentUser) return;
             const userDoc = await db.collection('users').doc(currentUser.uid).get();
             const data = userDoc.data();
-            const productsCount = (await db.collection('products').where('sellerId', '==', currentUser.uid).get()).size;
-            const ordersCount = (await db.collection('orders').where('buyerId', '==', currentUser.uid).get()).size;
+            const productsSnap = await db.collection('products').where('sellerId', '==', currentUser.uid).get();
+            const productsCount = productsSnap.size;
+            const ordersSnap = await db.collection('orders').where('buyerId', '==', currentUser.uid).get();
+            const ordersCount = ordersSnap.size;
             
             let sellerCard = '';
             if (data.role !== 'business' && data.role !== 'admin') {
                 sellerCard = `
                     <div class="become-seller-card">
                         <div>
-                            <strong>Jadi Penjual</strong>
-                            <p style="font-size:0.75rem">Jual produk Anda sendiri</p>
+                            <strong>Jadi Penjual Sekarang!</strong>
+                            <p style="font-size:0.75rem">Jual produk Anda sendiri dan dapatkan penghasilan</p>
                         </div>
                         <button class="btn btn-warning btn-sm" onclick="showBecomeSellerModal()">Daftar Jadi Penjual</button>
                     </div>
@@ -1101,18 +693,18 @@
                         <div class="profile-info">
                             <h2>${data.name}</h2>
                             <p>${data.email}</p>
-                            <p><span class="badge ${data.role === 'admin' ? 'badge-admin' : data.role === 'business' ? 'badge-business' : 'badge-user'}">${data.role === 'admin' ? 'Admin' : data.role === 'business' ? 'Penjual' : 'Pembeli'}</span></p>
+                            <p><span class="badge ${data.role === 'admin' ? 'badge-admin' : data.role === 'business' ? 'badge-business' : 'badge-user'}">${data.role === 'admin' ? 'Administrator' : data.role === 'business' ? 'Penjual' : 'Pembeli'}</span></p>
                             <button class="btn btn-outline btn-sm" onclick="showAddressModal()">Edit Alamat</button>
                         </div>
                     </div>
                     ${sellerCard}
                     <div class="profile-stats">
-                        <div class="stat-card"><div class="stat-number">${productsCount}</div><div>Produk</div></div>
-                        <div class="stat-card"><div class="stat-number">${ordersCount}</div><div>Pesanan</div></div>
-                        <div class="stat-card"><div class="stat-number">${cart.length}</div><div>Keranjang</div></div>
+                        <div class="stat-card"><div class="stat-number">${productsCount}</div><div class="stat-label">Total Produk</div></div>
+                        <div class="stat-card"><div class="stat-number">${ordersCount}</div><div class="stat-label">Total Pesanan</div></div>
+                        <div class="stat-card"><div class="stat-number">${cart.length}</div><div class="stat-label">Keranjang</div></div>
                     </div>
                     <div class="profile-address">
-                        <h4>Alamat</h4>
+                        <h4>Alamat Pengiriman</h4>
                         <p>${data.address ? `${data.address}, ${data.city} - ${data.postalCode}` : 'Belum diisi'}</p>
                         <p>📞 ${data.phone || '-'}</p>
                     </div>
@@ -1123,10 +715,10 @@
             await auth.signOut(); 
             cart = []; 
             localStorage.removeItem('cart'); 
-            showAlert('Keluar', 'success'); 
+            showAlert('Berhasil keluar', 'success'); 
         }
 
-        // Auth state listener - ini yang penting
+        // Auth state listener
         auth.onAuthStateChanged(async (user) => {
             currentUser = user;
             if (user) {
@@ -1134,7 +726,7 @@
                 if (doc.exists) {
                     currentUserData = doc.data();
                 } else {
-                    currentUserData = { name: user.email?.split('@')[0], email: user.email, role: 'user' };
+                    currentUserData = { name: user.email?.split('@')[0] || 'User', email: user.email, role: 'user' };
                     await db.collection('users').doc(user.uid).set(currentUserData);
                 }
             } else {

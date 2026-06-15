@@ -2,9 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>WhatsApp Clone - Real Time Chat</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Jual Beli Online</title>
     <style>
         * {
             margin: 0;
@@ -12,1243 +11,687 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --bg: #111B21;
-            --header: #202C33;
-            --green: #25D366;
-            --text: #E9EDEF;
-            --text-muted: #8696A0;
-            --border: #2A3942;
-            --outgoing: #005C4B;
-            --incoming: #202C33;
-        }
-
-        [data-theme="light"] {
-            --bg: #FFFFFF;
-            --header: #F0F2F5;
-            --text: #111B21;
-            --border: #E9EDEF;
-            --outgoing: #D9FDD3;
-            --incoming: #FFFFFF;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
 
-        /* Login */
-        .login-page {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #075E54, #128C7E);
-        }
-        .login-card {
+        /* Navbar */
+        .navbar {
             background: white;
-            border-radius: 32px;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .login-card i { font-size: 60px; color: #25D366; }
-        .login-card h1 { margin: 10px 0; color: #111B21; }
-        .input-group {
-            margin: 15px 0;
-            text-align: left;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 16px;
-        }
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        .btn-google {
-            background: white;
-            color: #111;
-            border: 1px solid #ddd;
-        }
-        .divider {
-            margin: 20px 0;
-            color: #666;
-        }
-        .switch-link {
-            margin-top: 20px;
-            color: #25D366;
-            cursor: pointer;
-        }
-
-        /* Main App */
-        .app-container {
-            display: flex;
-            height: 100vh;
-        }
-        .sidebar {
-            width: 380px;
-            background: var(--bg);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-header {
-            padding: 20px;
-            background: var(--header);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            position: relative;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .online-dot {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            background: #25D366;
-            border-radius: 50%;
-            border: 2px solid var(--header);
-        }
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 20px;
-            cursor: pointer;
-            padding: 8px;
-        }
-        .search-box {
-            padding: 12px;
-            background: var(--bg);
-        }
-        .search-box div {
-            background: var(--header);
-            padding: 10px 16px;
-            border-radius: 8px;
-            display: flex;
-            gap: 10px;
-        }
-        .search-box input {
-            background: none;
-            border: none;
-            outline: none;
-            color: var(--text);
-            width: 100%;
-        }
-        .tabs {
-            display: flex;
-            background: var(--header);
-            border-bottom: 1px solid var(--border);
-        }
-        .tab {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-        .tab.active {
-            color: #25D366;
-            border-bottom: 2px solid #25D366;
-        }
-        .chats-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border);
-        }
-        .chat-item:hover {
-            background: var(--header);
-        }
-        .chat-info {
-            flex: 1;
-        }
-        .chat-name {
-            font-weight: 600;
-        }
-        .chat-msg {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        .chat-time {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-header {
-            padding: 12px 20px;
-            background: var(--header);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .back-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .message {
-            max-width: 65%;
-            padding: 8px 12px;
-            border-radius: 12px;
-            word-wrap: break-word;
-        }
-        .message-out {
-            background: var(--outgoing);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-        .message-in {
-            background: var(--incoming);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .message-text {
-            font-size: 14px;
-        }
-        .message-time {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-align: right;
-            margin-top: 4px;
-        }
-        .message-media {
-            max-width: 200px;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-        .input-area {
-            padding: 12px 20px;
-            background: var(--header);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .input-wrapper {
-            flex: 1;
-            background: var(--bg);
-            border-radius: 24px;
-            padding: 8px 16px;
-        }
-        .input-wrapper textarea {
-            width: 100%;
-            background: none;
-            border: none;
-            outline: none;
-            color: var(--text);
-            resize: none;
-            font-family: inherit;
-        }
-        .reply-preview {
-            background: var(--header);
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-
-        /* Bottom Sheet */
-        .bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg);
-            border-radius: 20px 20px 0 0;
-            transform: translateY(100%);
-            transition: transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
             z-index: 1000;
         }
-        .bottom-sheet.show {
-            transform: translateY(0);
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .sheet-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            padding: 20px;
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
         }
-        .sheet-options button {
-            padding: 16px;
-            background: var(--header);
-            border: none;
-            border-radius: 12px;
-            color: var(--text);
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
             cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Grid Produk */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-seller {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
 
         /* Modal */
         .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            background: var(--bg);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
         }
 
-        /* Profile */
-        .profile-tab {
-            padding: 20px;
-            text-align: center;
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            position: relative;
-            cursor: pointer;
-        }
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .profile-avatar i {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #25D366;
-            border-radius: 50%;
-            padding: 10px;
-        }
-        .profile-input {
-            width: 100%;
-            padding: 12px;
-            background: var(--header);
-            border: none;
-            border-radius: 8px;
-            color: var(--text);
-            font-size: 16px;
-            text-align: center;
-        }
-        .status-item {
+
+        .modal-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
+            margin-bottom: 1rem;
         }
-        .my-status {
-            background: var(--header);
-            margin: 16px;
-            padding: 16px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
+
+        .close {
             cursor: pointer;
+            font-size: 1.5rem;
         }
-        .toast {
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Alert */
+        .alert {
             position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 5px;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            z-index: 9999;
-            animation: fadeOut 3s forwards;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
         }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            70% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
+
+        .alert-success {
+            background: #48bb78;
         }
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
+
+        .alert-error {
+            background: #e53e3e;
         }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #25D366;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .hidden {
-            display: none !important;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                position: absolute;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                z-index: 100;
-                transition: left 0.3s;
-            }
-            .sidebar.show { left: 0; }
-            .chat-area {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                z-index: 200;
+
+        @keyframes slideIn {
+            from {
                 transform: translateX(100%);
-                transition: transform 0.3s;
             }
-            .chat-area.show { transform: translateX(0); }
-            .back-btn { display: block; }
-            .message { max-width: 85%; }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .form-section h2 {
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
         }
     </style>
 </head>
 <body>
-
-<!-- LOADING -->
-<div id="loading" class="loading hidden">
-    <div class="spinner"></div>
-    <p style="margin-top: 20px;">Loading...</p>
-</div>
-
-<!-- LOGIN PAGE -->
-<div id="loginPage" class="login-page">
-    <div class="login-card">
-        <i class="fab fa-whatsapp"></i>
-        <h1>Real-Time Chat</h1>
-        <div id="loginError" style="color:red; font-size:12px;"></div>
-        <form id="loginForm">
-            <div class="input-group">
-                <input type="email" id="loginEmail" placeholder="Email" required>
-            </div>
-            <div class="input-group">
-                <input type="password" id="loginPassword" placeholder="Password" required>
-            </div>
-            <button type="submit" class="btn">Login</button>
-        </form>
-        <div class="divider">or</div>
-        <button id="googleBtn" class="btn btn-google">Continue with Google</button>
-        <div class="switch-link" id="showRegister">Create new account →</div>
-    </div>
-
-    <div id="registerCard" class="login-card hidden">
-        <i class="fab fa-whatsapp"></i>
-        <h2>Create Account</h2>
-        <div id="registerError" style="color:red; font-size:12px;"></div>
-        <form id="registerForm">
-            <div class="input-group">
-                <input type="text" id="regName" placeholder="Full Name" required>
-            </div>
-            <div class="input-group">
-                <input type="email" id="regEmail" placeholder="Email" required>
-            </div>
-            <div class="input-group">
-                <input type="password" id="regPassword" placeholder="Password (min 6)" required>
-            </div>
-            <button type="submit" class="btn">Register</button>
-        </form>
-        <div class="switch-link" id="showLogin">← Back to Login</div>
-    </div>
-</div>
-
-<!-- MAIN APP -->
-<div id="app" class="app-container hidden">
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="avatar">
-                <img id="sidebarAvatar" src="">
-                <div class="online-dot"></div>
-            </div>
-            <span id="sidebarName" style="font-weight:600;">User</span>
-            <div>
-                <button class="icon-btn" id="darkModeBtn"><i class="fas fa-moon"></i></button>
-                <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </div>
-        <div class="search-box">
-            <div>
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search or start new chat">
-            </div>
-        </div>
-        <div class="tabs">
-            <button class="tab active" data-tab="chats"><i class="fas fa-comment"></i> Chats</button>
-            <button class="tab" data-tab="status"><i class="fas fa-circle"></i> Status</button>
-            <button class="tab" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
-        </div>
-
-        <!-- Chats List -->
-        <div class="chats-list" id="chatsList"></div>
-
-        <!-- Status Tab -->
-        <div id="statusTab" class="hidden">
-            <div class="my-status" onclick="uploadStatus()">
-                <div class="avatar"><img id="statusAvatar" src=""></div>
-                <div><strong>My Status</strong><br><span style="font-size:12px;">Tap to add status</span></div>
-            </div>
-            <div id="statusList"></div>
-        </div>
-
-        <!-- Profile Tab -->
-        <div id="profileTab" class="hidden">
-            <div class="profile-tab">
-                <div class="profile-avatar" onclick="changePhoto()">
-                    <img id="profileAvatar" src="">
-                    <i class="fas fa-camera"></i>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Marketplace</div>
+            <div class="nav-links">
+                <a onclick="showProducts()">Produk</a>
+                <a onclick="showMyProducts()">Produk Saya</a>
+                <a onclick="showOrders()">Pesanan Saya</a>
+                <div id="authButtons">
+                    <button class="btn btn-primary" onclick="showLoginModal()">Login</button>
+                    <button class="btn btn-primary" onclick="showRegisterModal()">Register</button>
                 </div>
-                <input type="text" id="profileName" class="profile-input" placeholder="Your Name">
-                <p id="profileEmail" style="margin-top:10px; color:var(--text-muted);"></p>
-                <div style="margin: 30px 0;">
-                    <button class="btn" onclick="createGroup()" style="background:#25D366;">+ Create Group</button>
-                </div>
-                <div>
-                    <h4>Storage</h4>
-                    <div id="storageInfo">Loading...</div>
-                    <button class="btn" onclick="clearMedia()" style="background:#e74c3c; margin-top:15px;">Clear All Media</button>
+                <div id="userInfo" style="display: none;">
+                    <span id="userName"></span>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
                 </div>
             </div>
         </div>
+    </nav>
+
+    <div class="container" id="mainContent">
+        <!-- Content will be loaded here -->
     </div>
 
-    <!-- CHAT AREA -->
-    <div class="chat-area" id="chatArea">
-        <div class="chat-header">
-            <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
-            <div class="avatar"><img id="chatAvatar" src=""></div>
-            <div><strong id="chatName">Select a chat</strong><br><span id="chatTyping" style="font-size:12px;"></span></div>
-        </div>
-        <div class="messages" id="messages"></div>
-        <div class="input-area">
-            <button class="icon-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
-            <div class="input-wrapper">
-                <div id="replyPreview" class="reply-preview hidden">
-                    <span id="replyText"></span>
-                    <button onclick="cancelReply()" style="background:none; border:none;">×</button>
-                </div>
-                <textarea id="messageInput" rows="1" placeholder="Type a message..."></textarea>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login</h2>
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
             </div>
-            <button class="icon-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
-            <button class="icon-btn" id="sendBtn" style="background:#25D366; color:white; border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
         </div>
     </div>
-</div>
 
-<!-- BOTTOM SHEET -->
-<div id="bottomSheet" class="bottom-sheet">
-    <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-        <h3>Attach Media</h3>
-        <button onclick="closeSheet()" style="background:none; border:none; font-size:24px;">×</button>
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Register</h2>
+                <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
     </div>
-    <div class="sheet-options">
-        <button onclick="uploadImage()"><i class="fas fa-image"></i> Gallery</button>
-        <button onclick="takePhoto()"><i class="fas fa-camera"></i> Camera</button>
-        <button onclick="uploadVideo()"><i class="fas fa-video"></i> Video</button>
-        <button onclick="uploadDoc()"><i class="fas fa-file"></i> Document</button>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tambah Produk</h2>
+                <span class="close" onclick="closeModal('addProductModal')">&times;</span>
+            </div>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input type="number" id="productPrice" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="productDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL Gambar</label>
+                    <input type="url" id="productImage" placeholder="https://via.placeholder.com/300">
+                </div>
+                <button type="submit" class="btn btn-primary">Tambah Produk</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- VOICE MODAL -->
-<div id="voiceModal" class="modal hidden">
-    <div class="modal-content">
-        <h3>🎤 Voice Message</h3>
-        <div id="timer" style="font-size:48px; margin:20px;">00:00</div>
-        <button id="startRecord" class="btn">Start</button>
-        <button id="stopRecord" class="btn hidden" style="background:#e74c3c;">Stop</button>
-    </div>
-</div>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-<!-- STATUS VIEW -->
-<div id="statusModal" class="modal hidden">
-    <div id="statusViewer" style="position:relative; width:100%; max-width:400px; height:80vh; background:#000; display:flex; align-items:center; justify-content:center;">
-        <div id="statusContent"></div>
-        <button onclick="closeStatus()" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.5); border:none; color:white; width:40px; height:40px; border-radius:50%;">×</button>
-    </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-<script>
-// ==================== FIREBASE ====================
-const firebaseConfig = {
-    apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
-    authDomain: "simplechat-85cd8.firebaseapp.com",
-    projectId: "simplechat-85cd8",
-    storageBucket: "simplechat-85cd8.firebasestorage.app",
-    messagingSenderId: "244789873168",
-    appId: "1:244789873168:web:4cba5481f689ab3103d895"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Enable offline
-db.enablePersistence({ synchronizeTabs: true }).catch(e => console.log(e));
-
-// ==================== GLOBAL ====================
-let currentUser = null;
-let currentChat = null;
-let replyTo = null;
-let mediaToSend = null;
-let unsubMessages = null;
-
-// ==================== HELPERS ====================
-function showLoad(show) {
-    document.getElementById('loading').classList.toggle('hidden', !show);
-}
-
-function toast(msg) {
-    const t = document.createElement('div');
-    t.className = 'toast';
-    t.innerText = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-}
-
-function formatTime(date) {
-    if (!date) return '';
-    const d = date.toDate ? date.toDate() : date;
-    const now = new Date();
-    if (now - d < 86400000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    return d.toLocaleDateString();
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function compressImage(file, maxWH = 800) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const img = new Image();
-            img.src = e.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let w = img.width, h = img.height;
-                if (w > h && w > maxWH) { h = (h * maxWH) / w; w = maxWH; }
-                else if (h > maxWH) { w = (w * maxWH) / h; h = maxWH; }
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                resolve(canvas.toDataURL('image/jpeg', 0.7));
-            };
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
+            authDomain: "simplechat-85cd8.firebaseapp.com",
+            projectId: "simplechat-85cd8",
+            storageBucket: "simplechat-85cd8.firebasestorage.app",
+            messagingSenderId: "244789873168",
+            appId: "1:244789873168:web:4cba5481f689ab3103d895",
+            measurementId: "G-KR9MJP5QKM"
         };
-    });
-}
 
-function fileToBase64(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-    });
-}
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-// ==================== AUTH ====================
-auth.onAuthStateChanged(async (user) => {
-    if (user) {
-        currentUser = user;
-        await setupUser(user.uid);
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        await loadChats();
-        loadStatuses();
-        updateStorage();
-        showLoad(false);
-    } else {
-        document.getElementById('loginPage').classList.remove('hidden');
-        document.getElementById('app').classList.add('hidden');
-        showLoad(false);
-    }
-});
+        let currentUser = null;
 
-async function setupUser(uid) {
-    await db.collection('users').doc(uid).set({
-        uid, email: currentUser.email,
-        displayName: currentUser.displayName || currentUser.email.split('@')[0],
-        photoURL: currentUser.photoURL || null,
-        online: true,
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-    
-    await db.collection('presence').doc(uid).set({ online: true });
-    db.collection('presence').doc(uid).onDisconnect().set({ online: false });
-    
-    const name = currentUser.displayName || currentUser.email.split('@')[0];
-    const avatar = currentUser.photoURL || `https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}`;
-    document.getElementById('sidebarName').innerText = name.split(' ')[0];
-    document.getElementById('sidebarAvatar').src = avatar;
-    document.getElementById('profileAvatar').src = avatar;
-    document.getElementById('statusAvatar').src = avatar;
-    document.getElementById('profileName').value = name;
-    document.getElementById('profileEmail').innerText = currentUser.email;
-}
-
-// Login
-document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    showLoad(true);
-    try {
-        await auth.signInWithEmailAndPassword(
-            document.getElementById('loginEmail').value,
-            document.getElementById('loginPassword').value
-        );
-    } catch (err) {
-        document.getElementById('loginError').innerText = err.message;
-        showLoad(false);
-    }
-});
-
-// Register
-document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    showLoad(true);
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const pass = document.getElementById('regPassword').value;
-    if (pass.length < 6) {
-        document.getElementById('registerError').innerText = 'Password min 6 characters';
-        showLoad(false);
-        return;
-    }
-    try {
-        const cred = await auth.createUserWithEmailAndPassword(email, pass);
-        await cred.user.updateProfile({ displayName: name });
-        await db.collection('users').doc(cred.user.uid).set({ displayName: name, email });
-        toast('Registered!');
-    } catch (err) {
-        document.getElementById('registerError').innerText = err.message;
-        showLoad(false);
-    }
-});
-
-// Google
-document.getElementById('googleBtn')?.addEventListener('click', async () => {
-    showLoad(true);
-    try {
-        await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    } catch (err) {
-        alert(err.message);
-        showLoad(false);
-    }
-});
-
-document.getElementById('logoutBtn')?.addEventListener('click', () => auth.signOut());
-document.getElementById('showRegister')?.addEventListener('click', () => {
-    document.querySelector('.login-card').classList.add('hidden');
-    document.getElementById('registerCard').classList.remove('hidden');
-});
-document.getElementById('showLogin')?.addEventListener('click', () => {
-    document.getElementById('registerCard').classList.add('hidden');
-    document.querySelector('.login-card').classList.remove('hidden');
-});
-
-// Update name
-document.getElementById('profileName')?.addEventListener('change', async (e) => {
-    await db.collection('users').doc(currentUser.uid).update({ displayName: e.target.value });
-    await currentUser.updateProfile({ displayName: e.target.value });
-    document.getElementById('sidebarName').innerText = e.target.value.split(' ')[0];
-    toast('Name updated!');
-});
-
-// Dark mode
-let dark = true;
-document.getElementById('darkModeBtn')?.addEventListener('click', () => {
-    dark = !dark;
-    document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
-});
-
-// Tabs
-document.querySelectorAll('.tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        document.getElementById('chatsList').classList.add('hidden');
-        document.getElementById('statusTab').classList.add('hidden');
-        document.getElementById('profileTab').classList.add('hidden');
-        if (tab === 'chats') document.getElementById('chatsList').classList.remove('hidden');
-        else if (tab === 'status') document.getElementById('statusTab').classList.remove('hidden');
-        else if (tab === 'profile') document.getElementById('profileTab').classList.remove('hidden');
-    });
-});
-
-document.getElementById('backBtn')?.addEventListener('click', () => {
-    document.getElementById('chatArea').classList.remove('show');
-    document.getElementById('sidebar').classList.add('show');
-});
-
-// ==================== CHATS ====================
-async function loadChats() {
-    const list = document.getElementById('chatsList');
-    list.innerHTML = '<div style="text-align:center; padding:40px;">Loading...</div>';
-    
-    try {
-        const snapshot = await db.collection('chats')
-            .where('participants', 'array-contains', currentUser.uid)
-            .orderBy('lastMessageTime', 'desc')
-            .limit(50)
-            .get();
-        
-        if (snapshot.empty) {
-            list.innerHTML = '<div style="text-align:center; padding:40px;">💬 No chats yet<br><small>Create a group to start</small></div>';
-            return;
+        // Show alert message
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
         }
-        
-        list.innerHTML = '';
-        
-        for (const doc of snapshot.docs) {
-            const chat = doc.data();
-            const otherId = chat.participants?.find(p => p !== currentUser.uid);
-            let name = chat.isGroup ? chat.groupName : 'User';
-            let avatar = null;
-            
-            if (!chat.isGroup && otherId) {
-                const u = await db.collection('users').doc(otherId).get();
-                if (u.exists) name = u.data()?.displayName || 'User';
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Show login modal
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        // Show register modal
+        function showRegisterModal() {
+            document.getElementById('registerModal').style.display = 'flex';
+        }
+
+        // Show add product modal
+        function showAddProductModal() {
+            if (!currentUser) {
+                showAlert('Silakan login terlebih dahulu', 'error');
+                return;
             }
+            document.getElementById('addProductModal').style.display = 'flex';
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
             
-            let online = false;
-            if (otherId) {
-                const p = await db.collection('presence').doc(otherId).get();
-                online = p.exists ? p.data().online : false;
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showAlert('Login berhasil!');
+                closeModal('loginModal');
+                updateAuthUI();
+                showProducts();
+            } catch (error) {
+                showAlert(error.message, 'error');
             }
+        });
+
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
             
-            const av = `https://ui-avatars.com/api/?background=25D366&color=fff&name=${encodeURIComponent(name)}`;
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showAlert('Registrasi berhasil!');
+                closeModal('registerModal');
+                updateAuthUI();
+                showProducts();
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        });
+
+        // Add product form handler
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('productName').value;
+            const price = parseInt(document.getElementById('productPrice').value);
+            const description = document.getElementById('productDescription').value;
+            const imageUrl = document.getElementById('productImage').value || 'https://via.placeholder.com/300';
             
-            list.innerHTML += `
-                <div class="chat-item" onclick="openChat('${doc.id}', '${escapeHtml(name)}', '${av}', ${chat.isGroup || false})">
-                    <div class="avatar"><img src="${av}"><div class="online-dot" style="${online ? 'background:#25D366' : 'background:#8696A0'}"></div></div>
-                    <div class="chat-info"><div class="chat-name">${escapeHtml(name)}</div><div class="chat-msg">${escapeHtml(chat.lastMessage) || 'Tap to chat'}</div></div>
-                    <div class="chat-time">${formatTime(chat.lastMessageTime)}</div>
+            try {
+                await db.collection('products').add({
+                    name: name,
+                    price: price,
+                    description: description,
+                    imageUrl: imageUrl,
+                    sellerId: currentUser.uid,
+                    sellerName: currentUser.displayName || currentUser.email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'available'
+                });
+                showAlert('Produk berhasil ditambahkan!');
+                closeModal('addProductModal');
+                document.getElementById('addProductForm').reset();
+                showMyProducts();
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        });
+
+        // Logout
+        async function logout() {
+            await auth.signOut();
+            showAlert('Logout berhasil!');
+            updateAuthUI();
+            showProducts();
+        }
+
+        // Update UI based on auth state
+        function updateAuthUI() {
+            currentUser = auth.currentUser;
+            if (currentUser) {
+                document.getElementById('authButtons').style.display = 'none';
+                document.getElementById('userInfo').style.display = 'flex';
+                document.getElementById('userName').textContent = currentUser.email;
+            } else {
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('userInfo').style.display = 'none';
+            }
+        }
+
+        // Show all products
+        async function showProducts() {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1 style="color: white;">Semua Produk</h1>
+                    ${currentUser ? '<button class="btn btn-primary" onclick="showAddProductModal()">+ Tambah Produk</button>' : ''}
+                </div>
+                <div class="products-grid" id="productsGrid">
+                    <div class="loading">Loading...</div>
                 </div>
             `;
+            
+            const productsRef = db.collection('products').where('status', '==', 'available').orderBy('createdAt', 'desc');
+            productsRef.onSnapshot((snapshot) => {
+                const productsGrid = document.getElementById('productsGrid');
+                if (snapshot.empty) {
+                    productsGrid.innerHTML = '<div class="loading">Belum ada produk</div>';
+                    return;
+                }
+                
+                productsGrid.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const product = doc.data();
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.imageUrl}" class="product-image" alt="${product.name}">
+                        <div class="product-info">
+                            <div class="product-title">${product.name}</div>
+                            <div class="product-price">Rp ${product.price.toLocaleString()}</div>
+                            <div class="product-seller">Penjual: ${product.sellerName}</div>
+                            <p style="color: #666; margin-bottom: 1rem;">${product.description.substring(0, 100)}${product.description.length > 100 ? '...' : ''}</p>
+                            ${currentUser && currentUser.uid !== product.sellerId ? `<button class="btn btn-primary" onclick="buyProduct('${doc.id}', ${product.price})">Beli</button>` : ''}
+                        </div>
+                    `;
+                    productsGrid.appendChild(productCard);
+                });
+            });
         }
-    } catch (err) {
-        list.innerHTML = '<div style="text-align:center; padding:40px;">❌ Error loading chats</div>';
-        console.error(err);
-    }
-}
 
-window.openChat = async function(chatId, name, avatar, isGroup) {
-    currentChat = chatId;
-    document.getElementById('chatName').innerText = name;
-    document.getElementById('chatAvatar').src = avatar;
-    document.getElementById('chatArea').classList.add('show');
-    document.getElementById('sidebar').classList.remove('show');
-    
-    if (unsubMessages) unsubMessages();
-    
-    const q = db.collection('messages').where('chatId', '==', chatId).orderBy('timestamp', 'desc').limit(30);
-    unsubMessages = q.onSnapshot(snapshot => {
-        const container = document.getElementById('messages');
-        container.innerHTML = '';
-        const msgs = [];
-        snapshot.forEach(d => msgs.unshift({ id: d.id, ...d.data() }));
-        msgs.forEach(msg => displayMsg(msg));
-        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    });
-    
-    await db.collection('chats').doc(chatId).update({ [`unreadCount.${currentUser.uid}`]: 0 });
-    setupTyping(chatId);
-};
-
-function displayMsg(msg) {
-    const isOut = msg.senderId === currentUser.uid;
-    const div = document.createElement('div');
-    div.className = `message ${isOut ? 'message-out' : 'message-in'}`;
-    
-    let replyHtml = '';
-    if (msg.replyTo) {
-        replyHtml = `<div style="font-size:11px; color:#25D366; margin-bottom:4px;">↩️ ${escapeHtml(msg.replyTo.content?.substring(0, 40))}</div>`;
-    }
-    
-    let mediaHtml = '';
-    if (msg.mediaBase64) {
-        if (msg.mediaType === 'image') mediaHtml = `<img src="${msg.mediaBase64}" class="message-media">`;
-        else if (msg.mediaType === 'video') mediaHtml = `<video src="${msg.mediaBase64}" controls class="message-media"></video>`;
-        else if (msg.mediaType === 'audio') mediaHtml = `<audio src="${msg.mediaBase64}" controls></audio>`;
-        else mediaHtml = `<div style="padding:8px; background:rgba(0,0,0,0.1); border-radius:8px;">📄 ${msg.mediaName}</div>`;
-    }
-    
-    div.innerHTML = `${replyHtml}<div class="message-text">${escapeHtml(msg.content || '').replace(/\*(.*?)\*/g, '<strong>$1</strong>')}</div>${mediaHtml}<div class="message-time">${formatTime(msg.timestamp)}</div>`;
-    document.getElementById('messages').appendChild(div);
-}
-
-async function sendMsg() {
-    const input = document.getElementById('messageInput');
-    const content = input.value.trim();
-    if (!content && !mediaToSend) return;
-    
-    const msg = {
-        chatId: currentChat,
-        senderId: currentUser.uid,
-        content: content,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        replyTo: replyTo
-    };
-    
-    if (mediaToSend) {
-        msg.mediaBase64 = mediaToSend.base64;
-        msg.mediaType = mediaToSend.type;
-        msg.mediaName = mediaToSend.name;
-    }
-    
-    await db.collection('messages').add(msg);
-    await db.collection('chats').doc(currentChat).update({
-        lastMessage: content || `[${mediaToSend?.type || 'Media'}]`,
-        lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    
-    input.value = '';
-    mediaToSend = null;
-    replyTo = null;
-    document.getElementById('replyPreview')?.classList.add('hidden');
-}
-
-function setupTyping(chatId) {
-    const input = document.getElementById('messageInput');
-    const typingRef = db.collection('typing').doc(chatId);
-    input.oninput = () => {
-        typingRef.set({ [currentUser.uid]: true });
-        clearTimeout(window.typingTO);
-        window.typingTO = setTimeout(() => typingRef.update({ [currentUser.uid]: false }), 1000);
-    };
-    typingRef.onSnapshot(doc => {
-        const data = doc.data();
-        if (data) {
-            const typing = Object.entries(data).some(([uid, v]) => v && uid !== currentUser.uid);
-            document.getElementById('chatTyping').innerText = typing ? 'Typing...' : '';
+        // Show my products
+        async function showMyProducts() {
+            if (!currentUser) {
+                showAlert('Silakan login terlebih dahulu', 'error');
+                return;
+            }
+            
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h1 style="color: white;">Produk Saya</h1>
+                    <button class="btn btn-primary" onclick="showAddProductModal()">+ Tambah Produk</button>
+                </div>
+                <div class="products-grid" id="myProductsGrid">
+                    <div class="loading">Loading...</div>
+                </div>
+            `;
+            
+            const productsRef = db.collection('products').where('sellerId', '==', currentUser.uid).orderBy('createdAt', 'desc');
+            productsRef.onSnapshot((snapshot) => {
+                const productsGrid = document.getElementById('myProductsGrid');
+                if (snapshot.empty) {
+                    productsGrid.innerHTML = '<div class="loading">Anda belum memiliki produk</div>';
+                    return;
+                }
+                
+                productsGrid.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const product = doc.data();
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.imageUrl}" class="product-image" alt="${product.name}">
+                        <div class="product-info">
+                            <div class="product-title">${product.name}</div>
+                            <div class="product-price">Rp ${product.price.toLocaleString()}</div>
+                            <div class="product-seller">Status: ${product.status === 'available' ? 'Tersedia' : 'Terjual'}</div>
+                            <p style="color: #666; margin-bottom: 1rem;">${product.description.substring(0, 100)}${product.description.length > 100 ? '...' : ''}</p>
+                            ${product.status === 'available' ? `<button class="btn btn-danger" onclick="deleteProduct('${doc.id}')">Hapus</button>` : ''}
+                        </div>
+                    `;
+                    productsGrid.appendChild(productCard);
+                });
+            });
         }
-    });
-}
 
-window.replyMsg = function(id, content) {
-    replyTo = { messageId: id, content: content };
-    document.getElementById('replyText').innerText = `Replying to: ${content.substring(0, 40)}`;
-    document.getElementById('replyPreview').classList.remove('hidden');
-};
-window.cancelReply = () => {
-    replyTo = null;
-    document.getElementById('replyPreview').classList.add('hidden');
-};
+        // Buy product
+        async function buyProduct(productId, price) {
+            if (!currentUser) {
+                showAlert('Silakan login terlebih dahulu', 'error');
+                return;
+            }
+            
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const productRef = db.collection('products').doc(productId);
+                    const productDoc = await transaction.get(productRef);
+                    
+                    if (!productDoc.exists) {
+                        throw new Error('Produk tidak ditemukan');
+                    }
+                    
+                    if (productDoc.data().status !== 'available') {
+                        throw new Error('Produk sudah terjual');
+                    }
+                    
+                    transaction.update(productRef, { status: 'sold' });
+                    
+                    transaction.set(db.collection('orders').doc(), {
+                        productId: productId,
+                        productName: productDoc.data().name,
+                        productPrice: price,
+                        buyerId: currentUser.uid,
+                        buyerName: currentUser.email,
+                        sellerId: productDoc.data().sellerId,
+                        sellerName: productDoc.data().sellerName,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'completed'
+                    });
+                });
+                
+                showAlert('Pembelian berhasil!');
+                showProducts();
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
 
-document.getElementById('sendBtn')?.addEventListener('click', sendMsg);
-document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-});
+        // Delete product
+        async function deleteProduct(productId) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                try {
+                    await db.collection('products').doc(productId).delete();
+                    showAlert('Produk berhasil dihapus!');
+                } catch (error) {
+                    showAlert(error.message, 'error');
+                }
+            }
+        }
 
-// ==================== MEDIA ====================
-window.uploadImage = () => {
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = 'image/*';
-    input.onchange = async (e) => {
-        showLoad(true);
-        const base64 = await compressImage(e.target.files[0]);
-        mediaToSend = { base64, type: 'image', name: e.target.files[0].name };
-        sendMsg();
-        showLoad(false);
-        closeSheet();
-    };
-    input.click();
-};
+        // Show orders
+        async function showOrders() {
+            if (!currentUser) {
+                showAlert('Silakan login terlebih dahulu', 'error');
+                return;
+            }
+            
+            const content = document.getElementById('mainContent');
+            content.innerHTML = `
+                <h1 style="color: white; margin-bottom: 2rem;">Pesanan Saya</h1>
+                <div id="ordersList"></div>
+            `;
+            
+            const ordersRef = db.collection('orders')
+                .where('buyerId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc');
+            
+            ordersRef.onSnapshot((snapshot) => {
+                const ordersList = document.getElementById('ordersList');
+                if (snapshot.empty) {
+                    ordersList.innerHTML = '<div class="loading">Belum ada pesanan</div>';
+                    return;
+                }
+                
+                ordersList.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const order = doc.data();
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'product-card';
+                    orderCard.style.marginBottom = '1rem';
+                    orderCard.innerHTML = `
+                        <div class="product-info">
+                            <div class="product-title">${order.productName}</div>
+                            <div class="product-price">Rp ${order.productPrice.toLocaleString()}</div>
+                            <div class="product-seller">Penjual: ${order.sellerName}</div>
+                            <div class="product-seller">Status: ${order.status === 'completed' ? 'Selesai' : 'Diproses'}</div>
+                            <div class="product-seller">Tanggal: ${order.createdAt?.toDate().toLocaleDateString()}</div>
+                        </div>
+                    `;
+                    ordersList.appendChild(orderCard);
+                });
+            });
+        }
 
-window.takePhoto = () => {
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
-    input.onchange = async (e) => {
-        showLoad(true);
-        const base64 = await compressImage(e.target.files[0]);
-        mediaToSend = { base64, type: 'image', name: 'photo.jpg' };
-        sendMsg();
-        showLoad(false);
-        closeSheet();
-    };
-    input.click();
-};
-
-window.uploadVideo = () => {
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = 'video/*';
-    input.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (file.size > 500000) { toast('Video too large! Max 500KB'); return; }
-        showLoad(true);
-        const base64 = await fileToBase64(file);
-        mediaToSend = { base64, type: 'video', name: file.name };
-        sendMsg();
-        showLoad(false);
-        closeSheet();
-    };
-    input.click();
-};
-
-window.uploadDoc = () => {
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = '.pdf,.doc,.docx,.txt';
-    input.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (file.size > 500000) { toast('File too large! Max 500KB'); return; }
-        showLoad(true);
-        const base64 = await fileToBase64(file);
-        mediaToSend = { base64, type: 'document', name: file.name };
-        sendMsg();
-        showLoad(false);
-        closeSheet();
-    };
-    input.click();
-};
-
-document.getElementById('attachBtn')?.addEventListener('click', () => {
-    document.getElementById('bottomSheet').classList.add('show');
-});
-window.closeSheet = () => {
-    document.getElementById('bottomSheet').classList.remove('show');
-};
-
-// ==================== VOICE ====================
-let recorder, chunks = [];
-document.getElementById('voiceBtn')?.addEventListener('click', () => {
-    document.getElementById('voiceModal').classList.remove('hidden');
-});
-
-async function startRecording() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    recorder = new MediaRecorder(stream);
-    chunks = [];
-    recorder.ondataavailable = e => chunks.push(e.data);
-    recorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' });
-        if (blob.size > 500000) { toast('Too long!'); return; }
-        const base64 = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(blob); });
-        mediaToSend = { base64, type: 'audio', name: 'voice.webm' };
-        sendMsg();
-        stream.getTracks().forEach(t => t.stop());
-    };
-    recorder.start();
-    let sec = 0;
-    const timer = setInterval(() => {
-        sec++;
-        document.getElementById('timer').innerText = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
-        if (sec >= 30) { clearInterval(timer); stopRecording(); }
-    }, 1000);
-    document.getElementById('startRecord').classList.add('hidden');
-    document.getElementById('stopRecord').classList.remove('hidden');
-    window.stopRecording = () => {
-        clearInterval(timer);
-        recorder.stop();
-        document.getElementById('voiceModal').classList.add('hidden');
-        document.getElementById('startRecord').classList.remove('hidden');
-        document.getElementById('stopRecord').classList.add('hidden');
-        document.getElementById('timer').innerText = '00:00';
-    };
-}
-document.getElementById('startRecord')?.addEventListener('click', startRecording);
-document.getElementById('stopRecord')?.addEventListener('click', () => window.stopRecording?.());
-
-// ==================== STATUS ====================
-window.uploadStatus = () => {
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = 'image/*,video/*';
-    input.onchange = async (e) => {
-        showLoad(true);
-        const file = e.target.files[0];
-        const media = file.type.startsWith('image') ? await compressImage(file, 600) : await fileToBase64(file);
-        await db.collection('status').add({
-            userId: currentUser.uid,
-            mediaBase64: media,
-            mediaType: file.type.startsWith('image') ? 'image' : 'video',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            expiresAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 24*60*60*1000)),
-            views: []
+        // Auth state observer
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            updateAuthUI();
+            showProducts();
         });
-        toast('Status uploaded!');
-        showLoad(false);
-    };
-    input.click();
-};
 
-async function loadStatuses() {
-    const snapshot = await db.collection('status')
-        .where('expiresAt', '>', firebase.firestore.Timestamp.now())
-        .orderBy('timestamp', 'desc')
-        .get();
-    
-    const grouped = {};
-    snapshot.forEach(d => { const s = d.data(); if (!grouped[s.userId]) grouped[s.userId] = []; grouped[s.userId].push({ id: d.id, ...s }); });
-    
-    const list = document.getElementById('statusList');
-    list.innerHTML = '';
-    for (const [uid, statuses] of Object.entries(grouped)) {
-        const u = await db.collection('users').doc(uid).get();
-        const name = u.data()?.displayName || 'Unknown';
-        list.innerHTML += `
-            <div class="status-item" onclick="viewStatus('${uid}', ${JSON.stringify(statuses).replace(/"/g, '&quot;')})">
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}"></div>
-                <div><strong>${name}</strong><br><span style="font-size:12px;">${formatTime(statuses[0].timestamp)}</span></div>
-            </div>
-        `;
-    }
-}
-
-window.viewStatus = function(uid, statuses) {
-    let idx = 0;
-    const modal = document.getElementById('statusModal');
-    const viewer = document.getElementById('statusContent');
-    function show(i) {
-        const s = statuses[i];
-        if (!s) { closeStatus(); return; }
-        if (s.userId !== currentUser.uid && !s.views?.includes(currentUser.uid))
-            db.collection('status').doc(s.id).update({ views: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-        viewer.innerHTML = s.mediaType === 'image' ? `<img src="${s.mediaBase64}" style="max-width:100%; max-height:80vh;">` : `<video src="${s.mediaBase64}" controls autoplay style="max-width:100%; max-height:80vh;"></video>`;
-    }
-    show(idx);
-    modal.classList.remove('hidden');
-    modal.onclick = () => { idx++; if (idx < statuses.length) show(idx); else closeStatus(); };
-};
-window.closeStatus = () => {
-    document.getElementById('statusModal').classList.add('hidden');
-    document.getElementById('statusContent').innerHTML = '';
-};
-
-// ==================== GROUP & STORAGE ====================
-window.createGroup = async () => {
-    const name = prompt('Group name:');
-    if (!name) return;
-    const members = [currentUser.uid];
-    const emails = prompt('Member emails (comma separated):');
-    if (emails) {
-        for (const email of emails.split(',').map(e => e.trim())) {
-            const q = await db.collection('users').where('email', '==', email).get();
-            if (!q.empty) members.push(q.docs[0].id);
-        }
-    }
-    await db.collection('chats').add({
-        isGroup: true,
-        groupName: name,
-        participants: members,
-        admins: [currentUser.uid],
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    toast('Group created!');
-    loadChats();
-};
-
-async function updateStorage() {
-    if (!currentUser) return;
-    const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
-    let total = 0, count = 0;
-    for (const chat of chats.docs) {
-        const msgs = await db.collection('messages').where('chatId', '==', chat.id).where('mediaSize', '!=', null).get();
-        msgs.forEach(m => { total += m.data().mediaSize || 0; count++; });
-    }
-    document.getElementById('storageInfo').innerHTML = `📦 Used: ${(total/(1024*1024)).toFixed(2)} MB<br>📁 Files: ${count}`;
-}
-
-window.clearMedia = async () => {
-    if (!confirm('Delete all media?')) return;
-    const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
-    for (const chat of chats.docs) {
-        const msgs = await db.collection('messages').where('chatId', '==', chat.id).where('mediaBase64', '!=', null).get();
-        const batch = db.batch();
-        msgs.forEach(m => batch.update(m.ref, { mediaBase64: firebase.firestore.FieldValue.delete() }));
-        await batch.commit();
-    }
-    toast('Media cleared!');
-    updateStorage();
-};
-
-window.changePhoto = () => {
-    const input = document.createElement('input');
-    input.type = 'file'; input.accept = 'image/*';
-    input.onchange = async (e) => {
-        showLoad(true);
-        const base64 = await compressImage(e.target.files[0], 200);
-        await db.collection('users').doc(currentUser.uid).update({ photoURL: base64 });
-        await currentUser.updateProfile({ photoURL: base64 });
-        location.reload();
-    };
-    input.click();
-};
-
-setInterval(updateStorage, 30000);
-</script>
+        // Initial load
+        showProducts();
+    </script>
 </body>
 </html>

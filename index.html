@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketHub | Jual Beli Online</title>
+    <title>MarketHub | Marketplace Modern</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -18,79 +18,671 @@
             --light: #f8fafc;
             --border: #e2e8f0;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--dark); }
-        .navbar { background: white; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--dark); cursor: pointer; }
-        .logo span { color: var(--primary); }
-        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-        .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
-        .nav-links a:hover { color: var(--primary); }
-        .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--gray); }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 2rem; }
-        .hero { background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%); border-radius: 1rem; padding: 3rem; color: white; margin-bottom: 2rem; }
-        .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .hero p { color: #94a3b8; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-        .section-header h2 { font-size: 1.25rem; font-weight: 600; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        .product-card { background: white; border-radius: 1rem; overflow: hidden; transition: all 0.2s; border: 1px solid var(--border); }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15); }
-        .product-image { width: 100%; height: 200px; object-fit: cover; background: var(--light); }
-        .product-info { padding: 1rem; }
-        .product-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
-        .product-price { font-weight: 700; font-size: 1.1rem; color: var(--primary); margin: 0.5rem 0; }
-        .product-stock { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.75rem; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; border-radius: 1rem; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; animation: modalIn 0.2s ease; }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { font-size: 1.125rem; font-weight: 600; }
-        .modal-close { cursor: pointer; font-size: 1.25rem; color: var(--gray); }
-        .modal-body { padding: 1.5rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.625rem 0.75rem; border: 1px solid var(--border); border-radius: 0.5rem; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
-        .profile-container { background: white; border-radius: 1rem; border: 1px solid var(--border); overflow: hidden; }
-        .profile-header { padding: 2rem; background: var(--light); display: flex; gap: 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-        .profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 600; color: white; }
-        .profile-info h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.25rem; }
-        .profile-info p { color: var(--gray); font-size: 0.875rem; }
-        .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem; border-bottom: 1px solid var(--border); }
-        .stat-card { text-align: center; padding: 1rem; background: var(--light); border-radius: 0.75rem; }
-        .stat-number { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .stat-label { font-size: 0.75rem; color: var(--gray); margin-top: 0.25rem; }
-        .profile-address { padding: 1.5rem; }
-        .become-seller-card { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); margin: 1rem; padding: 1rem; border-radius: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-        .cart-item { display: flex; gap: 1rem; padding: 1rem; background: white; border-radius: 0.75rem; border: 1px solid var(--border); margin-bottom: 0.75rem; align-items: center; flex-wrap: wrap; }
-        .cart-item-image { width: 70px; height: 70px; object-fit: cover; border-radius: 0.5rem; }
-        .cart-item-info { flex: 1; }
-        .cart-quantity { display: flex; align-items: center; gap: 0.5rem; }
-        .cart-quantity button { width: 28px; height: 28px; border: 1px solid var(--border); background: white; border-radius: 0.375rem; cursor: pointer; }
-        .cart-total { background: white; padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 1rem; }
-        .alert { position: fixed; top: 80px; right: 20px; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: white; font-size: 0.875rem; z-index: 1000; animation: slideIn 0.2s ease; }
-        .alert-success { background: var(--success); }
-        .alert-error { background: var(--danger); }
-        .alert-info { background: var(--primary); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.7rem; font-weight: 600; }
-        .badge-admin { background: #ef4444; color: white; }
-        .badge-business { background: #f59e0b; color: white; }
-        .badge-user { background: #10b981; color: white; }
-        .empty-state { text-align: center; padding: 3rem; background: white; border-radius: 1rem; border: 1px solid var(--border); }
-        .loading { text-align: center; padding: 3rem; color: var(--gray); }
-        .divider { text-align: center; padding: 1rem 0; color: var(--gray); font-size: 0.75rem; position: relative; }
-        @media (max-width: 768px) { .nav-container { flex-direction: column; } .hero { padding: 1.5rem; } .hero h1 { font-size: 1.25rem; } .profile-header { flex-direction: column; align-items: center; text-align: center; } .products-grid { grid-template-columns: 1fr; } }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
+            border-radius: 1rem;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #94a3b8;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--light);
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+
+        .product-price {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        .product-stock {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .product-seller {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalIn 0.2s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .profile-container {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .profile-header {
+            padding: 2rem;
+            background: var(--light);
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .profile-info h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+
+        .profile-address {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-address h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-address p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .become-seller-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            margin: 1rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .become-seller-card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+        }
+
+        .become-seller-card p {
+            font-size: 0.75rem;
+            color: #b45309;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            margin-bottom: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.875rem;
+        }
+
+        .cart-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-quantity button {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .cart-quantity button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .cart-total {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .alert {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 0.875rem 1.25rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .alert-success {
+            background: var(--success);
+        }
+
+        .alert-error {
+            background: var(--danger);
+        }
+
+        .alert-info {
+            background: var(--primary);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-business {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge-user {
+            background: #10b981;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .divider {
+            text-align: center;
+            padding: 1rem 0;
+            color: var(--gray);
+            font-size: 0.75rem;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 50px);
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .hero {
+                padding: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-actions {
+                justify-content: center;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .become-seller-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -122,11 +714,15 @@
                         <label>Kata Sandi</label>
                         <input type="password" id="loginPassword" placeholder="********" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Masuk</button>
+                    <button type="submit" class="btn btn-primary btn-block">Masuk</button>
                 </form>
                 <div class="divider">atau</div>
-                <button class="btn btn-outline" onclick="googleLogin()" style="width:100%"><i class="fab fa-google"></i> Google</button>
-                <p style="text-align:center; margin-top:1rem; font-size:0.75rem; color:var(--gray)">Belum punya akun? <a onclick="showRegisterModal()" style="color:var(--primary); cursor:pointer">Daftar</a></p>
+                <button class="btn btn-outline btn-block" onclick="googleLogin()">
+                    <i class="fab fa-google"></i> Lanjutkan dengan Google
+                </button>
+                <p style="text-align:center; margin-top:1rem; font-size:0.75rem; color:var(--gray)">
+                    Belum punya akun? <a onclick="showRegisterModal()" style="color:var(--primary); cursor:pointer; font-weight:500">Daftar</a>
+                </p>
             </div>
         </div>
     </div>
@@ -135,7 +731,7 @@
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Daftar Akun</h3>
+                <h3>Daftar Akun Baru</h3>
                 <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -159,7 +755,7 @@
                             <option value="business">Penjual</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Daftar</button>
+                    <button type="submit" class="btn btn-primary btn-block">Daftar</button>
                 </form>
             </div>
         </div>
@@ -173,13 +769,16 @@
                 <span class="modal-close" onclick="closeModal('becomeSellerModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <p>Dengan menjadi penjual, Anda dapat:</p>
+                <p style="margin-bottom:1rem">Dengan menjadi penjual, Anda dapat:</p>
                 <ul style="margin: 1rem 0 1rem 1.5rem; color: var(--gray);">
                     <li>Menambahkan produk sendiri</li>
                     <li>Mengelola stok produk</li>
                     <li>Melihat pesanan masuk</li>
+                    <li>Mendapatkan penghasilan tambahan</li>
                 </ul>
-                <button class="btn btn-warning" onclick="upgradeToSeller()" style="width:100%">Upgrade ke Penjual</button>
+                <button class="btn btn-warning btn-block" onclick="upgradeToSeller()" style="margin-top:1rem">
+                    <i class="fas fa-store"></i> Upgrade ke Akun Penjual
+                </button>
             </div>
         </div>
     </div>
@@ -188,18 +787,18 @@
     <div id="addProductModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Tambah Produk</h3>
+                <h3>Tambah Produk Baru</h3>
                 <span class="modal-close" onclick="closeModal('addProductModal')">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="addProductForm">
                     <div class="form-group">
                         <label>Nama Produk</label>
-                        <input type="text" id="productName" required>
+                        <input type="text" id="productName" placeholder="Contoh: Kaos Polos" required>
                     </div>
                     <div class="form-group">
                         <label>Harga (Rp)</label>
-                        <input type="number" id="productPrice" required>
+                        <input type="number" id="productPrice" placeholder="100000" required>
                     </div>
                     <div class="form-group">
                         <label>Stok</label>
@@ -207,13 +806,13 @@
                     </div>
                     <div class="form-group">
                         <label>Deskripsi</label>
-                        <textarea id="productDescription" rows="3"></textarea>
+                        <textarea id="productDescription" rows="3" placeholder="Deskripsi produk..."></textarea>
                     </div>
                     <div class="form-group">
                         <label>URL Gambar</label>
                         <input type="url" id="productImage" placeholder="https://placehold.co/400x300">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Tambah</button>
+                    <button type="submit" class="btn btn-primary btn-block">Tambahkan Produk</button>
                 </form>
             </div>
         </div>
@@ -230,21 +829,21 @@
                 <form id="addressForm">
                     <div class="form-group">
                         <label>Alamat Lengkap</label>
-                        <textarea id="address" rows="2" required></textarea>
+                        <textarea id="address" rows="2" placeholder="Jalan, nomor rumah, RT/RW" required></textarea>
                     </div>
                     <div class="form-group">
                         <label>Kota</label>
-                        <input type="text" id="city" required>
+                        <input type="text" id="city" placeholder="Kota" required>
                     </div>
                     <div class="form-group">
                         <label>Kode Pos</label>
-                        <input type="text" id="postalCode" required>
+                        <input type="text" id="postalCode" placeholder="Kode Pos" required>
                     </div>
                     <div class="form-group">
-                        <label>No. Telepon</label>
-                        <input type="tel" id="phone" required>
+                        <label>Nomor Telepon</label>
+                        <input type="tel" id="phone" placeholder="08123456789" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Simpan</button>
+                    <button type="submit" class="btn btn-primary btn-block">Simpan Alamat</button>
                 </form>
             </div>
         </div>
@@ -255,6 +854,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
             authDomain: "simplechat-85cd8.firebaseapp.com",
@@ -264,6 +864,7 @@
             appId: "1:244789873168:web:4cba5481f689ab3103d895"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -291,7 +892,7 @@
 
         function showAddProductModal() {
             if (!currentUser) {
-                showAlert('Silakan login dulu', 'error');
+                showAlert('Silakan login terlebih dahulu', 'error');
                 return;
             }
             if (currentUserData?.role !== 'business' && currentUserData?.role !== 'admin') {
@@ -337,6 +938,7 @@
             }
         }
 
+        // Login handler
         document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -351,12 +953,14 @@
             }
         });
 
+        // Register handler
         document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const role = document.getElementById('registerRole').value;
+            
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 await db.collection('users').doc(userCredential.user.uid).set({
@@ -364,13 +968,14 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     address: '', city: '', postalCode: '', phone: ''
                 });
-                showAlert('Daftar berhasil! Silakan login', 'success');
+                showAlert('Pendaftaran berhasil! Silakan login', 'success');
                 closeModal('registerModal');
             } catch (error) {
                 showAlert(error.message, 'error');
             }
         });
 
+        // Add product handler
         document.getElementById('addProductForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -385,15 +990,20 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'available'
                 });
-                showAlert('Produk ditambahkan', 'success');
+                showAlert('Produk berhasil ditambahkan', 'success');
                 closeModal('addProductModal');
                 document.getElementById('addProductForm').reset();
-                showMyProducts();
+                if (currentUserData?.role === 'business' || currentUserData?.role === 'admin') {
+                    showMyProducts();
+                } else {
+                    showProducts();
+                }
             } catch (error) {
                 showAlert(error.message, 'error');
             }
         });
 
+        // Address handler
         document.getElementById('addressForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -411,20 +1021,21 @@
             }
         });
 
+        // Cart functions
         function addToCart(product) {
             if (!currentUser) {
-                showAlert('Login dulu', 'error');
+                showAlert('Silakan login terlebih dahulu', 'error');
                 return;
             }
             const existing = cart.find(item => item.id === product.id);
             if (existing) {
                 if (existing.quantity < product.stock) existing.quantity++;
-                else { showAlert('Stok habis', 'error'); return; }
+                else { showAlert('Stok tidak mencukupi', 'error'); return; }
             } else {
                 cart.push({ ...product, quantity: 1 });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
-            showAlert(`${product.name} ditambahkan`, 'success');
+            showAlert(`${product.name} ditambahkan ke keranjang`, 'success');
             updateCartCount();
         }
 
@@ -435,14 +1046,14 @@
         }
 
         async function checkout() {
-            if (!currentUser) { showAlert('Login dulu', 'error'); return; }
-            if (cart.length === 0) { showAlert('Keranjang kosong', 'error'); return; }
+            if (!currentUser) { showAlert('Silakan login terlebih dahulu', 'error'); return; }
+            if (cart.length === 0) { showAlert('Keranjang belanja kosong', 'error'); return; }
             
             const userData = await db.collection('users').doc(currentUser.uid).get();
             const address = userData.data();
             if (!address.address) { 
                 showAddressModal(); 
-                showAlert('Isi alamat dulu', 'info'); 
+                showAlert('Lengkapi alamat pengiriman terlebih dahulu', 'info'); 
                 return; 
             }
 
@@ -450,7 +1061,7 @@
                 const productRef = db.collection('products').doc(item.id);
                 const productDoc = await productRef.get();
                 if (productDoc.exists && productDoc.data().stock < item.quantity) {
-                    showAlert(`Stok ${item.name} habis`, 'error');
+                    showAlert(`Stok ${item.name} tidak mencukupi`, 'error');
                     return;
                 }
             }
@@ -462,11 +1073,17 @@
                     if (!productDoc.exists) throw new Error('Produk tidak ditemukan');
                     transaction.update(productRef, { stock: productDoc.data().stock - item.quantity });
                     transaction.set(db.collection('orders').doc(), {
-                        productId: item.id, productName: item.name, price: item.price,
-                        quantity: item.quantity, total: item.price * item.quantity,
-                        buyerId: currentUser.uid, buyerName: currentUserData?.name,
-                        sellerId: item.sellerId, sellerName: item.sellerName,
-                        address: address.address, city: address.city,
+                        productId: item.id, 
+                        productName: item.name, 
+                        price: item.price,
+                        quantity: item.quantity, 
+                        total: item.price * item.quantity,
+                        buyerId: currentUser.uid, 
+                        buyerName: currentUserData?.name,
+                        sellerId: item.sellerId, 
+                        sellerName: item.sellerName,
+                        address: address.address, 
+                        city: address.city,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         status: 'paid'
                     });
@@ -475,32 +1092,38 @@
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
-            showAlert('Checkout berhasil', 'success');
+            showAlert('Pesanan berhasil dibuat', 'success');
             showOrders();
         }
 
+        // Navigation
         function updateNav() {
             const nav = document.getElementById('navLinks');
             if (!currentUser) {
-                nav.innerHTML = `<a onclick="showProducts()">Beranda</a><button class="btn btn-outline btn-sm" onclick="showLoginModal()">Masuk</button><button class="btn btn-primary btn-sm" onclick="showRegisterModal()">Daftar</button>`;
+                nav.innerHTML = `
+                    <a onclick="showProducts()">Beranda</a>
+                    <button class="btn btn-outline btn-sm" onclick="showLoginModal()">Masuk</button>
+                    <button class="btn btn-primary btn-sm" onclick="showRegisterModal()">Daftar</button>
+                `;
                 return;
             }
             const role = currentUserData?.role;
-            const roleText = role === 'admin' ? 'Admin' : role === 'business' ? 'Penjual' : 'Pembeli';
+            const roleBadge = role === 'admin' ? 'Administrator' : role === 'business' ? 'Penjual' : 'Pembeli';
             const roleClass = role === 'admin' ? 'badge-admin' : role === 'business' ? 'badge-business' : 'badge-user';
+            
             nav.innerHTML = `
                 <a onclick="showProducts()">Beranda</a>
                 ${role === 'business' || role === 'admin' ? '<a onclick="showMyProducts()">Produk Saya</a>' : ''}
                 <a onclick="showCart()">Keranjang (<span id="cartCount">0</span>)</a>
                 <a onclick="showOrders()">Pesanan</a>
                 <a onclick="showProfile()">Profil</a>
-                <span class="badge ${roleClass}">${roleText}</span>
+                <span class="badge ${roleClass}">${roleBadge}</span>
                 <button class="btn btn-danger btn-sm" onclick="logout()">Keluar</button>
             `;
             updateCartCount();
         }
 
-        // TAMPILAN BERANDA - FIXED
+        // Show Products (Beranda)
         function showProducts() {
             const content = document.getElementById('mainContent');
             content.innerHTML = `
@@ -515,17 +1138,17 @@
                 </div>
                 <div class="products-grid" id="productsGrid"><div class="loading">Memuat produk...</div></div>`;
             
-            // Query tanpa where dulu biar muncul
-            db.collection('products').orderBy('createdAt', 'desc').get().then((snap) => {
+            db.collection('products').orderBy('createdAt', 'desc').onSnapshot((snap) => {
                 const grid = document.getElementById('productsGrid');
                 if (!grid) return;
-                if (snap.empty) {
+                if (snap.empty) { 
                     grid.innerHTML = `
                         <div class="empty-state">
-                            <p>Belum ada produk</p>
-                            ${currentUser ? '<button class="btn btn-primary btn-sm" onclick="showAddProductModal()" style="margin-top:1rem">+ Tambah Produk</button>' : '<button class="btn btn-primary btn-sm" onclick="showLoginModal()" style="margin-top:1rem">Login untuk Jualan</button>'}
+                            <i class="fas fa-box-open"></i>
+                            <p>Belum ada produk yang tersedia</p>
+                            ${currentUser ? '<button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk Sekarang</button>' : '<button class="btn btn-primary btn-sm" onclick="showLoginModal()">Login untuk Jualan</button>'}
                         </div>`;
-                    return;
+                    return; 
                 }
                 grid.innerHTML = '';
                 snap.forEach(doc => {
@@ -533,25 +1156,22 @@
                     const isOwner = currentUser && currentUser.uid === p.sellerId;
                     grid.innerHTML += `
                         <div class="product-card">
-                            <img src="${p.imageUrl || 'https://placehold.co/400x300'}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
+                            <img src="${p.imageUrl}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
                             <div class="product-info">
-                                <div class="product-title">${p.name || 'Produk'}</div>
-                                <div class="product-price">Rp ${(p.price || 0).toLocaleString()}</div>
-                                <div class="product-stock">Stok: ${p.stock || 0}</div>
-                                <div class="product-seller"><i class="fas fa-store"></i> ${p.sellerName || 'Penjual'}</div>
+                                <div class="product-title">${p.name}</div>
+                                <div class="product-price">Rp ${p.price.toLocaleString()}</div>
+                                <div class="product-stock">Stok: ${p.stock}</div>
+                                <div class="product-seller"><i class="fas fa-store"></i> ${p.sellerName}</div>
                                 ${!isOwner && currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" onclick='addToCart({id:"${doc.id}",name:"${p.name}",price:${p.price},stock:${p.stock},sellerId:"${p.sellerId}",sellerName:"${p.sellerName}",image:"${p.imageUrl}"})'>Tambah ke Keranjang</button>` : ''}
                                 ${!currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" onclick="showLoginModal()">Login untuk Beli</button>` : ''}
                                 ${isOwner ? `<button class="btn btn-outline btn-sm" style="width:100%; margin-top:0.5rem" disabled>Produk Anda</button>` : ''}
                             </div>
                         </div>`;
                 });
-            }).catch(err => {
-                console.error(err);
-                const grid = document.getElementById('productsGrid');
-                if (grid) grid.innerHTML = `<div class="empty-state"><p>Error loading products: ${err.message}</p></div>`;
             });
         }
 
+        // Show My Products
         function showMyProducts() {
             if (!currentUser || (currentUserData?.role !== 'business' && currentUserData?.role !== 'admin')) {
                 showAlert('Akses ditolak', 'error');
@@ -561,15 +1181,15 @@
             content.innerHTML = `
                 <div class="section-header">
                     <h2>Produk Saya</h2>
-                    <button class="btn btn-primary btn-sm" onclick="showAddProductModal()">+ Tambah</button>
+                    <button class="btn btn-primary btn-sm" onclick="showAddProductModal()">+ Tambah Produk</button>
                 </div>
                 <div class="products-grid" id="myProductsGrid"><div class="loading">Memuat...</div></div>`;
             
-            db.collection('products').where('sellerId', '==', currentUser.uid).get().then((snap) => {
+            db.collection('products').where('sellerId', '==', currentUser.uid).orderBy('createdAt', 'desc').onSnapshot((snap) => {
                 const grid = document.getElementById('myProductsGrid');
                 if (!grid) return;
                 if (snap.empty) { 
-                    grid.innerHTML = '<div class="empty-state"><p>Belum ada produk</p><button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk</button></div>'; 
+                    grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>Belum ada produk</p><button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk Sekarang</button></div>'; 
                     return; 
                 }
                 grid.innerHTML = '';
@@ -577,7 +1197,7 @@
                     const p = doc.data();
                     grid.innerHTML += `
                         <div class="product-card">
-                            <img src="${p.imageUrl || 'https://placehold.co/400x300'}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
+                            <img src="${p.imageUrl}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
                             <div class="product-info">
                                 <div class="product-title">${p.name}</div>
                                 <div class="product-price">Rp ${p.price.toLocaleString()}</div>
@@ -590,34 +1210,38 @@
         }
 
         async function deleteProduct(id) {
-            if (confirm('Hapus produk ini?')) {
+            if (confirm('Yakin ingin menghapus produk ini?')) {
                 await db.collection('products').doc(id).delete();
                 showAlert('Produk dihapus', 'success');
                 showMyProducts();
             }
         }
 
+        // Show Cart
         function showCart() {
             const content = document.getElementById('mainContent');
             if (cart.length === 0) {
-                content.innerHTML = '<div class="empty-state"><p>Keranjang kosong</p><button class="btn btn-primary" onclick="showProducts()">Belanja Sekarang</button></div>';
+                content.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>Keranjang belanja kosong</p><button class="btn btn-primary" onclick="showProducts()">Mulai Belanja</button></div>';
                 return;
             }
             let total = 0;
-            content.innerHTML = `<div class="section-header"><h2>Keranjang Belanja</h2></div><div id="cartItems"></div><div class="cart-total"><span><strong>Total</strong></span><span style="font-size:1.25rem; font-weight:700; color:var(--primary)" id="cartTotal">0</span><button class="btn btn-success" onclick="checkout()">Checkout</button></div>`;
+            content.innerHTML = `<div class="section-header"><h2>Keranjang Belanja</h2></div><div id="cartItems"></div><div class="cart-total"><span><strong>Total Belanja</strong></span><span style="font-size:1.25rem; font-weight:700; color:var(--primary)" id="cartTotal">0</span><button class="btn btn-success" onclick="checkout()">Checkout</button></div>`;
             const container = document.getElementById('cartItems');
             cart.forEach((item, idx) => {
                 total += item.price * item.quantity;
                 container.innerHTML += `
                     <div class="cart-item">
                         <img src="${item.image}" class="cart-item-image" onerror="this.src='https://placehold.co/70x70'">
-                        <div class="cart-item-info"><strong>${item.name}</strong><br>Rp ${item.price.toLocaleString()}</div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">Rp ${item.price.toLocaleString()}</div>
+                        </div>
                         <div class="cart-quantity">
                             <button onclick="updateQuantity(${idx}, -1)">-</button>
-                            <span>${item.quantity}</span>
+                            <span style="min-width:30px; text-align:center">${item.quantity}</span>
                             <button onclick="updateQuantity(${idx}, 1)">+</button>
                         </div>
-                        <div>Rp ${(item.price * item.quantity).toLocaleString()}</div>
+                        <div style="font-weight:600; min-width:80px; text-align:right">Rp ${(item.price * item.quantity).toLocaleString()}</div>
                         <button class="btn btn-danger btn-sm" onclick="removeFromCart(${idx})">Hapus</button>
                     </div>`;
             });
@@ -628,7 +1252,7 @@
             const newQty = cart[idx].quantity + delta;
             if (newQty < 1) cart.splice(idx, 1);
             else if (newQty <= cart[idx].stock) cart[idx].quantity = newQty;
-            else { showAlert('Stok habis', 'error'); return; }
+            else { showAlert('Stok tidak mencukupi', 'error'); return; }
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
             showCart();
@@ -641,29 +1265,41 @@
             showCart(); 
         }
 
+        // Show Orders
         function showOrders() {
             if (!currentUser) return;
             const content = document.getElementById('mainContent');
-            content.innerHTML = `<div class="section-header"><h2>Pesanan Saya</h2></div><div id="ordersList"><div class="loading">Memuat...</div></div>`;
-            db.collection('orders').where('buyerId', '==', currentUser.uid).orderBy('createdAt', 'desc').get().then((snap) => {
+            content.innerHTML = `<div class="section-header"><h2>Riwayat Pesanan</h2></div><div id="ordersList"><div class="loading">Memuat...</div></div>`;
+            db.collection('orders').where('buyerId', '==', currentUser.uid).orderBy('createdAt', 'desc').onSnapshot((snap) => {
                 const list = document.getElementById('ordersList');
                 if (!list) return;
-                if (snap.empty) { list.innerHTML = '<div class="empty-state"><p>Belum ada pesanan</p></div>'; return; }
+                if (snap.empty) { list.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Belum ada riwayat pesanan</p></div>'; return; }
                 list.innerHTML = '';
                 snap.forEach(doc => {
                     const o = doc.data();
                     list.innerHTML += `
                         <div class="product-card" style="margin-bottom:1rem">
                             <div class="product-info">
-                                <strong>${o.productName}</strong><br>
-                                ${o.quantity} x Rp ${o.price.toLocaleString()} = <strong>Rp ${o.total.toLocaleString()}</strong><br>
-                                <i class="fas fa-map-marker-alt"></i> ${o.address}, ${o.city}
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem">
+                                    <strong>${o.productName}</strong>
+                                    <span class="badge badge-success">Selesai</span>
+                                </div>
+                                <div style="color:var(--gray); font-size:0.875rem; margin:0.5rem 0">
+                                    ${o.quantity} x Rp ${o.price.toLocaleString()} = <strong>Rp ${o.total.toLocaleString()}</strong>
+                                </div>
+                                <div style="color:var(--gray); font-size:0.75rem">
+                                    <i class="fas fa-map-marker-alt"></i> ${o.address}, ${o.city}
+                                </div>
+                                <div style="color:var(--gray); font-size:0.75rem; margin-top:0.25rem">
+                                    <i class="fas fa-calendar"></i> ${o.createdAt?.toDate().toLocaleDateString()}
+                                </div>
                             </div>
                         </div>`;
                 });
             });
         }
 
+        // Show Profile
         async function showProfile() {
             if (!currentUser) return;
             const userDoc = await db.collection('users').doc(currentUser.uid).get();
@@ -678,10 +1314,12 @@
                 sellerCard = `
                     <div class="become-seller-card">
                         <div>
-                            <strong>Jadi Penjual Sekarang!</strong>
-                            <p style="font-size:0.75rem">Jual produk Anda sendiri dan dapatkan penghasilan</p>
+                            <h4><i class="fas fa-store"></i> Jadi Penjual Sekarang!</h4>
+                            <p>Dapatkan penghasilan tambahan dengan menjual produk Anda</p>
                         </div>
-                        <button class="btn btn-warning btn-sm" onclick="showBecomeSellerModal()">Daftar Jadi Penjual</button>
+                        <button class="btn btn-warning btn-sm" onclick="showBecomeSellerModal()">
+                            <i class="fas fa-arrow-right"></i> Daftar Jadi Penjual
+                        </button>
                     </div>
                 `;
             }
@@ -692,21 +1330,34 @@
                         <div class="profile-avatar">${data.name?.charAt(0).toUpperCase() || 'U'}</div>
                         <div class="profile-info">
                             <h2>${data.name}</h2>
-                            <p>${data.email}</p>
+                            <p><i class="fas fa-envelope"></i> ${data.email}</p>
                             <p><span class="badge ${data.role === 'admin' ? 'badge-admin' : data.role === 'business' ? 'badge-business' : 'badge-user'}">${data.role === 'admin' ? 'Administrator' : data.role === 'business' ? 'Penjual' : 'Pembeli'}</span></p>
-                            <button class="btn btn-outline btn-sm" onclick="showAddressModal()">Edit Alamat</button>
+                            <div class="profile-actions">
+                                <button class="btn btn-outline btn-sm" onclick="showAddressModal()">
+                                    <i class="fas fa-map-marker-alt"></i> Edit Alamat
+                                </button>
+                            </div>
                         </div>
                     </div>
                     ${sellerCard}
                     <div class="profile-stats">
-                        <div class="stat-card"><div class="stat-number">${productsCount}</div><div class="stat-label">Total Produk</div></div>
-                        <div class="stat-card"><div class="stat-number">${ordersCount}</div><div class="stat-label">Total Pesanan</div></div>
-                        <div class="stat-card"><div class="stat-number">${cart.length}</div><div class="stat-label">Keranjang</div></div>
+                        <div class="stat-card">
+                            <div class="stat-number">${productsCount}</div>
+                            <div class="stat-label">Total Produk</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${ordersCount}</div>
+                            <div class="stat-label">Total Pesanan</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${cart.length}</div>
+                            <div class="stat-label">Keranjang</div>
+                        </div>
                     </div>
                     <div class="profile-address">
-                        <h4>Alamat Pengiriman</h4>
+                        <h4><i class="fas fa-map-marker-alt"></i> Alamat Pengiriman</h4>
                         <p>${data.address ? `${data.address}, ${data.city} - ${data.postalCode}` : 'Belum diisi'}</p>
-                        <p>📞 ${data.phone || '-'}</p>
+                        <p style="margin-top:0.5rem"><i class="fas fa-phone"></i> ${data.phone || '-'}</p>
                     </div>
                 </div>`;
         }
@@ -726,7 +1377,12 @@
                 if (doc.exists) {
                     currentUserData = doc.data();
                 } else {
-                    currentUserData = { name: user.email?.split('@')[0] || 'User', email: user.email, role: 'user' };
+                    currentUserData = { 
+                        name: user.email?.split('@')[0] || 'User', 
+                        email: user.email, 
+                        role: 'user',
+                        address: '', city: '', postalCode: '', phone: ''
+                    };
                     await db.collection('users').doc(user.uid).set(currentUserData);
                 }
             } else {

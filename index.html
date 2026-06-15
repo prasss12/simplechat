@@ -6,113 +6,153 @@
 <title>VOID THREAT BLACKSITE</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-    font-family:Consolas,monospace;
-    background:#f5f5f5;
-    margin:0;
-    padding:20px;
-    color:#222;
+font-family:Consolas,monospace;
+background:#f5f5f5;
+color:#222;
+padding:20px;
 }
 
 .container{
-    max-width:1000px;
-    margin:auto;
+max-width:1000px;
+margin:auto;
 }
 
 h1{
-    margin-bottom:5px;
+font-size:32px;
+margin-bottom:5px;
 }
 
 .subtitle{
-    color:#666;
-    margin-bottom:20px;
+color:#666;
+margin-bottom:20px;
 }
 
 input{
-    width:100%;
-    padding:10px;
-    border:1px solid #ccc;
-    margin-bottom:20px;
-    font-family:inherit;
+width:100%;
+padding:10px;
+border:1px solid #ccc;
+margin-bottom:20px;
+font-family:inherit;
 }
 
 .file{
-    background:#fff;
-    border:1px solid #ddd;
-    padding:12px;
-    margin-bottom:8px;
-    cursor:pointer;
+background:#fff;
+border:1px solid #ddd;
+padding:12px;
+margin-bottom:8px;
+cursor:pointer;
+transition:.2s;
 }
 
 .file:hover{
-    background:#fafafa;
+background:#fafafa;
 }
 
 .status{
-    font-size:12px;
-    color:#666;
+font-size:12px;
+color:#666;
+margin-top:4px;
 }
 
 .modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.7);
-    justify-content:center;
-    align-items:center;
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.75);
+justify-content:center;
+align-items:center;
+padding:20px;
 }
 
 .modal-content{
-    background:white;
-    width:90%;
-    max-width:700px;
-    max-height:90vh;
-    overflow:auto;
-    padding:20px;
+background:#fff;
+width:100%;
+max-width:800px;
+max-height:90vh;
+overflow:auto;
+padding:20px;
 }
 
 .modal img{
-    width:100%;
-    border:1px solid #ddd;
-    margin:15px 0;
+width:100%;
+margin:15px 0;
+border:1px solid #ddd;
 }
 
 .close{
-    float:right;
-    cursor:pointer;
-    font-size:22px;
+float:right;
+cursor:pointer;
+font-size:24px;
 }
+
+pre{
+white-space:pre-wrap;
+line-height:1.6;
+}
+
+.footer{
+margin-top:30px;
+font-size:12px;
+color:#666;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="container">
 
 <h1>VOID THREAT BLACKSITE</h1>
+
 <div class="subtitle">
 Recovered Entity Database<br>
 Archive Status: Partially Recovered
 </div>
 
-<input type="text" id="search" placeholder="Search files...">
+<input
+type="text"
+id="search"
+placeholder="Search files..."
+>
 
 <div id="files"></div>
+
+<div class="footer">
+communication: vtb999_
+</div>
 
 </div>
 
 <div class="modal" id="modal">
+
 <div class="modal-content">
 
-<span class="close" onclick="closeModal()">✖</span>
+<span class="close" onclick="closeModal()">
+✖
+</span>
 
 <h2 id="title"></h2>
+
 <p id="threat"></p>
 
 <img id="image" style="display:none;">
 
-<p id="description"></p>
+<pre id="description"></pre>
 
 </div>
+
 </div>
 
 <script>
@@ -120,12 +160,97 @@ Archive Status: Partially Recovered
 const files = [
 
 {
+id:"COMPANY-001",
+name:"company-profile",
+type:"txt",
+description:`VOID THREAT BLACKSITE
+
+Organization Type:
+Research and Documentation
+
+Founded:
+2026
+
+Status:
+Active
+
+Archive Status:
+Partially Recovered`
+},
+
+{
+id:"COMM-001",
+name:"communication-links",
+type:"txt",
+description:`COMMUNICATION LINKS
+
+Primary Contact
+
+vtb999_
+
+Status:
+Verified
+
+Last Update:
+2026-06-15`
+},
+
+{
+id:"STAFF-001",
+name:"staff-directory",
+type:"txt",
+description:`STAFF DIRECTORY
+
+Director:
+REDACTED
+
+Research Lead:
+REDACTED
+
+Archive Team:
+REDACTED
+
+Clearance:
+LEVEL-3`
+},
+
+{
+id:"GUIDE-001",
+name:"archive-guidelines",
+type:"txt",
+description:`ARCHIVE GUIDELINES
+
+1. Do not modify recovered records.
+2. Report corrupted archives.
+3. Restricted files require clearance.
+4. Archive integrity is mandatory.`
+},
+
+{
+id:"REC-001",
+name:"recruitment-notice",
+type:"txt",
+description:`RECRUITMENT NOTICE
+
+Position:
+Field Observer
+
+Status:
+OPEN`
+},
+
+{
 id:"VTB-001",
 name:"Forest Watcher",
 type:"txt",
 threat:"HIGH RISK",
 image:"entities/vtb-001.jpg",
-description:"Humanoid entity approximately 3 meters tall. Frequently observed standing motionless between trees."
+description:`Humanoid entity approximately 3 meters tall.
+
+Frequently observed standing motionless between trees.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -134,7 +259,7 @@ name:"The Observer",
 type:"txt",
 threat:"HIGH RISK",
 image:"entities/vtb-002.jpg",
-description:"Unknown entity repeatedly discovered in photographs after they are taken."
+description:`Unknown entity repeatedly discovered in photographs after they are taken.`
 },
 
 {
@@ -143,16 +268,18 @@ name:"The Smiling Passenger",
 type:"txt",
 threat:"HIGH RISK",
 image:"entities/vtb-003.jpg",
-description:"Unknown passenger appearing inside buses and trains during late-night hours."
+description:`Unknown passenger appearing inside buses and trains during late-night hours.`
 },
-
 {
 id:"VTB-004",
 name:"Tunnel Walker",
 type:"txt",
 threat:"MODERATE",
 image:"entities/vtb-004.jpg",
-description:"Tall humanoid figure frequently recorded inside abandoned tunnels."
+description:`Tall humanoid figure frequently recorded inside abandoned tunnels.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -161,7 +288,10 @@ name:"Deepwater Titan",
 type:"txt",
 threat:"EXTREME",
 image:"entities/vtb-005.jpg",
-description:"Massive aquatic organism inhabiting deep water environments."
+description:`Massive aquatic organism inhabiting deep water environments.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -170,7 +300,10 @@ name:"Antlered Shadow",
 type:"txt",
 threat:"HIGH RISK",
 image:"entities/vtb-006.jpg",
-description:"Shadow-like humanoid entity with massive antlers."
+description:`Shadow-like humanoid entity with massive antlers.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -179,7 +312,10 @@ name:"The Window Face",
 type:"txt",
 threat:"HIGH RISK",
 image:"entities/vtb-007.jpg",
-description:"Distorted human-like face frequently observed behind windows of abandoned structures."
+description:`Distorted human-like face frequently observed behind windows of abandoned structures.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -188,7 +324,10 @@ name:"Iron Jaw",
 type:"txt",
 threat:"EXTREME",
 image:"entities/vtb-008.jpg",
-description:"Large predatory entity possessing a split jaw structure and extreme physical strength."
+description:`Large predatory entity possessing abnormal jaw structure.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -197,7 +336,10 @@ name:"Radio Man",
 type:"txt",
 threat:"MODERATE",
 image:"entities/vtb-009.jpg",
-description:"Humanoid entity associated with unexplained radio broadcasts."
+description:`Humanoid entity associated with unexplained radio broadcasts.
+
+Status:
+ACTIVE`
 },
 
 {
@@ -206,40 +348,63 @@ name:"White Mask",
 type:"txt",
 threat:"HIGH RISK",
 image:"entities/vtb-010.jpg",
-description:"Tall humanoid entity possessing a completely white featureless face."
+description:`Tall humanoid entity possessing a completely white featureless face.
+
+Status:
+ACTIVE`
 },
 
 {
 id:"VTB-011",
 name:"Corrupted Archive",
 type:"corrupted",
-description:"FILE CORRUPTED\nRecovery Progress: 14%"
+description:`FILE CORRUPTED
+
+Recovery Progress:
+14%
+
+Error Code:
+VTB-ERR-011`
 },
 
 {
 id:"VTB-012",
 name:"Corrupted Archive",
 type:"corrupted",
-description:"FILE CORRUPTED\nRecovery Progress: 31%"
+description:`FILE CORRUPTED
+
+Recovery Progress:
+31%
+
+Error Code:
+VTB-ERR-012`
 },
 
 {
 id:"VTB-013",
 name:"Restricted File",
 type:"restricted",
-description:"ACCESS DENIED\nLEVEL-5 CLEARANCE REQUIRED"
+description:`ACCESS DENIED
+
+LEVEL-5 CLEARANCE REQUIRED
+
+Current Clearance:
+PUBLIC`
 },
 
 {
 id:"VTB-014",
 name:"Missing Archive",
 type:"missing",
-description:"ARCHIVE NOT FOUND\nFILE REMOVED FROM DATABASE"
+description:`ARCHIVE NOT FOUND
+
+FILE REMOVED FROM DATABASE`
 }
 
 ];
 
-const filesContainer = document.getElementById("files");
+const filesContainer =
+document.getElementById("files");
 
 function render(search=""){
 
@@ -251,19 +416,34 @@ files
 .toLowerCase()
 .includes(search.toLowerCase())
 )
-.forEach(file=>{
+.forEach(file => {
 
-let icon="📄";
+let icon = "📄";
 
-if(file.type==="corrupted") icon="⚠";
-if(file.type==="restricted") icon="🔒";
-if(file.type==="missing") icon="❌";
+if(file.type==="corrupted")
+icon = "⚠";
+
+if(file.type==="restricted")
+icon = "🔒";
+
+if(file.type==="missing")
+icon = "❌";
 
 filesContainer.innerHTML += `
-<div class="file" onclick="openFile('${file.id}')">
+
+<div
+class="file"
+onclick="openFile('${file.id}')"
+>
+
 <b>${icon} ${file.id}.${file.type}</b>
-<div class="status">${file.name}</div>
+
+<div class="status">
+${file.name}
 </div>
+
+</div>
+
 `;
 
 });
@@ -272,40 +452,83 @@ filesContainer.innerHTML += `
 
 render();
 
+document
+.getElementById("search")
+.addEventListener("input", e => {
+
+render(e.target.value);
+
+});
+
 function openFile(id){
 
-const file = files.find(f=>f.id===id);
+const file =
+files.find(f => f.id === id);
 
-document.getElementById("modal").style.display="flex";
-document.getElementById("title").innerText=file.id+" - "+file.name;
+document
+.getElementById("modal")
+.style.display = "flex";
 
-document.getElementById("description").innerText=file.description;
+document
+.getElementById("title")
+.innerText =
+file.id + " - " + file.name;
+
+document
+.getElementById("description")
+.innerText =
+file.description;
 
 if(file.image){
 
-document.getElementById("image").style.display="block";
-document.getElementById("image").src=file.image;
+document
+.getElementById("image")
+.style.display = "block";
 
-document.getElementById("threat").innerHTML=
-"<b>Threat Level:</b> "+file.threat;
+document
+.getElementById("image")
+.src = file.image;
+
+document
+.getElementById("threat")
+.innerHTML =
+"<b>Threat Level:</b> " +
+file.threat;
 
 }else{
 
-document.getElementById("image").style.display="none";
-document.getElementById("threat").innerHTML="";
+document
+.getElementById("image")
+.style.display = "none";
+
+document
+.getElementById("threat")
+.innerHTML = "";
 
 }
 
 }
 
 function closeModal(){
-document.getElementById("modal").style.display="none";
+
+document
+.getElementById("modal")
+.style.display = "none";
+
 }
 
-document.getElementById("search")
-.addEventListener("input",e=>{
-render(e.target.value);
-});
+window.onclick = function(event){
+
+const modal =
+document.getElementById("modal");
+
+if(event.target === modal){
+
+closeModal();
+
+}
+
+}
 
 </script>
 

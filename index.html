@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Real-Time Chat - Like WhatsApp</title>
+    <title>WhatsApp Clone - Real Time Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,162 +13,87 @@
         }
 
         :root {
-            --whatsapp-green: #25D366;
-            --whatsapp-dark: #075E54;
-            --whatsapp-teal: #128C7E;
-            --bg-dark: #111B21;
-            --bg-dark-header: #202C33;
-            --bg-light: #FFFFFF;
-            --text-light: #E9EDEF;
+            --bg: #111B21;
+            --header: #202C33;
+            --green: #25D366;
+            --text: #E9EDEF;
             --text-muted: #8696A0;
-            --border-dark: #2A3942;
-            --outgoing-msg: #005C4B;
-            --incoming-msg: #202C33;
-            --online: #25D366;
-            --offline: #8696A0;
+            --border: #2A3942;
+            --outgoing: #005C4B;
+            --incoming: #202C33;
         }
 
         [data-theme="light"] {
-            --bg-dark: #FFFFFF;
-            --bg-dark-header: #F0F2F5;
-            --text-light: #111B21;
-            --border-dark: #E9EDEF;
-            --outgoing-msg: #D9FDD3;
-            --incoming-msg: #FFFFFF;
+            --bg: #FFFFFF;
+            --header: #F0F2F5;
+            --text: #111B21;
+            --border: #E9EDEF;
+            --outgoing: #D9FDD3;
+            --incoming: #FFFFFF;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Login Page */
+        /* Login */
         .login-page {
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, var(--whatsapp-dark), var(--whatsapp-teal));
+            background: linear-gradient(135deg, #075E54, #128C7E);
         }
-
-        .login-box {
+        .login-card {
             background: white;
             border-radius: 32px;
             padding: 40px;
             width: 90%;
-            max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .login-logo {
+            max-width: 400px;
             text-align: center;
-            margin-bottom: 30px;
         }
-
-        .login-logo i {
-            font-size: 60px;
-            color: var(--whatsapp-green);
+        .login-card i { font-size: 60px; color: #25D366; }
+        .login-card h1 { margin: 10px 0; color: #111B21; }
+        .input-group {
+            margin: 15px 0;
+            text-align: left;
         }
-
-        .login-logo h1 {
-            color: #111B21;
-            font-size: 28px;
-            margin-top: 10px;
-        }
-
-        .input-field {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-field i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #667781;
-        }
-
-        .input-field input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 1px solid #E9EDEF;
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .input-field input:focus {
-            border-color: var(--whatsapp-green);
-        }
-
-        .btn-primary {
+        .input-group input {
             width: 100%;
             padding: 15px;
-            background: var(--whatsapp-green);
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #25D366;
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
+            margin: 10px 0;
         }
-
         .btn-google {
-            width: 100%;
-            padding: 15px;
             background: white;
-            border: 1px solid #E9EDEF;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 16px;
+            color: #111;
+            border: 1px solid #ddd;
         }
-
         .divider {
-            text-align: center;
             margin: 20px 0;
-            color: #667781;
-            position: relative;
+            color: #666;
         }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 45%;
-            height: 1px;
-            background: #E9EDEF;
-        }
-
-        .divider::before { left: 0; }
-        .divider::after { right: 0; }
-
-        .auth-link {
-            text-align: center;
+        .switch-link {
             margin-top: 20px;
-            color: #667781;
-        }
-
-        .auth-link a {
-            color: var(--whatsapp-green);
-            text-decoration: none;
-            font-weight: 600;
+            color: #25D366;
             cursor: pointer;
-        }
-
-        .error-msg {
-            color: #e74c3c;
-            font-size: 12px;
-            margin-top: 5px;
-            text-align: center;
         }
 
         /* Main App */
@@ -177,66 +101,42 @@
             display: flex;
             height: 100vh;
         }
-
-        /* Sidebar */
         .sidebar {
             width: 380px;
-            background: var(--bg-dark);
-            border-right: 1px solid var(--border-dark);
+            background: var(--bg);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
         }
-
         .sidebar-header {
-            padding: 20px 16px;
-            background: var(--bg-dark-header);
+            padding: 20px;
+            background: var(--header);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
         .avatar {
             width: 45px;
             height: 45px;
             border-radius: 50%;
             position: relative;
         }
-
         .avatar img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
         }
-
         .online-dot {
             position: absolute;
             bottom: 2px;
             right: 2px;
             width: 12px;
             height: 12px;
-            background: var(--online);
+            background: #25D366;
             border-radius: 50%;
-            border: 2px solid var(--bg-dark-header);
+            border: 2px solid var(--header);
         }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .sidebar-actions {
-            display: flex;
-            gap: 16px;
-        }
-
         .icon-btn {
             background: none;
             border: none;
@@ -244,129 +144,67 @@
             font-size: 20px;
             cursor: pointer;
             padding: 8px;
-            border-radius: 50%;
-            transition: all 0.3s;
         }
-
-        .icon-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* Search Bar */
-        .search-bar {
-            padding: 12px 16px;
-            background: var(--bg-dark);
-        }
-
         .search-box {
-            background: var(--bg-dark-header);
-            border-radius: 8px;
+            padding: 12px;
+            background: var(--bg);
+        }
+        .search-box div {
+            background: var(--header);
             padding: 10px 16px;
+            border-radius: 8px;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
-
-        .search-box i {
-            color: var(--text-muted);
-        }
-
         .search-box input {
             background: none;
             border: none;
             outline: none;
-            color: var(--text-light);
+            color: var(--text);
             width: 100%;
-            font-size: 14px;
         }
-
-        /* Tabs */
-        .tabs-nav {
+        .tabs {
             display: flex;
-            background: var(--bg-dark-header);
-            border-bottom: 1px solid var(--border-dark);
+            background: var(--header);
+            border-bottom: 1px solid var(--border);
         }
-
-        .tab-btn {
+        .tab {
             flex: 1;
             padding: 12px;
             background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            position: relative;
         }
-
-        .tab-btn.active {
-            color: var(--whatsapp-green);
+        .tab.active {
+            color: #25D366;
+            border-bottom: 2px solid #25D366;
         }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40%;
-            height: 2px;
-            background: var(--whatsapp-green);
-        }
-
-        /* Chats List */
         .chats-list {
             flex: 1;
             overflow-y: auto;
         }
-
         .chat-item {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 12px 16px;
             cursor: pointer;
-            transition: background 0.3s;
-            border-bottom: 1px solid var(--border-dark);
+            border-bottom: 1px solid var(--border);
         }
-
         .chat-item:hover {
-            background: var(--bg-dark-header);
+            background: var(--header);
         }
-
-        .chat-avatar {
-            position: relative;
-        }
-
-        .chat-avatar img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
         .chat-info {
             flex: 1;
-            min-width: 0;
         }
-
         .chat-name {
             font-weight: 600;
-            margin-bottom: 4px;
         }
-
-        .chat-last-msg {
+        .chat-msg {
             font-size: 13px;
             color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
-
-        .chat-meta {
-            text-align: right;
-        }
-
         .chat-time {
             font-size: 11px;
             color: var(--text-muted);
@@ -377,131 +215,89 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: var(--bg-dark);
         }
-
         .chat-header {
             padding: 12px 20px;
-            background: var(--bg-dark-header);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 1px solid var(--border-dark);
-        }
-
-        .chat-header-info {
+            background: var(--header);
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         .back-btn {
             display: none;
             background: none;
             border: none;
-            color: var(--text-light);
+            color: var(--text);
             font-size: 20px;
             cursor: pointer;
         }
-
-        /* Messages */
-        .messages-container {
+        .messages {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-        }
-
-        .messages-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         .message {
             max-width: 65%;
             padding: 8px 12px;
             border-radius: 12px;
             word-wrap: break-word;
         }
-
         .message-out {
-            background: var(--outgoing-msg);
+            background: var(--outgoing);
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
-
         .message-in {
-            background: var(--incoming-msg);
+            background: var(--incoming);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
-            color: #111B21;
         }
-
         .message-text {
             font-size: 14px;
-            line-height: 1.4;
         }
-
         .message-time {
             font-size: 10px;
             color: var(--text-muted);
             text-align: right;
             margin-top: 4px;
         }
-
-        .reply-indicator {
-            font-size: 11px;
-            color: var(--whatsapp-green);
-            margin-bottom: 4px;
-            padding-left: 8px;
-            border-left: 2px solid var(--whatsapp-green);
-        }
-
         .message-media {
             max-width: 200px;
             border-radius: 8px;
-            margin-top: 4px;
+            margin-top: 5px;
         }
-
-        /* Input Area */
-        .message-input-area {
+        .input-area {
             padding: 12px 20px;
-            background: var(--bg-dark-header);
+            background: var(--header);
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .input-wrapper {
             flex: 1;
-            background: var(--bg-dark);
+            background: var(--bg);
             border-radius: 24px;
             padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-
         .input-wrapper textarea {
-            flex: 1;
+            width: 100%;
             background: none;
             border: none;
             outline: none;
-            color: var(--text-light);
+            color: var(--text);
             resize: none;
             font-family: inherit;
-            font-size: 14px;
-            max-height: 100px;
         }
-
         .reply-preview {
-            background: var(--bg-dark-header);
-            padding: 8px 12px;
-            border-radius: 12px;
+            background: var(--header);
+            padding: 8px;
+            border-radius: 8px;
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             font-size: 12px;
         }
 
@@ -511,43 +307,28 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--bg-dark);
+            background: var(--bg);
             border-radius: 20px 20px 0 0;
-            z-index: 1000;
             transform: translateY(100%);
             transition: transform 0.3s;
+            z-index: 1000;
         }
-
         .bottom-sheet.show {
             transform: translateY(0);
         }
-
-        .sheet-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-dark);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .sheet-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 16px;
             padding: 20px;
         }
-
         .sheet-options button {
             padding: 16px;
-            background: var(--bg-dark-header);
+            background: var(--header);
             border: none;
             border-radius: 12px;
-            color: var(--text-light);
+            color: var(--text);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         /* Modal */
@@ -563,77 +344,59 @@
             align-items: center;
             z-index: 2000;
         }
-
         .modal-content {
-            background: var(--bg-dark);
+            background: var(--bg);
             border-radius: 20px;
-            padding: 24px;
+            padding: 30px;
             text-align: center;
-            min-width: 300px;
         }
 
-        /* Profile Tab */
+        /* Profile */
         .profile-tab {
             padding: 20px;
             text-align: center;
         }
-
-        .profile-avatar-large {
+        .profile-avatar {
             width: 120px;
             height: 120px;
             margin: 0 auto 20px;
             position: relative;
             cursor: pointer;
         }
-
-        .profile-avatar-large img {
+        .profile-avatar img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
         }
-
-        .profile-avatar-large i {
+        .profile-avatar i {
             position: absolute;
             bottom: 0;
             right: 0;
-            background: var(--whatsapp-green);
+            background: #25D366;
             border-radius: 50%;
             padding: 10px;
-            font-size: 14px;
         }
-
         .profile-input {
             width: 100%;
             padding: 12px;
-            background: var(--bg-dark-header);
+            background: var(--header);
             border: none;
             border-radius: 8px;
-            color: var(--text-light);
+            color: var(--text);
             font-size: 16px;
             text-align: center;
-            margin-bottom: 10px;
         }
-
-        .setting-item {
+        .status-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-dark);
+            gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
         }
-
-        .setting-item select {
-            padding: 8px 12px;
-            background: var(--bg-dark-header);
-            border: none;
-            border-radius: 8px;
-            color: var(--text-light);
-        }
-
-        /* Status */
-        .my-status-card {
-            background: var(--bg-dark-header);
+        .my-status {
+            background: var(--header);
             margin: 16px;
             padding: 16px;
             border-radius: 16px;
@@ -642,21 +405,6 @@
             gap: 16px;
             cursor: pointer;
         }
-
-        .status-list {
-            padding: 0 16px;
-        }
-
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-dark);
-            cursor: pointer;
-        }
-
-        /* Toast & Loading */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -667,17 +415,14 @@
             padding: 10px 20px;
             border-radius: 8px;
             z-index: 9999;
-            font-size: 14px;
             animation: fadeOut 3s forwards;
         }
-
         @keyframes fadeOut {
             0% { opacity: 1; }
             70% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
-
-        .loading-overlay {
+        .loading {
             position: fixed;
             top: 0;
             left: 0;
@@ -690,30 +435,24 @@
             flex-direction: column;
             z-index: 9999;
         }
-
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid var(--whatsapp-green);
+            border: 4px solid #25D366;
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
         .hidden {
             display: none !important;
         }
-
-        /* Mobile */
         @media (max-width: 768px) {
             .sidebar {
                 position: absolute;
                 left: -100%;
-                top: 0;
                 width: 100%;
                 height: 100%;
                 z-index: 100;
@@ -722,8 +461,6 @@
             .sidebar.show { left: 0; }
             .chat-area {
                 position: absolute;
-                top: 0;
-                left: 0;
                 width: 100%;
                 height: 100%;
                 z-index: 200;
@@ -733,784 +470,785 @@
             .chat-area.show { transform: translateX(0); }
             .back-btn { display: block; }
             .message { max-width: 85%; }
-            .sidebar { width: 100%; }
         }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark-header); }
-        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
     </style>
 </head>
 <body>
-    <!-- Loading -->
-    <div id="loadingOverlay" class="loading-overlay hidden">
-        <div class="spinner"></div>
-        <p style="margin-top: 20px;">Loading...</p>
+
+<!-- LOADING -->
+<div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <p style="margin-top: 20px;">Loading...</p>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="login-page">
+    <div class="login-card">
+        <i class="fab fa-whatsapp"></i>
+        <h1>Real-Time Chat</h1>
+        <div id="loginError" style="color:red; font-size:12px;"></div>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <div class="divider">or</div>
+        <button id="googleBtn" class="btn btn-google">Continue with Google</button>
+        <div class="switch-link" id="showRegister">Create new account →</div>
     </div>
 
-    <!-- Login Page -->
-    <div id="loginPage" class="login-page">
-        <div class="login-box">
-            <div class="login-logo">
-                <i class="fab fa-whatsapp"></i>
-                <h1>Real-Time Chat</h1>
-                <p>Connect with friends instantly</p>
+    <div id="registerCard" class="login-card hidden">
+        <i class="fab fa-whatsapp"></i>
+        <h2>Create Account</h2>
+        <div id="registerError" style="color:red; font-size:12px;"></div>
+        <form id="registerForm">
+            <div class="input-group">
+                <input type="text" id="regName" placeholder="Full Name" required>
             </div>
-            <div id="loginError" class="error-msg"></div>
-            <form id="loginForm">
-                <div class="input-field">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="loginEmail" placeholder="Email" required>
-                </div>
-                <div class="input-field">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPassword" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn-primary">Login</button>
-            </form>
-            <div class="divider">or</div>
-            <button id="googleLoginBtn" class="btn-google">
-                <i class="fab fa-google"></i> Continue with Google
-            </button>
-            <div class="auth-link">
-                Don't have an account? <a id="showRegisterBtn">Register</a>
+            <div class="input-group">
+                <input type="email" id="regEmail" placeholder="Email" required>
             </div>
-        </div>
-
-        <div id="registerBox" class="login-box hidden">
-            <div class="login-logo">
-                <i class="fab fa-whatsapp"></i>
-                <h2>Create Account</h2>
+            <div class="input-group">
+                <input type="password" id="regPassword" placeholder="Password (min 6)" required>
             </div>
-            <div id="registerError" class="error-msg"></div>
-            <form id="registerForm">
-                <div class="input-field">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="registerName" placeholder="Full Name" required>
-                </div>
-                <div class="input-field">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="registerEmail" placeholder="Email" required>
-                </div>
-                <div class="input-field">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="registerPassword" placeholder="Password (min 6)" required>
-                </div>
-                <button type="submit" class="btn-primary">Register</button>
-            </form>
-            <div class="auth-link">
-                Already have an account? <a id="showLoginBtn">Login</a>
-            </div>
-        </div>
+            <button type="submit" class="btn">Register</button>
+        </form>
+        <div class="switch-link" id="showLogin">← Back to Login</div>
     </div>
+</div>
 
-    <!-- Main App -->
-    <div id="appContainer" class="app-container hidden">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="user-info">
-                    <div class="avatar">
-                        <img id="sidebarAvatar" src="">
-                        <div class="online-dot"></div>
-                    </div>
-                    <span class="user-name" id="sidebarName">User</span>
-                </div>
-                <div class="sidebar-actions">
-                    <button class="icon-btn" id="darkModeToggle"><i class="fas fa-moon"></i></button>
-                    <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
+<!-- MAIN APP -->
+<div id="app" class="app-container hidden">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="avatar">
+                <img id="sidebarAvatar" src="">
+                <div class="online-dot"></div>
             </div>
-
-            <div class="search-bar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search or start new chat">
-                </div>
-            </div>
-
-            <div class="tabs-nav">
-                <button class="tab-btn active" data-tab="chats"><i class="fas fa-comment"></i> Chats</button>
-                <button class="tab-btn" data-tab="status"><i class="fas fa-circle"></i> Status</button>
-                <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
-            </div>
-
-            <div class="chats-list" id="chatsList"></div>
-            <div id="statusTab" class="hidden">
-                <div class="my-status-card" onclick="openStatusUpload()">
-                    <div class="avatar"><img id="statusAvatar" src=""></div>
-                    <div><div style="font-weight: 600;">My Status</div><div style="font-size: 13px; color: var(--text-muted);">Tap to add status</div></div>
-                </div>
-                <div id="statusList" class="status-list"></div>
-            </div>
-            <div id="profileTab" class="hidden">
-                <div class="profile-tab">
-                    <div class="profile-avatar-large" onclick="changeProfilePhoto()">
-                        <img id="profileAvatar" src="">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <input type="text" id="profileNameInput" class="profile-input" placeholder="Your Name">
-                    <p style="color: var(--text-muted); font-size: 12px;" id="profileEmail"></p>
-                    <div style="margin-top: 30px;">
-                        <h4 style="margin-bottom: 15px;">Storage</h4>
-                        <div id="storageInfo" style="margin-bottom: 15px;">Loading...</div>
-                        <button class="btn-primary" onclick="clearAllMedia()" style="background: #e74c3c;">Clear All Media</button>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <button class="btn-primary" onclick="createGroup()" style="background: var(--whatsapp-green);">+ Create Group</button>
-                    </div>
-                </div>
+            <span id="sidebarName" style="font-weight:600;">User</span>
+            <div>
+                <button class="icon-btn" id="darkModeBtn"><i class="fas fa-moon"></i></button>
+                <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
-
-        <div class="chat-area" id="chatArea">
-            <div class="chat-header">
-                <div class="chat-header-info">
-                    <button class="back-btn" id="backToSidebar"><i class="fas fa-arrow-left"></i></button>
-                    <div class="avatar"><img id="chatAvatar" src=""></div>
-                    <div class="chat-details"><h3 id="chatName">Select a chat</h3><p id="chatTyping" class="hidden">Typing...</p></div>
-                </div>
+        <div class="search-box">
+            <div>
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search or start new chat">
             </div>
-            <div class="messages-container" id="messagesContainer"><div class="messages-list" id="messagesList"></div></div>
-            <div class="message-input-area">
-                <button class="icon-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
-                <div class="input-wrapper">
-                    <div id="replyPreview" class="reply-preview hidden"><span id="replyText"></span><button onclick="cancelReply()" style="background:none; border:none;">×</button></div>
-                    <textarea id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+        </div>
+        <div class="tabs">
+            <button class="tab active" data-tab="chats"><i class="fas fa-comment"></i> Chats</button>
+            <button class="tab" data-tab="status"><i class="fas fa-circle"></i> Status</button>
+            <button class="tab" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
+        </div>
+
+        <!-- Chats List -->
+        <div class="chats-list" id="chatsList"></div>
+
+        <!-- Status Tab -->
+        <div id="statusTab" class="hidden">
+            <div class="my-status" onclick="uploadStatus()">
+                <div class="avatar"><img id="statusAvatar" src=""></div>
+                <div><strong>My Status</strong><br><span style="font-size:12px;">Tap to add status</span></div>
+            </div>
+            <div id="statusList"></div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="profileTab" class="hidden">
+            <div class="profile-tab">
+                <div class="profile-avatar" onclick="changePhoto()">
+                    <img id="profileAvatar" src="">
+                    <i class="fas fa-camera"></i>
                 </div>
-                <button class="icon-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
-                <button class="icon-btn" id="sendBtn" style="background: var(--whatsapp-green); color: white; border-radius: 50%;"><i class="fas fa-paper-plane"></i></button>
+                <input type="text" id="profileName" class="profile-input" placeholder="Your Name">
+                <p id="profileEmail" style="margin-top:10px; color:var(--text-muted);"></p>
+                <div style="margin: 30px 0;">
+                    <button class="btn" onclick="createGroup()" style="background:#25D366;">+ Create Group</button>
+                </div>
+                <div>
+                    <h4>Storage</h4>
+                    <div id="storageInfo">Loading...</div>
+                    <button class="btn" onclick="clearMedia()" style="background:#e74c3c; margin-top:15px;">Clear All Media</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Sheet -->
-    <div id="bottomSheet" class="bottom-sheet hidden">
-        <div class="sheet-header"><h3>Attach Media</h3><button onclick="closeBottomSheet()" style="background:none; border:none; font-size:24px;">×</button></div>
-        <div class="sheet-options">
-            <button onclick="uploadImage()"><i class="fas fa-image"></i> Gallery</button>
-            <button onclick="takePhoto()"><i class="fas fa-camera"></i> Camera</button>
-            <button onclick="uploadVideo()"><i class="fas fa-video"></i> Video</button>
-            <button onclick="uploadDocument()"><i class="fas fa-file"></i> Document</button>
+    <!-- CHAT AREA -->
+    <div class="chat-area" id="chatArea">
+        <div class="chat-header">
+            <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+            <div class="avatar"><img id="chatAvatar" src=""></div>
+            <div><strong id="chatName">Select a chat</strong><br><span id="chatTyping" style="font-size:12px;"></span></div>
         </div>
-    </div>
-
-    <!-- Voice Modal -->
-    <div id="voiceModal" class="modal hidden">
-        <div class="modal-content">
-            <h3>🎤 Voice Message</h3>
-            <div id="recordingTimer" style="font-size: 48px; margin: 20px;">00:00</div>
-            <div style="display: flex; gap: 20px; justify-content: center;">
-                <button id="startRecordBtn" class="btn-primary">Start</button>
-                <button id="stopRecordBtn" class="btn-primary hidden" style="background: #e74c3c;">Stop</button>
+        <div class="messages" id="messages"></div>
+        <div class="input-area">
+            <button class="icon-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
+            <div class="input-wrapper">
+                <div id="replyPreview" class="reply-preview hidden">
+                    <span id="replyText"></span>
+                    <button onclick="cancelReply()" style="background:none; border:none;">×</button>
+                </div>
+                <textarea id="messageInput" rows="1" placeholder="Type a message..."></textarea>
             </div>
+            <button class="icon-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
+            <button class="icon-btn" id="sendBtn" style="background:#25D366; color:white; border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
+</div>
 
-    <!-- Status View -->
-    <div id="statusViewModal" class="modal hidden">
-        <div style="position: relative; width: 100%; max-width: 400px; height: 80vh; background: #000; display: flex; align-items: center; justify-content: center;">
-            <div id="statusViewer"></div>
-            <button onclick="closeStatusView()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.5); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;">×</button>
-        </div>
+<!-- BOTTOM SHEET -->
+<div id="bottomSheet" class="bottom-sheet">
+    <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+        <h3>Attach Media</h3>
+        <button onclick="closeSheet()" style="background:none; border:none; font-size:24px;">×</button>
     </div>
+    <div class="sheet-options">
+        <button onclick="uploadImage()"><i class="fas fa-image"></i> Gallery</button>
+        <button onclick="takePhoto()"><i class="fas fa-camera"></i> Camera</button>
+        <button onclick="uploadVideo()"><i class="fas fa-video"></i> Video</button>
+        <button onclick="uploadDoc()"><i class="fas fa-file"></i> Document</button>
+    </div>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<!-- VOICE MODAL -->
+<div id="voiceModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>🎤 Voice Message</h3>
+        <div id="timer" style="font-size:48px; margin:20px;">00:00</div>
+        <button id="startRecord" class="btn">Start</button>
+        <button id="stopRecord" class="btn hidden" style="background:#e74c3c;">Stop</button>
+    </div>
+</div>
 
-    <script>
-        // ==================== FIREBASE CONFIG ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
-            authDomain: "simplechat-85cd8.firebaseapp.com",
-            projectId: "simplechat-85cd8",
-            storageBucket: "simplechat-85cd8.firebasestorage.app",
-            messagingSenderId: "244789873168",
-            appId: "1:244789873168:web:4cba5481f689ab3103d895"
-        };
+<!-- STATUS VIEW -->
+<div id="statusModal" class="modal hidden">
+    <div id="statusViewer" style="position:relative; width:100%; max-width:400px; height:80vh; background:#000; display:flex; align-items:center; justify-content:center;">
+        <div id="statusContent"></div>
+        <button onclick="closeStatus()" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.5); border:none; color:white; width:40px; height:40px; border-radius:50%;">×</button>
+    </div>
+</div>
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-        // Enable offline persistence (biar cepet)
-        db.enablePersistence({ synchronizeTabs: true }).catch(e => console.log("Persistence:", e));
+<script>
+// ==================== FIREBASE ====================
+const firebaseConfig = {
+    apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
+    authDomain: "simplechat-85cd8.firebaseapp.com",
+    projectId: "simplechat-85cd8",
+    storageBucket: "simplechat-85cd8.firebasestorage.app",
+    messagingSenderId: "244789873168",
+    appId: "1:244789873168:web:4cba5481f689ab3103d895"
+};
 
-        // ==================== GLOBAL ====================
-        let currentUser = null;
-        let currentChatId = null;
-        let currentReplyTo = null;
-        let currentMediaToSend = null;
-        let messagesUnsub = null;
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-        // ==================== HELPER ====================
-        function showLoading(show) {
-            document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
-        }
+// Enable offline
+db.enablePersistence({ synchronizeTabs: true }).catch(e => console.log(e));
 
-        function showToast(msg) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
+// ==================== GLOBAL ====================
+let currentUser = null;
+let currentChat = null;
+let replyTo = null;
+let mediaToSend = null;
+let unsubMessages = null;
 
-        function formatTime(date) {
-            if (!date) return '';
-            const d = date.toDate ? date.toDate() : date;
-            const now = new Date();
-            const diff = now - d;
-            if (diff < 86400000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            return d.toLocaleDateString();
-        }
+// ==================== HELPERS ====================
+function showLoad(show) {
+    document.getElementById('loading').classList.toggle('hidden', !show);
+}
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+function toast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerText = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
 
-        async function compressImage(file, maxSizeMB = 0.5, maxWH = 800) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let w = img.width, h = img.height;
-                        if (w > h && w > maxWH) { h = (h * maxWH) / w; w = maxWH; }
-                        else if (h > maxWH) { w = (w * maxWH) / h; h = maxWH; }
-                        canvas.width = w; canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        let quality = 0.7;
-                        let dataUrl = canvas.toDataURL('image/jpeg', quality);
-                        while (dataUrl.length > maxSizeMB * 1024 * 1024 && quality > 0.2) {
-                            quality -= 0.1;
-                            dataUrl = canvas.toDataURL('image/jpeg', quality);
-                        }
-                        resolve(dataUrl);
-                    };
-                    img.onerror = reject;
-                };
-                reader.onerror = reject;
-            });
-        }
+function formatTime(date) {
+    if (!date) return '';
+    const d = date.toDate ? date.toDate() : date;
+    const now = new Date();
+    if (now - d < 86400000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString();
+}
 
-        async function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-            });
-        }
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
-        // ==================== AUTH ====================
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                await setupUser(user.uid);
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('appContainer').classList.remove('hidden');
-                await loadChats(); // tunggu selesai
-                loadStatuses();
-                updateStorage();
-                showLoading(false);
-            } else {
-                document.getElementById('loginPage').classList.remove('hidden');
-                document.getElementById('appContainer').classList.add('hidden');
-                showLoading(false);
-            }
-        });
-
-        async function setupUser(uid) {
-            await db.collection('users').doc(uid).set({
-                uid, email: currentUser.email,
-                displayName: currentUser.displayName || currentUser.email.split('@')[0],
-                photoURL: currentUser.photoURL || null,
-                lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                online: true
-            }, { merge: true });
-            
-            await db.collection('presence').doc(uid).set({ online: true });
-            db.collection('presence').doc(uid).onDisconnect().set({ online: false });
-            
-            document.getElementById('sidebarName').innerText = currentUser.displayName?.split(' ')[0] || 'User';
-            document.getElementById('profileNameInput').value = currentUser.displayName || '';
-            document.getElementById('profileEmail').innerText = currentUser.email;
-            const avatarUrl = currentUser.photoURL || `https://ui-avatars.com/api/?background=25D366&color=fff&name=${currentUser.displayName || 'U'}`;
-            document.getElementById('sidebarAvatar').src = avatarUrl;
-            document.getElementById('profileAvatar').src = avatarUrl;
-            document.getElementById('statusAvatar').src = avatarUrl;
-        }
-
-        // Register
-        document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoading(true);
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            if (password.length < 6) {
-                document.getElementById('registerError').innerHTML = 'Password min 6 characters';
-                showLoading(false); return;
-            }
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
-                await cred.user.updateProfile({ displayName: name });
-                await db.collection('users').doc(cred.user.uid).set({ displayName: name, email });
-                showToast('Registration successful!');
-            } catch (err) {
-                document.getElementById('registerError').innerHTML = err.message;
-                showLoading(false);
-            }
-        });
-
-        // Login
-        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoading(true);
-            try {
-                await auth.signInWithEmailAndPassword(
-                    document.getElementById('loginEmail').value,
-                    document.getElementById('loginPassword').value
-                );
-            } catch (err) {
-                document.getElementById('loginError').innerHTML = err.message;
-                showLoading(false);
-            }
-        });
-
-        // Google Login
-        document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
-            showLoading(true);
-            try {
-                await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-            } catch (err) {
-                alert(err.message);
-                showLoading(false);
-            }
-        });
-
-        document.getElementById('logoutBtn')?.addEventListener('click', () => auth.signOut());
-        document.getElementById('showRegisterBtn')?.addEventListener('click', () => {
-            document.querySelector('.login-box').classList.add('hidden');
-            document.getElementById('registerBox').classList.remove('hidden');
-        });
-        document.getElementById('showLoginBtn')?.addEventListener('click', () => {
-            document.getElementById('registerBox').classList.add('hidden');
-            document.querySelector('.login-box').classList.remove('hidden');
-        });
-
-        document.getElementById('profileNameInput')?.addEventListener('change', async (e) => {
-            await db.collection('users').doc(currentUser.uid).update({ displayName: e.target.value });
-            await currentUser.updateProfile({ displayName: e.target.value });
-            document.getElementById('sidebarName').innerText = e.target.value.split(' ')[0];
-            showToast('Name updated!');
-        });
-
-        // Dark Mode
-        let isDark = localStorage.getItem('theme') === 'light';
-        document.getElementById('darkModeToggle')?.addEventListener('click', () => {
-            isDark = !isDark;
-            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            localStorage.setItem('theme', isDark ? 'light' : 'dark');
-        });
-        if (localStorage.getItem('theme') === 'light') document.body.setAttribute('data-theme', 'light');
-
-        // Tab Navigation
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const tab = btn.dataset.tab;
-                document.getElementById('chatsList').classList.add('hidden');
-                document.getElementById('statusTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
-                if (tab === 'chats') document.getElementById('chatsList').classList.remove('hidden');
-                else if (tab === 'status') document.getElementById('statusTab').classList.remove('hidden');
-                else if (tab === 'profile') document.getElementById('profileTab').classList.remove('hidden');
-            });
-        });
-
-        document.getElementById('backToSidebar')?.addEventListener('click', () => {
-            document.querySelector('.chat-area').classList.remove('show');
-            document.querySelector('.sidebar').classList.add('show');
-        });
-
-        // ==================== CHATS (DIPERCEPAT) ====================
-        async function loadChats() {
-            if (!currentUser) return;
-            
-            const list = document.getElementById('chatsList');
-            list.innerHTML = '<div style="text-align:center; padding:40px;">📱 Loading...</div>';
-            
-            try {
-                const snapshot = await db.collection('chats')
-                    .where('participants', 'array-contains', currentUser.uid)
-                    .orderBy('lastMessageTime', 'desc')
-                    .limit(50)
-                    .get();
-                
-                if (snapshot.empty) {
-                    list.innerHTML = '<div style="text-align:center; padding:40px;">💬 No chats yet</div>';
-                    return;
-                }
-                
-                list.innerHTML = '';
-                
-                for (const doc of snapshot.docs) {
-                    const chat = doc.data();
-                    const otherId = chat.participants?.find(p => p !== currentUser.uid);
-                    let name = chat.isGroup ? chat.groupName : 'Unknown';
-                    let avatar = null;
-                    
-                    if (!chat.isGroup && otherId) {
-                        const userDoc = await db.collection('users').doc(otherId).get();
-                        if (userDoc.exists) {
-                            name = userDoc.data()?.displayName || 'Unknown';
-                            avatar = userDoc.data()?.photoURL;
-                        }
-                    }
-                    
-                    let isOnline = false;
-                    if (otherId) {
-                        const presence = await db.collection('presence').doc(otherId).get();
-                        isOnline = presence.exists ? presence.data().online : false;
-                    }
-                    
-                    const av = avatar || `https://ui-avatars.com/api/?background=25D366&color=fff&name=${encodeURIComponent(name)}`;
-                    
-                    list.innerHTML += `
-                        <div class="chat-item" onclick="openChat('${doc.id}', '${escapeHtml(name)}', '${av}', ${chat.isGroup || false})">
-                            <div class="chat-avatar">
-                                <img src="${av}">
-                                <div class="online-dot" style="${isOnline ? 'background: #25D366' : 'background: #8696A0'}"></div>
-                            </div>
-                            <div class="chat-info">
-                                <div class="chat-name">${escapeHtml(name)}</div>
-                                <div class="chat-last-msg">${escapeHtml(chat.lastMessage) || 'Tap to chat'}</div>
-                            </div>
-                            <div class="chat-meta"><div class="chat-time">${formatTime(chat.lastMessageTime)}</div></div>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error(error);
-                list.innerHTML = '<div style="text-align:center; padding:40px;">❌ Error loading chats<br><small>Check Firestore setup</small></div>';
-            }
-        }
-
-        window.openChat = async function(chatId, name, avatar, isGroup) {
-            currentChatId = chatId;
-            document.getElementById('chatName').innerText = name;
-            document.getElementById('chatAvatar').src = avatar;
-            document.querySelector('.chat-area').classList.add('show');
-            document.querySelector('.sidebar').classList.remove('show');
-            
-            if (messagesUnsub) messagesUnsub();
-            
-            const q = db.collection('messages').where('chatId', '==', chatId).orderBy('timestamp', 'desc').limit(30);
-            messagesUnsub = q.onSnapshot(snapshot => {
-                const container = document.getElementById('messagesList');
-                container.innerHTML = '';
-                const msgs = [];
-                snapshot.forEach(d => msgs.unshift({ id: d.id, ...d.data() }));
-                msgs.forEach(msg => displayMessage(msg));
-                document.getElementById('messagesContainer').scrollTop = document.getElementById('messagesContainer').scrollHeight;
-            });
-            
-            await db.collection('chats').doc(chatId).update({ [`unreadCount.${currentUser.uid}`]: 0 });
-            setupTyping(chatId);
-        };
-
-        function displayMessage(msg) {
-            const isOut = msg.senderId === currentUser.uid;
-            const div = document.createElement('div');
-            div.className = `message ${isOut ? 'message-out' : 'message-in'}`;
-            let replyHtml = msg.replyTo ? `<div class="reply-indicator">↩️ ${escapeHtml(msg.replyTo.content?.substring(0, 40))}</div>` : '';
-            let mediaHtml = '';
-            if (msg.mediaBase64) {
-                if (msg.mediaType === 'image') mediaHtml = `<img src="${msg.mediaBase64}" class="message-media" style="max-width:200px; border-radius:8px; margin-top:5px;">`;
-                else if (msg.mediaType === 'video') mediaHtml = `<video src="${msg.mediaBase64}" controls style="max-width:200px; border-radius:8px;"></video>`;
-                else if (msg.mediaType === 'audio') mediaHtml = `<audio src="${msg.mediaBase64}" controls></audio>`;
-                else mediaHtml = `<div style="padding:8px; background:rgba(0,0,0,0.1); border-radius:8px;">📄 ${msg.mediaName}</div>`;
-            }
-            div.innerHTML = `${replyHtml}<div class="message-text">${escapeHtml(msg.content || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>${mediaHtml}<div class="message-time">${formatTime(msg.timestamp)}</div>`;
-            document.getElementById('messagesList').appendChild(div);
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const content = input.value.trim();
-            if (!content && !currentMediaToSend) return;
-            
-            const msg = {
-                chatId: currentChatId, senderId: currentUser.uid, content: content,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(), replyTo: currentReplyTo
+function compressImage(file, maxWH = 800) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if (w > h && w > maxWH) { h = (h * maxWH) / w; w = maxWH; }
+                else if (h > maxWH) { w = (w * maxWH) / h; h = maxWH; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                resolve(canvas.toDataURL('image/jpeg', 0.7));
             };
-            if (currentMediaToSend) {
-                msg.mediaBase64 = currentMediaToSend.base64;
-                msg.mediaType = currentMediaToSend.type;
-                msg.mediaName = currentMediaToSend.name;
+        };
+    });
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+    });
+}
+
+// ==================== AUTH ====================
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        currentUser = user;
+        await setupUser(user.uid);
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        await loadChats();
+        loadStatuses();
+        updateStorage();
+        showLoad(false);
+    } else {
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+        showLoad(false);
+    }
+});
+
+async function setupUser(uid) {
+    await db.collection('users').doc(uid).set({
+        uid, email: currentUser.email,
+        displayName: currentUser.displayName || currentUser.email.split('@')[0],
+        photoURL: currentUser.photoURL || null,
+        online: true,
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    
+    await db.collection('presence').doc(uid).set({ online: true });
+    db.collection('presence').doc(uid).onDisconnect().set({ online: false });
+    
+    const name = currentUser.displayName || currentUser.email.split('@')[0];
+    const avatar = currentUser.photoURL || `https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}`;
+    document.getElementById('sidebarName').innerText = name.split(' ')[0];
+    document.getElementById('sidebarAvatar').src = avatar;
+    document.getElementById('profileAvatar').src = avatar;
+    document.getElementById('statusAvatar').src = avatar;
+    document.getElementById('profileName').value = name;
+    document.getElementById('profileEmail').innerText = currentUser.email;
+}
+
+// Login
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showLoad(true);
+    try {
+        await auth.signInWithEmailAndPassword(
+            document.getElementById('loginEmail').value,
+            document.getElementById('loginPassword').value
+        );
+    } catch (err) {
+        document.getElementById('loginError').innerText = err.message;
+        showLoad(false);
+    }
+});
+
+// Register
+document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showLoad(true);
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const pass = document.getElementById('regPassword').value;
+    if (pass.length < 6) {
+        document.getElementById('registerError').innerText = 'Password min 6 characters';
+        showLoad(false);
+        return;
+    }
+    try {
+        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await cred.user.updateProfile({ displayName: name });
+        await db.collection('users').doc(cred.user.uid).set({ displayName: name, email });
+        toast('Registered!');
+    } catch (err) {
+        document.getElementById('registerError').innerText = err.message;
+        showLoad(false);
+    }
+});
+
+// Google
+document.getElementById('googleBtn')?.addEventListener('click', async () => {
+    showLoad(true);
+    try {
+        await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    } catch (err) {
+        alert(err.message);
+        showLoad(false);
+    }
+});
+
+document.getElementById('logoutBtn')?.addEventListener('click', () => auth.signOut());
+document.getElementById('showRegister')?.addEventListener('click', () => {
+    document.querySelector('.login-card').classList.add('hidden');
+    document.getElementById('registerCard').classList.remove('hidden');
+});
+document.getElementById('showLogin')?.addEventListener('click', () => {
+    document.getElementById('registerCard').classList.add('hidden');
+    document.querySelector('.login-card').classList.remove('hidden');
+});
+
+// Update name
+document.getElementById('profileName')?.addEventListener('change', async (e) => {
+    await db.collection('users').doc(currentUser.uid).update({ displayName: e.target.value });
+    await currentUser.updateProfile({ displayName: e.target.value });
+    document.getElementById('sidebarName').innerText = e.target.value.split(' ')[0];
+    toast('Name updated!');
+});
+
+// Dark mode
+let dark = true;
+document.getElementById('darkModeBtn')?.addEventListener('click', () => {
+    dark = !dark;
+    document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.getElementById('chatsList').classList.add('hidden');
+        document.getElementById('statusTab').classList.add('hidden');
+        document.getElementById('profileTab').classList.add('hidden');
+        if (tab === 'chats') document.getElementById('chatsList').classList.remove('hidden');
+        else if (tab === 'status') document.getElementById('statusTab').classList.remove('hidden');
+        else if (tab === 'profile') document.getElementById('profileTab').classList.remove('hidden');
+    });
+});
+
+document.getElementById('backBtn')?.addEventListener('click', () => {
+    document.getElementById('chatArea').classList.remove('show');
+    document.getElementById('sidebar').classList.add('show');
+});
+
+// ==================== CHATS ====================
+async function loadChats() {
+    const list = document.getElementById('chatsList');
+    list.innerHTML = '<div style="text-align:center; padding:40px;">Loading...</div>';
+    
+    try {
+        const snapshot = await db.collection('chats')
+            .where('participants', 'array-contains', currentUser.uid)
+            .orderBy('lastMessageTime', 'desc')
+            .limit(50)
+            .get();
+        
+        if (snapshot.empty) {
+            list.innerHTML = '<div style="text-align:center; padding:40px;">💬 No chats yet<br><small>Create a group to start</small></div>';
+            return;
+        }
+        
+        list.innerHTML = '';
+        
+        for (const doc of snapshot.docs) {
+            const chat = doc.data();
+            const otherId = chat.participants?.find(p => p !== currentUser.uid);
+            let name = chat.isGroup ? chat.groupName : 'User';
+            let avatar = null;
+            
+            if (!chat.isGroup && otherId) {
+                const u = await db.collection('users').doc(otherId).get();
+                if (u.exists) name = u.data()?.displayName || 'User';
             }
             
-            await db.collection('messages').add(msg);
-            await db.collection('chats').doc(currentChatId).update({
-                lastMessage: content || `[${currentMediaToSend?.type || 'Media'}]`,
-                lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            let online = false;
+            if (otherId) {
+                const p = await db.collection('presence').doc(otherId).get();
+                online = p.exists ? p.data().online : false;
+            }
             
-            input.value = '';
-            currentMediaToSend = null;
-            currentReplyTo = null;
-            document.getElementById('replyPreview')?.classList.add('hidden');
+            const av = `https://ui-avatars.com/api/?background=25D366&color=fff&name=${encodeURIComponent(name)}`;
+            
+            list.innerHTML += `
+                <div class="chat-item" onclick="openChat('${doc.id}', '${escapeHtml(name)}', '${av}', ${chat.isGroup || false})">
+                    <div class="avatar"><img src="${av}"><div class="online-dot" style="${online ? 'background:#25D366' : 'background:#8696A0'}"></div></div>
+                    <div class="chat-info"><div class="chat-name">${escapeHtml(name)}</div><div class="chat-msg">${escapeHtml(chat.lastMessage) || 'Tap to chat'}</div></div>
+                    <div class="chat-time">${formatTime(chat.lastMessageTime)}</div>
+                </div>
+            `;
         }
+    } catch (err) {
+        list.innerHTML = '<div style="text-align:center; padding:40px;">❌ Error loading chats</div>';
+        console.error(err);
+    }
+}
 
-        window.replyToMessage = function(id, content) {
-            currentReplyTo = { messageId: id, content: content };
-            document.getElementById('replyText').innerText = `Replying to: ${content.substring(0, 40)}`;
-            document.getElementById('replyPreview').classList.remove('hidden');
-        };
-        window.cancelReply = () => { currentReplyTo = null; document.getElementById('replyPreview').classList.add('hidden'); };
+window.openChat = async function(chatId, name, avatar, isGroup) {
+    currentChat = chatId;
+    document.getElementById('chatName').innerText = name;
+    document.getElementById('chatAvatar').src = avatar;
+    document.getElementById('chatArea').classList.add('show');
+    document.getElementById('sidebar').classList.remove('show');
+    
+    if (unsubMessages) unsubMessages();
+    
+    const q = db.collection('messages').where('chatId', '==', chatId).orderBy('timestamp', 'desc').limit(30);
+    unsubMessages = q.onSnapshot(snapshot => {
+        const container = document.getElementById('messages');
+        container.innerHTML = '';
+        const msgs = [];
+        snapshot.forEach(d => msgs.unshift({ id: d.id, ...d.data() }));
+        msgs.forEach(msg => displayMsg(msg));
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    });
+    
+    await db.collection('chats').doc(chatId).update({ [`unreadCount.${currentUser.uid}`]: 0 });
+    setupTyping(chatId);
+};
 
-        function setupTyping(chatId) {
-            const input = document.getElementById('messageInput');
-            const typingRef = db.collection('typing').doc(chatId);
-            input.oninput = () => {
-                typingRef.set({ [currentUser.uid]: true });
-                clearTimeout(window.typingTimeout);
-                window.typingTimeout = setTimeout(() => typingRef.update({ [currentUser.uid]: false }), 1000);
-            };
-            typingRef.onSnapshot(doc => {
-                const data = doc.data();
-                if (data) {
-                    const isTyping = Object.entries(data).some(([uid, v]) => v && uid !== currentUser.uid);
-                    document.getElementById('chatTyping').classList.toggle('hidden', !isTyping);
-                }
-            });
+function displayMsg(msg) {
+    const isOut = msg.senderId === currentUser.uid;
+    const div = document.createElement('div');
+    div.className = `message ${isOut ? 'message-out' : 'message-in'}`;
+    
+    let replyHtml = '';
+    if (msg.replyTo) {
+        replyHtml = `<div style="font-size:11px; color:#25D366; margin-bottom:4px;">↩️ ${escapeHtml(msg.replyTo.content?.substring(0, 40))}</div>`;
+    }
+    
+    let mediaHtml = '';
+    if (msg.mediaBase64) {
+        if (msg.mediaType === 'image') mediaHtml = `<img src="${msg.mediaBase64}" class="message-media">`;
+        else if (msg.mediaType === 'video') mediaHtml = `<video src="${msg.mediaBase64}" controls class="message-media"></video>`;
+        else if (msg.mediaType === 'audio') mediaHtml = `<audio src="${msg.mediaBase64}" controls></audio>`;
+        else mediaHtml = `<div style="padding:8px; background:rgba(0,0,0,0.1); border-radius:8px;">📄 ${msg.mediaName}</div>`;
+    }
+    
+    div.innerHTML = `${replyHtml}<div class="message-text">${escapeHtml(msg.content || '').replace(/\*(.*?)\*/g, '<strong>$1</strong>')}</div>${mediaHtml}<div class="message-time">${formatTime(msg.timestamp)}</div>`;
+    document.getElementById('messages').appendChild(div);
+}
+
+async function sendMsg() {
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+    if (!content && !mediaToSend) return;
+    
+    const msg = {
+        chatId: currentChat,
+        senderId: currentUser.uid,
+        content: content,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        replyTo: replyTo
+    };
+    
+    if (mediaToSend) {
+        msg.mediaBase64 = mediaToSend.base64;
+        msg.mediaType = mediaToSend.type;
+        msg.mediaName = mediaToSend.name;
+    }
+    
+    await db.collection('messages').add(msg);
+    await db.collection('chats').doc(currentChat).update({
+        lastMessage: content || `[${mediaToSend?.type || 'Media'}]`,
+        lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    input.value = '';
+    mediaToSend = null;
+    replyTo = null;
+    document.getElementById('replyPreview')?.classList.add('hidden');
+}
+
+function setupTyping(chatId) {
+    const input = document.getElementById('messageInput');
+    const typingRef = db.collection('typing').doc(chatId);
+    input.oninput = () => {
+        typingRef.set({ [currentUser.uid]: true });
+        clearTimeout(window.typingTO);
+        window.typingTO = setTimeout(() => typingRef.update({ [currentUser.uid]: false }), 1000);
+    };
+    typingRef.onSnapshot(doc => {
+        const data = doc.data();
+        if (data) {
+            const typing = Object.entries(data).some(([uid, v]) => v && uid !== currentUser.uid);
+            document.getElementById('chatTyping').innerText = typing ? 'Typing...' : '';
         }
+    });
+}
 
-        document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
-        document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+window.replyMsg = function(id, content) {
+    replyTo = { messageId: id, content: content };
+    document.getElementById('replyText').innerText = `Replying to: ${content.substring(0, 40)}`;
+    document.getElementById('replyPreview').classList.remove('hidden');
+};
+window.cancelReply = () => {
+    replyTo = null;
+    document.getElementById('replyPreview').classList.add('hidden');
+};
+
+document.getElementById('sendBtn')?.addEventListener('click', sendMsg);
+document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+
+// ==================== MEDIA ====================
+window.uploadImage = () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*';
+    input.onchange = async (e) => {
+        showLoad(true);
+        const base64 = await compressImage(e.target.files[0]);
+        mediaToSend = { base64, type: 'image', name: e.target.files[0].name };
+        sendMsg();
+        showLoad(false);
+        closeSheet();
+    };
+    input.click();
+};
+
+window.takePhoto = () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
+    input.onchange = async (e) => {
+        showLoad(true);
+        const base64 = await compressImage(e.target.files[0]);
+        mediaToSend = { base64, type: 'image', name: 'photo.jpg' };
+        sendMsg();
+        showLoad(false);
+        closeSheet();
+    };
+    input.click();
+};
+
+window.uploadVideo = () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'video/*';
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file.size > 500000) { toast('Video too large! Max 500KB'); return; }
+        showLoad(true);
+        const base64 = await fileToBase64(file);
+        mediaToSend = { base64, type: 'video', name: file.name };
+        sendMsg();
+        showLoad(false);
+        closeSheet();
+    };
+    input.click();
+};
+
+window.uploadDoc = () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = '.pdf,.doc,.docx,.txt';
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file.size > 500000) { toast('File too large! Max 500KB'); return; }
+        showLoad(true);
+        const base64 = await fileToBase64(file);
+        mediaToSend = { base64, type: 'document', name: file.name };
+        sendMsg();
+        showLoad(false);
+        closeSheet();
+    };
+    input.click();
+};
+
+document.getElementById('attachBtn')?.addEventListener('click', () => {
+    document.getElementById('bottomSheet').classList.add('show');
+});
+window.closeSheet = () => {
+    document.getElementById('bottomSheet').classList.remove('show');
+};
+
+// ==================== VOICE ====================
+let recorder, chunks = [];
+document.getElementById('voiceBtn')?.addEventListener('click', () => {
+    document.getElementById('voiceModal').classList.remove('hidden');
+});
+
+async function startRecording() {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recorder = new MediaRecorder(stream);
+    chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        if (blob.size > 500000) { toast('Too long!'); return; }
+        const base64 = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(blob); });
+        mediaToSend = { base64, type: 'audio', name: 'voice.webm' };
+        sendMsg();
+        stream.getTracks().forEach(t => t.stop());
+    };
+    recorder.start();
+    let sec = 0;
+    const timer = setInterval(() => {
+        sec++;
+        document.getElementById('timer').innerText = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
+        if (sec >= 30) { clearInterval(timer); stopRecording(); }
+    }, 1000);
+    document.getElementById('startRecord').classList.add('hidden');
+    document.getElementById('stopRecord').classList.remove('hidden');
+    window.stopRecording = () => {
+        clearInterval(timer);
+        recorder.stop();
+        document.getElementById('voiceModal').classList.add('hidden');
+        document.getElementById('startRecord').classList.remove('hidden');
+        document.getElementById('stopRecord').classList.add('hidden');
+        document.getElementById('timer').innerText = '00:00';
+    };
+}
+document.getElementById('startRecord')?.addEventListener('click', startRecording);
+document.getElementById('stopRecord')?.addEventListener('click', () => window.stopRecording?.());
+
+// ==================== STATUS ====================
+window.uploadStatus = () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*,video/*';
+    input.onchange = async (e) => {
+        showLoad(true);
+        const file = e.target.files[0];
+        const media = file.type.startsWith('image') ? await compressImage(file, 600) : await fileToBase64(file);
+        await db.collection('status').add({
+            userId: currentUser.uid,
+            mediaBase64: media,
+            mediaType: file.type.startsWith('image') ? 'image' : 'video',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            expiresAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 24*60*60*1000)),
+            views: []
         });
+        toast('Status uploaded!');
+        showLoad(false);
+    };
+    input.click();
+};
 
-        // ==================== MEDIA ====================
-        window.uploadImage = () => {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = 'image/*';
-            input.onchange = async (e) => {
-                showLoading(true);
-                const base64 = await compressImage(e.target.files[0]);
-                currentMediaToSend = { base64, type: 'image', name: e.target.files[0].name };
-                sendMessage();
-                showLoading(false);
-                closeBottomSheet();
-            };
-            input.click();
-        };
-        window.takePhoto = () => {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment';
-            input.onchange = async (e) => {
-                showLoading(true);
-                const base64 = await compressImage(e.target.files[0]);
-                currentMediaToSend = { base64, type: 'image', name: 'photo.jpg' };
-                sendMessage();
-                showLoading(false);
-                closeBottomSheet();
-            };
-            input.click();
-        };
-        window.uploadVideo = () => {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = 'video/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file.size > 500000) { alert('Video too large! Max 500KB'); return; }
-                showLoading(true);
-                const base64 = await fileToBase64(file);
-                currentMediaToSend = { base64, type: 'video', name: file.name };
-                sendMessage();
-                showLoading(false);
-                closeBottomSheet();
-            };
-            input.click();
-        };
-        window.uploadDocument = () => {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = '.pdf,.doc,.docx,.txt';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file.size > 500000) { alert('Document too large! Max 500KB'); return; }
-                showLoading(true);
-                const base64 = await fileToBase64(file);
-                currentMediaToSend = { base64, type: 'document', name: file.name };
-                sendMessage();
-                showLoading(false);
-                closeBottomSheet();
-            };
-            input.click();
-        };
-        document.getElementById('attachBtn')?.addEventListener('click', () => document.getElementById('bottomSheet').classList.add('show'));
-        window.closeBottomSheet = () => document.getElementById('bottomSheet').classList.remove('show');
+async function loadStatuses() {
+    const snapshot = await db.collection('status')
+        .where('expiresAt', '>', firebase.firestore.Timestamp.now())
+        .orderBy('timestamp', 'desc')
+        .get();
+    
+    const grouped = {};
+    snapshot.forEach(d => { const s = d.data(); if (!grouped[s.userId]) grouped[s.userId] = []; grouped[s.userId].push({ id: d.id, ...s }); });
+    
+    const list = document.getElementById('statusList');
+    list.innerHTML = '';
+    for (const [uid, statuses] of Object.entries(grouped)) {
+        const u = await db.collection('users').doc(uid).get();
+        const name = u.data()?.displayName || 'Unknown';
+        list.innerHTML += `
+            <div class="status-item" onclick="viewStatus('${uid}', ${JSON.stringify(statuses).replace(/"/g, '&quot;')})">
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}"></div>
+                <div><strong>${name}</strong><br><span style="font-size:12px;">${formatTime(statuses[0].timestamp)}</span></div>
+            </div>
+        `;
+    }
+}
 
-        // ==================== VOICE ====================
-        let mediaRecorder, audioChunks = [];
-        document.getElementById('voiceBtn')?.addEventListener('click', () => document.getElementById('voiceModal').classList.remove('hidden'));
-        async function startRecording() {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-            mediaRecorder.onstop = async () => {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                if (blob.size > 500000) { alert('Too long!'); return; }
-                const base64 = await new Promise(resolve => { const r = new FileReader(); r.onloadend = () => resolve(r.result); r.readAsDataURL(blob); });
-                currentMediaToSend = { base64, type: 'audio', name: 'voice.webm' };
-                sendMessage();
-                stream.getTracks().forEach(t => t.stop());
-            };
-            mediaRecorder.start();
-            let sec = 0;
-            const timer = setInterval(() => {
-                sec++;
-                document.getElementById('recordingTimer').innerText = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
-                if (sec >= 30) { clearInterval(timer); stopRecording(); }
-            }, 1000);
-            document.getElementById('startRecordBtn').classList.add('hidden');
-            document.getElementById('stopRecordBtn').classList.remove('hidden');
-            window.stopRecording = () => {
-                clearInterval(timer);
-                mediaRecorder.stop();
-                document.getElementById('voiceModal').classList.add('hidden');
-                document.getElementById('startRecordBtn').classList.remove('hidden');
-                document.getElementById('stopRecordBtn').classList.add('hidden');
-                document.getElementById('recordingTimer').innerText = '00:00';
-            };
+window.viewStatus = function(uid, statuses) {
+    let idx = 0;
+    const modal = document.getElementById('statusModal');
+    const viewer = document.getElementById('statusContent');
+    function show(i) {
+        const s = statuses[i];
+        if (!s) { closeStatus(); return; }
+        if (s.userId !== currentUser.uid && !s.views?.includes(currentUser.uid))
+            db.collection('status').doc(s.id).update({ views: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+        viewer.innerHTML = s.mediaType === 'image' ? `<img src="${s.mediaBase64}" style="max-width:100%; max-height:80vh;">` : `<video src="${s.mediaBase64}" controls autoplay style="max-width:100%; max-height:80vh;"></video>`;
+    }
+    show(idx);
+    modal.classList.remove('hidden');
+    modal.onclick = () => { idx++; if (idx < statuses.length) show(idx); else closeStatus(); };
+};
+window.closeStatus = () => {
+    document.getElementById('statusModal').classList.add('hidden');
+    document.getElementById('statusContent').innerHTML = '';
+};
+
+// ==================== GROUP & STORAGE ====================
+window.createGroup = async () => {
+    const name = prompt('Group name:');
+    if (!name) return;
+    const members = [currentUser.uid];
+    const emails = prompt('Member emails (comma separated):');
+    if (emails) {
+        for (const email of emails.split(',').map(e => e.trim())) {
+            const q = await db.collection('users').where('email', '==', email).get();
+            if (!q.empty) members.push(q.docs[0].id);
         }
-        document.getElementById('startRecordBtn')?.addEventListener('click', startRecording);
-        document.getElementById('stopRecordBtn')?.addEventListener('click', () => window.stopRecording?.());
+    }
+    await db.collection('chats').add({
+        isGroup: true,
+        groupName: name,
+        participants: members,
+        admins: [currentUser.uid],
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    toast('Group created!');
+    loadChats();
+};
 
-        // ==================== STATUS ====================
-        window.openStatusUpload = () => {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = 'image/*,video/*';
-            input.onchange = async (e) => {
-                showLoading(true);
-                const file = e.target.files[0];
-                let media = file.type.startsWith('image') ? await compressImage(file, 0.5, 600) : await fileToBase64(file);
-                await db.collection('status').add({
-                    userId: currentUser.uid, mediaBase64: media,
-                    mediaType: file.type.startsWith('image') ? 'image' : 'video',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    expiresAt: firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 24*60*60*1000)),
-                    views: []
-                });
-                showToast('Status uploaded!');
-                showLoading(false);
-            };
-            input.click();
-        };
+async function updateStorage() {
+    if (!currentUser) return;
+    const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
+    let total = 0, count = 0;
+    for (const chat of chats.docs) {
+        const msgs = await db.collection('messages').where('chatId', '==', chat.id).where('mediaSize', '!=', null).get();
+        msgs.forEach(m => { total += m.data().mediaSize || 0; count++; });
+    }
+    document.getElementById('storageInfo').innerHTML = `📦 Used: ${(total/(1024*1024)).toFixed(2)} MB<br>📁 Files: ${count}`;
+}
 
-        async function loadStatuses() {
-            const snapshot = await db.collection('status')
-                .where('expiresAt', '>', firebase.firestore.Timestamp.now())
-                .orderBy('timestamp', 'desc')
-                .get();
-            
-            const grouped = {};
-            snapshot.forEach(d => { const s = d.data(); if (!grouped[s.userId]) grouped[s.userId] = []; grouped[s.userId].push({ id: d.id, ...s }); });
-            
-            const list = document.getElementById('statusList');
-            list.innerHTML = '';
-            for (const [uid, statuses] of Object.entries(grouped)) {
-                const u = await db.collection('users').doc(uid).get();
-                const name = u.data()?.displayName || 'Unknown';
-                list.innerHTML += `<div class="status-item" onclick="viewStatus('${uid}', ${JSON.stringify(statuses).replace(/"/g, '&quot;')})">
-                    <div class="avatar"><img src="https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}"></div>
-                    <div><div style="font-weight:600;">${name}</div><div style="font-size:12px;">${formatTime(statuses[0].timestamp)}</div></div>
-                </div>`;
-            }
-        }
+window.clearMedia = async () => {
+    if (!confirm('Delete all media?')) return;
+    const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
+    for (const chat of chats.docs) {
+        const msgs = await db.collection('messages').where('chatId', '==', chat.id).where('mediaBase64', '!=', null).get();
+        const batch = db.batch();
+        msgs.forEach(m => batch.update(m.ref, { mediaBase64: firebase.firestore.FieldValue.delete() }));
+        await batch.commit();
+    }
+    toast('Media cleared!');
+    updateStorage();
+};
 
-        window.viewStatus = function(uid, statuses) {
-            let idx = 0;
-            const modal = document.getElementById('statusViewModal');
-            const viewer = document.getElementById('statusViewer');
-            function show(i) {
-                const s = statuses[i];
-                if (!s) { closeStatusView(); return; }
-                if (s.userId !== currentUser.uid && !s.views?.includes(currentUser.uid))
-                    db.collection('status').doc(s.id).update({ views: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-                viewer.innerHTML = s.mediaType === 'image' ? `<img src="${s.mediaBase64}" style="max-width:100%; max-height:80vh;">` : `<video src="${s.mediaBase64}" controls autoplay style="max-width:100%; max-height:80vh;"></video>`;
-            }
-            show(idx);
-            modal.classList.remove('hidden');
-            modal.onclick = () => { idx++; if (idx < statuses.length) show(idx); else closeStatusView(); };
-        };
-        window.closeStatusView = () => { document.getElementById('statusViewModal').classList.add('hidden'); document.getElementById('statusViewer').innerHTML = ''; };
+window.changePhoto = () => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*';
+    input.onchange = async (e) => {
+        showLoad(true);
+        const base64 = await compressImage(e.target.files[0], 200);
+        await db.collection('users').doc(currentUser.uid).update({ photoURL: base64 });
+        await currentUser.updateProfile({ photoURL: base64 });
+        location.reload();
+    };
+    input.click();
+};
 
-        // ==================== GROUP & STORAGE ====================
-        window.createGroup = async () => {
-            const name = prompt('Group name:');
-            if (!name) return;
-            const members = [currentUser.uid];
-            const emails = prompt('Member emails (comma separated):');
-            if (emails) {
-                for (const email of emails.split(',').map(e => e.trim())) {
-                    const q = await db.collection('users').where('email', '==', email).get();
-                    if (!q.empty) members.push(q.docs[0].id);
-                }
-            }
-            await db.collection('chats').add({ isGroup: true, groupName: name, participants: members, admins: [currentUser.uid], createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-            showToast('Group created!');
-            loadChats();
-        };
-
-        async function updateStorage() {
-            if (!currentUser) return;
-            const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
-            let total = 0, count = 0;
-            for (const chat of chats.docs) {
-                const msgs = await db.collection('messages').where('chatId', '==', chat.id).where('mediaSize', '!=', null).get();
-                msgs.forEach(m => { total += m.data().mediaSize || 0; count++; });
-            }
-            document.getElementById('storageInfo').innerHTML = `📦 Used: ${(total/(1024*1024)).toFixed(2)} MB<br>📁 Files: ${count}`;
-        }
-
-        window.clearAllMedia = async () => {
-            if (!confirm('Delete all media from all chats?')) return;
-            const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
-            for (const chat of chats.docs) {
-                const msgs = await db.collection('messages').where('chatId', '==', chat.id).where('mediaBase64', '!=', null).get();
-                const batch = db.batch();
-                msgs.forEach(m => batch.update(m.ref, { mediaBase64: firebase.firestore.FieldValue.delete() }));
-                await batch.commit();
-            }
-            showToast('Media cleared!');
-            updateStorage();
-        };
-
-        window.changeProfilePhoto = () => {
-            const input = document.createElement('input');
-            input.type = 'file'; input.accept = 'image/*';
-            input.onchange = async (e) => {
-                showLoading(true);
-                const base64 = await compressImage(e.target.files[0], 0.5, 200);
-                await db.collection('users').doc(currentUser.uid).update({ photoURL: base64 });
-                await currentUser.updateProfile({ photoURL: base64 });
-                location.reload();
-            };
-            input.click();
-        };
-
-        setInterval(updateStorage, 30000);
-    </script>
+setInterval(updateStorage, 30000);
+</script>
 </body>
 </html>

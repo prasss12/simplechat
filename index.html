@@ -82,6 +82,55 @@
             color: var(--primary);
         }
 
+        /* Search Bar */
+        .search-container {
+            background: white;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-container i {
+            color: var(--gray);
+        }
+
+        .search-container input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.875rem;
+            padding: 0.5rem 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            background: white;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .btn {
             padding: 0.5rem 1.2rem;
             border-radius: 0.5rem;
@@ -119,26 +168,14 @@
             color: white;
         }
 
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
         .btn-success {
             background: var(--success);
             color: white;
         }
 
-        .btn-success:hover {
-            background: #059669;
-        }
-
         .btn-warning {
             background: var(--warning);
             color: white;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
         }
 
         .btn-sm {
@@ -159,19 +196,20 @@
         .hero {
             background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
             border-radius: 1rem;
-            padding: 3rem;
+            padding: 2rem;
             color: white;
             margin-bottom: 2rem;
         }
 
         .hero h1 {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
         .hero p {
             color: #94a3b8;
+            font-size: 0.875rem;
         }
 
         .section-header {
@@ -223,7 +261,6 @@
             font-weight: 600;
             font-size: 0.95rem;
             margin-bottom: 0.25rem;
-            color: var(--dark);
         }
 
         .product-price {
@@ -242,10 +279,15 @@
         .product-seller {
             font-size: 0.75rem;
             color: var(--gray);
-            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .store-name {
+            font-weight: 600;
+            color: var(--dark);
         }
 
         .modal {
@@ -300,11 +342,6 @@
             cursor: pointer;
             font-size: 1.25rem;
             color: var(--gray);
-            transition: color 0.2s;
-        }
-
-        .modal-close:hover {
-            color: var(--dark);
         }
 
         .modal-body {
@@ -320,7 +357,6 @@
             font-size: 0.875rem;
             font-weight: 500;
             margin-bottom: 0.5rem;
-            color: var(--dark);
         }
 
         .form-group input,
@@ -332,15 +368,12 @@
             border-radius: 0.5rem;
             font-size: 0.875rem;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
         }
 
         .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .profile-container {
@@ -373,9 +406,9 @@
         }
 
         .profile-info h2 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .profile-info p {
@@ -384,20 +417,12 @@
             margin-bottom: 0.25rem;
         }
 
-        .profile-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
         .profile-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             padding: 1.5rem;
             border-bottom: 1px solid var(--border);
-            background: white;
         }
 
         .stat-card {
@@ -405,16 +430,10 @@
             padding: 1rem;
             background: var(--light);
             border-radius: 0.75rem;
-            transition: all 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .stat-number {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
@@ -422,23 +441,10 @@
         .stat-label {
             font-size: 0.75rem;
             color: var(--gray);
-            margin-top: 0.25rem;
         }
 
         .profile-address {
             padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .profile-address h4 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-address p {
-            font-size: 0.875rem;
-            color: var(--gray);
         }
 
         .become-seller-card {
@@ -451,18 +457,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-        }
-
-        .become-seller-card h4 {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 0.25rem;
-        }
-
-        .become-seller-card p {
-            font-size: 0.75rem;
-            color: #b45309;
         }
 
         .cart-item {
@@ -484,22 +478,6 @@
             border-radius: 0.5rem;
         }
 
-        .cart-item-info {
-            flex: 1;
-        }
-
-        .cart-item-title {
-            font-weight: 600;
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .cart-item-price {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 0.875rem;
-        }
-
         .cart-quantity {
             display: flex;
             align-items: center;
@@ -513,13 +491,6 @@
             background: white;
             border-radius: 0.375rem;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .cart-quantity button:hover {
-            border-color: var(--primary);
-            color: var(--primary);
         }
 
         .cart-total {
@@ -539,37 +510,21 @@
             position: fixed;
             top: 80px;
             right: 20px;
-            padding: 0.875rem 1.25rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 0.5rem;
             color: white;
             font-size: 0.875rem;
-            font-weight: 500;
             z-index: 1000;
             animation: slideIn 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .alert-success {
-            background: var(--success);
-        }
-
-        .alert-error {
-            background: var(--danger);
-        }
-
-        .alert-info {
-            background: var(--primary);
-        }
+        .alert-success { background: var(--success); }
+        .alert-error { background: var(--danger); }
+        .alert-info { background: var(--primary); }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .badge {
@@ -580,20 +535,9 @@
             font-weight: 600;
         }
 
-        .badge-admin {
-            background: #ef4444;
-            color: white;
-        }
-
-        .badge-business {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .badge-user {
-            background: #10b981;
-            color: white;
-        }
+        .badge-admin { background: #ef4444; color: white; }
+        .badge-business { background: #f59e0b; color: white; }
+        .badge-user { background: #10b981; color: white; }
 
         .empty-state {
             text-align: center;
@@ -601,17 +545,6 @@
             background: white;
             border-radius: 1rem;
             border: 1px solid var(--border);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: var(--border);
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            color: var(--gray);
-            margin-bottom: 1rem;
         }
 
         .loading {
@@ -628,60 +561,11 @@
             position: relative;
         }
 
-        .divider::before,
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: calc(50% - 50px);
-            height: 1px;
-            background: var(--border);
-        }
-
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
-        }
-
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-            }
-
-            .hero {
-                padding: 1.5rem;
-            }
-
-            .hero h1 {
-                font-size: 1.25rem;
-            }
-
-            .profile-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .profile-actions {
-                justify-content: center;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .become-seller-card {
-                flex-direction: column;
-                text-align: center;
-            }
+            .nav-container { flex-direction: column; }
+            .search-container { max-width: 100%; }
+            .profile-header { flex-direction: column; align-items: center; text-align: center; }
+            .products-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -689,6 +573,10 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo" onclick="showProducts()">Market<span>Hub</span></div>
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Cari produk atau toko..." onkeyup="searchProducts()">
+            </div>
             <div class="nav-links" id="navLinks"></div>
         </div>
     </nav>
@@ -718,10 +606,10 @@
                 </form>
                 <div class="divider">atau</div>
                 <button class="btn btn-outline btn-block" onclick="googleLogin()">
-                    <i class="fab fa-google"></i> Lanjutkan dengan Google
+                    <i class="fab fa-google"></i> Google
                 </button>
-                <p style="text-align:center; margin-top:1rem; font-size:0.75rem; color:var(--gray)">
-                    Belum punya akun? <a onclick="showRegisterModal()" style="color:var(--primary); cursor:pointer; font-weight:500">Daftar</a>
+                <p style="text-align:center; margin-top:1rem; font-size:0.75rem">
+                    Belum punya akun? <a onclick="showRegisterModal()" style="color:var(--primary); cursor:pointer">Daftar</a>
                 </p>
             </div>
         </div>
@@ -731,7 +619,7 @@
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Daftar Akun Baru</h3>
+                <h3>Daftar Akun</h3>
                 <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
             </div>
             <div class="modal-body">
@@ -761,24 +649,39 @@
         </div>
     </div>
 
-    <!-- Become Seller Modal -->
+    <!-- Become Seller Modal (LENGKAP) -->
     <div id="becomeSellerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Jadi Penjual</h3>
+                <h3><i class="fas fa-store"></i> Daftar Jadi Penjual</h3>
                 <span class="modal-close" onclick="closeModal('becomeSellerModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom:1rem">Dengan menjadi penjual, Anda dapat:</p>
-                <ul style="margin: 1rem 0 1rem 1.5rem; color: var(--gray);">
-                    <li>Menambahkan produk sendiri</li>
-                    <li>Mengelola stok produk</li>
-                    <li>Melihat pesanan masuk</li>
-                    <li>Mendapatkan penghasilan tambahan</li>
-                </ul>
-                <button class="btn btn-warning btn-block" onclick="upgradeToSeller()" style="margin-top:1rem">
-                    <i class="fas fa-store"></i> Upgrade ke Akun Penjual
-                </button>
+                <form id="becomeSellerForm">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="sellerFullName" placeholder="Masukkan nama lengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Toko</label>
+                        <input type="text" id="storeName" placeholder="Contoh: Toko Bahagia" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Toko</label>
+                        <textarea id="storeAddress" rows="2" placeholder="Jl. Contoh No. 123, Kecamatan, Kota" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor HP / WhatsApp</label>
+                        <input type="tel" id="storePhone" placeholder="08123456789" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Toko (Opsional)</label>
+                        <textarea id="storeDescription" rows="2" placeholder="Ceritakan tentang toko Anda..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-block">
+                        <i class="fas fa-check-circle"></i> Daftar Jadi Penjual
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -787,18 +690,18 @@
     <div id="addProductModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Tambah Produk Baru</h3>
+                <h3>Tambah Produk</h3>
                 <span class="modal-close" onclick="closeModal('addProductModal')">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="addProductForm">
                     <div class="form-group">
                         <label>Nama Produk</label>
-                        <input type="text" id="productName" placeholder="Contoh: Kaos Polos" required>
+                        <input type="text" id="productName" required>
                     </div>
                     <div class="form-group">
                         <label>Harga (Rp)</label>
-                        <input type="number" id="productPrice" placeholder="100000" required>
+                        <input type="number" id="productPrice" required>
                     </div>
                     <div class="form-group">
                         <label>Stok</label>
@@ -806,13 +709,13 @@
                     </div>
                     <div class="form-group">
                         <label>Deskripsi</label>
-                        <textarea id="productDescription" rows="3" placeholder="Deskripsi produk..."></textarea>
+                        <textarea id="productDescription" rows="3"></textarea>
                     </div>
                     <div class="form-group">
                         <label>URL Gambar</label>
                         <input type="url" id="productImage" placeholder="https://placehold.co/400x300">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Tambahkan Produk</button>
+                    <button type="submit" class="btn btn-primary btn-block">Tambah</button>
                 </form>
             </div>
         </div>
@@ -829,21 +732,21 @@
                 <form id="addressForm">
                     <div class="form-group">
                         <label>Alamat Lengkap</label>
-                        <textarea id="address" rows="2" placeholder="Jalan, nomor rumah, RT/RW" required></textarea>
+                        <textarea id="address" rows="2" required></textarea>
                     </div>
                     <div class="form-group">
                         <label>Kota</label>
-                        <input type="text" id="city" placeholder="Kota" required>
+                        <input type="text" id="city" required>
                     </div>
                     <div class="form-group">
                         <label>Kode Pos</label>
-                        <input type="text" id="postalCode" placeholder="Kode Pos" required>
+                        <input type="text" id="postalCode" required>
                     </div>
                     <div class="form-group">
-                        <label>Nomor Telepon</label>
-                        <input type="tel" id="phone" placeholder="08123456789" required>
+                        <label>No. Telepon</label>
+                        <input type="tel" id="phone" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Simpan Alamat</button>
+                    <button type="submit" class="btn btn-primary btn-block">Simpan</button>
                 </form>
             </div>
         </div>
@@ -854,7 +757,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDQSKfs6tZzVfpv0BKuM-9Zf00LQHvCGyk",
             authDomain: "simplechat-85cd8.firebaseapp.com",
@@ -864,7 +766,6 @@
             appId: "1:244789873168:web:4cba5481f689ab3103d895"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -872,6 +773,8 @@
         let currentUser = null;
         let currentUserData = null;
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        let allProducts = [];
+        let currentFilter = 'all';
 
         function showAlert(message, type = 'success') {
             const alert = document.createElement('div');
@@ -892,7 +795,7 @@
 
         function showAddProductModal() {
             if (!currentUser) {
-                showAlert('Silakan login terlebih dahulu', 'error');
+                showAlert('Silakan login dulu', 'error');
                 return;
             }
             if (currentUserData?.role !== 'business' && currentUserData?.role !== 'admin') {
@@ -902,11 +805,24 @@
             document.getElementById('addProductModal').style.display = 'flex';
         }
 
-        async function upgradeToSeller() {
+        // Upgrade to seller with complete form
+        document.getElementById('becomeSellerForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
             if (!currentUser) return;
+            
+            const sellerData = {
+                role: 'business',
+                fullName: document.getElementById('sellerFullName').value,
+                storeName: document.getElementById('storeName').value,
+                storeAddress: document.getElementById('storeAddress').value,
+                storePhone: document.getElementById('storePhone').value,
+                storeDescription: document.getElementById('storeDescription').value || '',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
             try {
-                await db.collection('users').doc(currentUser.uid).update({ role: 'business' });
-                currentUserData.role = 'business';
+                await db.collection('users').doc(currentUser.uid).update(sellerData);
+                currentUserData = { ...currentUserData, ...sellerData };
                 showAlert('Selamat! Anda sekarang menjadi penjual', 'success');
                 closeModal('becomeSellerModal');
                 updateNav();
@@ -914,7 +830,7 @@
             } catch (error) {
                 showAlert(error.message, 'error');
             }
-        }
+        });
 
         async function googleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
@@ -938,7 +854,6 @@
             }
         }
 
-        // Login handler
         document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -953,7 +868,6 @@
             }
         });
 
-        // Register handler
         document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
@@ -968,14 +882,13 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     address: '', city: '', postalCode: '', phone: ''
                 });
-                showAlert('Pendaftaran berhasil! Silakan login', 'success');
+                showAlert('Daftar berhasil! Silakan login', 'success');
                 closeModal('registerModal');
             } catch (error) {
                 showAlert(error.message, 'error');
             }
         });
 
-        // Add product handler
         document.getElementById('addProductForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -986,24 +899,19 @@
                     description: document.getElementById('productDescription').value,
                     imageUrl: document.getElementById('productImage').value || 'https://placehold.co/400x300',
                     sellerId: currentUser.uid,
-                    sellerName: currentUserData?.name,
+                    sellerName: currentUserData?.storeName || currentUserData?.name,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'available'
                 });
-                showAlert('Produk berhasil ditambahkan', 'success');
+                showAlert('Produk ditambahkan', 'success');
                 closeModal('addProductModal');
                 document.getElementById('addProductForm').reset();
-                if (currentUserData?.role === 'business' || currentUserData?.role === 'admin') {
-                    showMyProducts();
-                } else {
-                    showProducts();
-                }
+                showMyProducts();
             } catch (error) {
                 showAlert(error.message, 'error');
             }
         });
 
-        // Address handler
         document.getElementById('addressForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
@@ -1021,21 +929,20 @@
             }
         });
 
-        // Cart functions
         function addToCart(product) {
             if (!currentUser) {
-                showAlert('Silakan login terlebih dahulu', 'error');
+                showAlert('Login dulu', 'error');
                 return;
             }
             const existing = cart.find(item => item.id === product.id);
             if (existing) {
                 if (existing.quantity < product.stock) existing.quantity++;
-                else { showAlert('Stok tidak mencukupi', 'error'); return; }
+                else { showAlert('Stok habis', 'error'); return; }
             } else {
                 cart.push({ ...product, quantity: 1 });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
-            showAlert(`${product.name} ditambahkan ke keranjang`, 'success');
+            showAlert(`${product.name} ditambahkan`, 'success');
             updateCartCount();
         }
 
@@ -1046,14 +953,14 @@
         }
 
         async function checkout() {
-            if (!currentUser) { showAlert('Silakan login terlebih dahulu', 'error'); return; }
-            if (cart.length === 0) { showAlert('Keranjang belanja kosong', 'error'); return; }
+            if (!currentUser) { showAlert('Login dulu', 'error'); return; }
+            if (cart.length === 0) { showAlert('Keranjang kosong', 'error'); return; }
             
             const userData = await db.collection('users').doc(currentUser.uid).get();
             const address = userData.data();
             if (!address.address) { 
                 showAddressModal(); 
-                showAlert('Lengkapi alamat pengiriman terlebih dahulu', 'info'); 
+                showAlert('Isi alamat dulu', 'info'); 
                 return; 
             }
 
@@ -1061,7 +968,7 @@
                 const productRef = db.collection('products').doc(item.id);
                 const productDoc = await productRef.get();
                 if (productDoc.exists && productDoc.data().stock < item.quantity) {
-                    showAlert(`Stok ${item.name} tidak mencukupi`, 'error');
+                    showAlert(`Stok ${item.name} habis`, 'error');
                     return;
                 }
             }
@@ -1070,20 +977,13 @@
                 await db.runTransaction(async (transaction) => {
                     const productRef = db.collection('products').doc(item.id);
                     const productDoc = await transaction.get(productRef);
-                    if (!productDoc.exists) throw new Error('Produk tidak ditemukan');
                     transaction.update(productRef, { stock: productDoc.data().stock - item.quantity });
                     transaction.set(db.collection('orders').doc(), {
-                        productId: item.id, 
-                        productName: item.name, 
-                        price: item.price,
-                        quantity: item.quantity, 
-                        total: item.price * item.quantity,
-                        buyerId: currentUser.uid, 
-                        buyerName: currentUserData?.name,
-                        sellerId: item.sellerId, 
-                        sellerName: item.sellerName,
-                        address: address.address, 
-                        city: address.city,
+                        productId: item.id, productName: item.name, price: item.price,
+                        quantity: item.quantity, total: item.price * item.quantity,
+                        buyerId: currentUser.uid, buyerName: currentUserData?.name,
+                        sellerId: item.sellerId, sellerName: item.sellerName,
+                        address: address.address, city: address.city,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         status: 'paid'
                     });
@@ -1092,11 +992,28 @@
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
-            showAlert('Pesanan berhasil dibuat', 'success');
+            showAlert('Checkout berhasil', 'success');
             showOrders();
         }
 
-        // Navigation
+        // SEARCH FUNCTION
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                const title = card.querySelector('.product-title')?.innerText.toLowerCase() || '';
+                const seller = card.querySelector('.product-seller')?.innerText.toLowerCase() || '';
+                const store = card.querySelector('.store-name')?.innerText.toLowerCase() || '';
+                
+                if (title.includes(searchTerm) || seller.includes(searchTerm) || store.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
         function updateNav() {
             const nav = document.getElementById('navLinks');
             if (!currentUser) {
@@ -1108,7 +1025,7 @@
                 return;
             }
             const role = currentUserData?.role;
-            const roleBadge = role === 'admin' ? 'Administrator' : role === 'business' ? 'Penjual' : 'Pembeli';
+            const roleText = role === 'admin' ? 'Admin' : role === 'business' ? 'Penjual' : 'Pembeli';
             const roleClass = role === 'admin' ? 'badge-admin' : role === 'business' ? 'badge-business' : 'badge-user';
             
             nav.innerHTML = `
@@ -1117,19 +1034,23 @@
                 <a onclick="showCart()">Keranjang (<span id="cartCount">0</span>)</a>
                 <a onclick="showOrders()">Pesanan</a>
                 <a onclick="showProfile()">Profil</a>
-                <span class="badge ${roleClass}">${roleBadge}</span>
+                <span class="badge ${roleClass}">${roleText}</span>
                 <button class="btn btn-danger btn-sm" onclick="logout()">Keluar</button>
             `;
             updateCartCount();
         }
 
-        // Show Products (Beranda)
         function showProducts() {
             const content = document.getElementById('mainContent');
             content.innerHTML = `
                 <div class="hero">
                     <h1>Belanja Kebutuhan Anda</h1>
                     <p>Temukan berbagai produk berkualitas dari penjual terpercaya</p>
+                </div>
+                <div class="search-filters">
+                    <div class="filter-chip ${currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</div>
+                    <div class="filter-chip ${currentFilter === 'product' ? 'active' : ''}" onclick="setFilter('product')">Produk</div>
+                    <div class="filter-chip ${currentFilter === 'store' ? 'active' : ''}" onclick="setFilter('store')">Toko</div>
                 </div>
                 <div class="section-header">
                     <h2>Semua Produk</h2>
@@ -1142,12 +1063,7 @@
                 const grid = document.getElementById('productsGrid');
                 if (!grid) return;
                 if (snap.empty) { 
-                    grid.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-box-open"></i>
-                            <p>Belum ada produk yang tersedia</p>
-                            ${currentUser ? '<button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk Sekarang</button>' : '<button class="btn btn-primary btn-sm" onclick="showLoginModal()">Login untuk Jualan</button>'}
-                        </div>`;
+                    grid.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>Belum ada produk</p>${currentUser ? '<button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk</button>' : '<button class="btn btn-primary btn-sm" onclick="showLoginModal()">Login untuk Jualan</button>'}</div>`;
                     return; 
                 }
                 grid.innerHTML = '';
@@ -1155,13 +1071,13 @@
                     const p = doc.data();
                     const isOwner = currentUser && currentUser.uid === p.sellerId;
                     grid.innerHTML += `
-                        <div class="product-card">
+                        <div class="product-card" data-product-name="${p.name.toLowerCase()}" data-seller-name="${p.sellerName?.toLowerCase() || ''}">
                             <img src="${p.imageUrl}" class="product-image" onerror="this.src='https://placehold.co/400x300'">
                             <div class="product-info">
                                 <div class="product-title">${p.name}</div>
                                 <div class="product-price">Rp ${p.price.toLocaleString()}</div>
                                 <div class="product-stock">Stok: ${p.stock}</div>
-                                <div class="product-seller"><i class="fas fa-store"></i> ${p.sellerName}</div>
+                                <div class="product-seller"><i class="fas fa-store"></i> <span class="store-name">${p.sellerName || 'Penjual'}</span></div>
                                 ${!isOwner && currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" onclick='addToCart({id:"${doc.id}",name:"${p.name}",price:${p.price},stock:${p.stock},sellerId:"${p.sellerId}",sellerName:"${p.sellerName}",image:"${p.imageUrl}"})'>Tambah ke Keranjang</button>` : ''}
                                 ${!currentUser ? `<button class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" onclick="showLoginModal()">Login untuk Beli</button>` : ''}
                                 ${isOwner ? `<button class="btn btn-outline btn-sm" style="width:100%; margin-top:0.5rem" disabled>Produk Anda</button>` : ''}
@@ -1171,7 +1087,34 @@
             });
         }
 
-        // Show My Products
+        function setFilter(type) {
+            currentFilter = type;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                const title = card.querySelector('.product-title')?.innerText.toLowerCase() || '';
+                const seller = card.querySelector('.store-name')?.innerText.toLowerCase() || '';
+                
+                let match = false;
+                if (type === 'all') {
+                    match = title.includes(searchTerm) || seller.includes(searchTerm);
+                } else if (type === 'product') {
+                    match = title.includes(searchTerm);
+                } else if (type === 'store') {
+                    match = seller.includes(searchTerm);
+                }
+                
+                card.style.display = match ? '' : 'none';
+            });
+            
+            // Update active class
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
         function showMyProducts() {
             if (!currentUser || (currentUserData?.role !== 'business' && currentUserData?.role !== 'admin')) {
                 showAlert('Akses ditolak', 'error');
@@ -1181,7 +1124,7 @@
             content.innerHTML = `
                 <div class="section-header">
                     <h2>Produk Saya</h2>
-                    <button class="btn btn-primary btn-sm" onclick="showAddProductModal()">+ Tambah Produk</button>
+                    <button class="btn btn-primary btn-sm" onclick="showAddProductModal()">+ Tambah</button>
                 </div>
                 <div class="products-grid" id="myProductsGrid"><div class="loading">Memuat...</div></div>`;
             
@@ -1189,7 +1132,7 @@
                 const grid = document.getElementById('myProductsGrid');
                 if (!grid) return;
                 if (snap.empty) { 
-                    grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><p>Belum ada produk</p><button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk Sekarang</button></div>'; 
+                    grid.innerHTML = '<div class="empty-state"><p>Belum ada produk</p><button class="btn btn-primary btn-sm" onclick="showAddProductModal()">Tambah Produk</button></div>'; 
                     return; 
                 }
                 grid.innerHTML = '';
@@ -1210,38 +1153,34 @@
         }
 
         async function deleteProduct(id) {
-            if (confirm('Yakin ingin menghapus produk ini?')) {
+            if (confirm('Hapus produk ini?')) {
                 await db.collection('products').doc(id).delete();
                 showAlert('Produk dihapus', 'success');
                 showMyProducts();
             }
         }
 
-        // Show Cart
         function showCart() {
             const content = document.getElementById('mainContent');
             if (cart.length === 0) {
-                content.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>Keranjang belanja kosong</p><button class="btn btn-primary" onclick="showProducts()">Mulai Belanja</button></div>';
+                content.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>Keranjang kosong</p><button class="btn btn-primary" onclick="showProducts()">Belanja</button></div>';
                 return;
             }
             let total = 0;
-            content.innerHTML = `<div class="section-header"><h2>Keranjang Belanja</h2></div><div id="cartItems"></div><div class="cart-total"><span><strong>Total Belanja</strong></span><span style="font-size:1.25rem; font-weight:700; color:var(--primary)" id="cartTotal">0</span><button class="btn btn-success" onclick="checkout()">Checkout</button></div>`;
+            content.innerHTML = `<div class="section-header"><h2>Keranjang</h2></div><div id="cartItems"></div><div class="cart-total"><span>Total</span><span style="font-size:1.25rem; font-weight:700; color:var(--primary)" id="cartTotal">0</span><button class="btn btn-success" onclick="checkout()">Checkout</button></div>`;
             const container = document.getElementById('cartItems');
             cart.forEach((item, idx) => {
                 total += item.price * item.quantity;
                 container.innerHTML += `
                     <div class="cart-item">
-                        <img src="${item.image}" class="cart-item-image" onerror="this.src='https://placehold.co/70x70'">
-                        <div class="cart-item-info">
-                            <div class="cart-item-title">${item.name}</div>
-                            <div class="cart-item-price">Rp ${item.price.toLocaleString()}</div>
-                        </div>
+                        <img src="${item.image}" class="cart-item-image">
+                        <div class="cart-item-info"><strong>${item.name}</strong><br>Rp ${item.price.toLocaleString()}</div>
                         <div class="cart-quantity">
                             <button onclick="updateQuantity(${idx}, -1)">-</button>
-                            <span style="min-width:30px; text-align:center">${item.quantity}</span>
+                            <span>${item.quantity}</span>
                             <button onclick="updateQuantity(${idx}, 1)">+</button>
                         </div>
-                        <div style="font-weight:600; min-width:80px; text-align:right">Rp ${(item.price * item.quantity).toLocaleString()}</div>
+                        <div>Rp ${(item.price * item.quantity).toLocaleString()}</div>
                         <button class="btn btn-danger btn-sm" onclick="removeFromCart(${idx})">Hapus</button>
                     </div>`;
             });
@@ -1252,7 +1191,7 @@
             const newQty = cart[idx].quantity + delta;
             if (newQty < 1) cart.splice(idx, 1);
             else if (newQty <= cart[idx].stock) cart[idx].quantity = newQty;
-            else { showAlert('Stok tidak mencukupi', 'error'); return; }
+            else { showAlert('Stok habis', 'error'); return; }
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
             showCart();
@@ -1265,41 +1204,29 @@
             showCart(); 
         }
 
-        // Show Orders
         function showOrders() {
             if (!currentUser) return;
             const content = document.getElementById('mainContent');
-            content.innerHTML = `<div class="section-header"><h2>Riwayat Pesanan</h2></div><div id="ordersList"><div class="loading">Memuat...</div></div>`;
+            content.innerHTML = `<div class="section-header"><h2>Pesanan Saya</h2></div><div id="ordersList"><div class="loading">Memuat...</div></div>`;
             db.collection('orders').where('buyerId', '==', currentUser.uid).orderBy('createdAt', 'desc').onSnapshot((snap) => {
                 const list = document.getElementById('ordersList');
                 if (!list) return;
-                if (snap.empty) { list.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>Belum ada riwayat pesanan</p></div>'; return; }
+                if (snap.empty) { list.innerHTML = '<div class="empty-state"><p>Belum ada pesanan</p></div>'; return; }
                 list.innerHTML = '';
                 snap.forEach(doc => {
                     const o = doc.data();
                     list.innerHTML += `
                         <div class="product-card" style="margin-bottom:1rem">
                             <div class="product-info">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem">
-                                    <strong>${o.productName}</strong>
-                                    <span class="badge badge-success">Selesai</span>
-                                </div>
-                                <div style="color:var(--gray); font-size:0.875rem; margin:0.5rem 0">
-                                    ${o.quantity} x Rp ${o.price.toLocaleString()} = <strong>Rp ${o.total.toLocaleString()}</strong>
-                                </div>
-                                <div style="color:var(--gray); font-size:0.75rem">
-                                    <i class="fas fa-map-marker-alt"></i> ${o.address}, ${o.city}
-                                </div>
-                                <div style="color:var(--gray); font-size:0.75rem; margin-top:0.25rem">
-                                    <i class="fas fa-calendar"></i> ${o.createdAt?.toDate().toLocaleDateString()}
-                                </div>
+                                <strong>${o.productName}</strong><br>
+                                ${o.quantity} x Rp ${o.price.toLocaleString()} = <strong>Rp ${o.total.toLocaleString()}</strong><br>
+                                📍 ${o.address}, ${o.city}
                             </div>
                         </div>`;
                 });
             });
         }
 
-        // Show Profile
         async function showProfile() {
             if (!currentUser) return;
             const userDoc = await db.collection('users').doc(currentUser.uid).get();
@@ -1314,12 +1241,23 @@
                 sellerCard = `
                     <div class="become-seller-card">
                         <div>
-                            <h4><i class="fas fa-store"></i> Jadi Penjual Sekarang!</h4>
-                            <p>Dapatkan penghasilan tambahan dengan menjual produk Anda</p>
+                            <strong>Jadi Penjual Sekarang!</strong>
+                            <p style="font-size:0.75rem">Jual produk Anda sendiri dan dapatkan penghasilan</p>
                         </div>
-                        <button class="btn btn-warning btn-sm" onclick="showBecomeSellerModal()">
-                            <i class="fas fa-arrow-right"></i> Daftar Jadi Penjual
-                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="showBecomeSellerModal()">Daftar Jadi Penjual</button>
+                    </div>
+                `;
+            }
+            
+            let storeInfo = '';
+            if (data.role === 'business' && data.storeName) {
+                storeInfo = `
+                    <div class="profile-address" style="background: var(--light); margin-top: 0;">
+                        <h4><i class="fas fa-store"></i> Informasi Toko</h4>
+                        <p><strong>${data.storeName}</strong></p>
+                        <p>📍 ${data.storeAddress || 'Belum diisi'}</p>
+                        <p>📞 ${data.storePhone || '-'}</p>
+                        <p>${data.storeDescription || ''}</p>
                     </div>
                 `;
             }
@@ -1330,34 +1268,22 @@
                         <div class="profile-avatar">${data.name?.charAt(0).toUpperCase() || 'U'}</div>
                         <div class="profile-info">
                             <h2>${data.name}</h2>
-                            <p><i class="fas fa-envelope"></i> ${data.email}</p>
-                            <p><span class="badge ${data.role === 'admin' ? 'badge-admin' : data.role === 'business' ? 'badge-business' : 'badge-user'}">${data.role === 'admin' ? 'Administrator' : data.role === 'business' ? 'Penjual' : 'Pembeli'}</span></p>
-                            <div class="profile-actions">
-                                <button class="btn btn-outline btn-sm" onclick="showAddressModal()">
-                                    <i class="fas fa-map-marker-alt"></i> Edit Alamat
-                                </button>
-                            </div>
+                            <p>${data.email}</p>
+                            <p><span class="badge ${data.role === 'admin' ? 'badge-admin' : data.role === 'business' ? 'badge-business' : 'badge-user'}">${data.role === 'admin' ? 'Admin' : data.role === 'business' ? 'Penjual' : 'Pembeli'}</span></p>
+                            <button class="btn btn-outline btn-sm" onclick="showAddressModal()">Edit Alamat</button>
                         </div>
                     </div>
                     ${sellerCard}
+                    ${storeInfo}
                     <div class="profile-stats">
-                        <div class="stat-card">
-                            <div class="stat-number">${productsCount}</div>
-                            <div class="stat-label">Total Produk</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${ordersCount}</div>
-                            <div class="stat-label">Total Pesanan</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${cart.length}</div>
-                            <div class="stat-label">Keranjang</div>
-                        </div>
+                        <div class="stat-card"><div class="stat-number">${productsCount}</div><div class="stat-label">Produk</div></div>
+                        <div class="stat-card"><div class="stat-number">${ordersCount}</div><div class="stat-label">Pesanan</div></div>
+                        <div class="stat-card"><div class="stat-number">${cart.length}</div><div class="stat-label">Keranjang</div></div>
                     </div>
                     <div class="profile-address">
-                        <h4><i class="fas fa-map-marker-alt"></i> Alamat Pengiriman</h4>
+                        <h4>Alamat Pengiriman</h4>
                         <p>${data.address ? `${data.address}, ${data.city} - ${data.postalCode}` : 'Belum diisi'}</p>
-                        <p style="margin-top:0.5rem"><i class="fas fa-phone"></i> ${data.phone || '-'}</p>
+                        <p>📞 ${data.phone || '-'}</p>
                     </div>
                 </div>`;
         }
@@ -1366,10 +1292,9 @@
             await auth.signOut(); 
             cart = []; 
             localStorage.removeItem('cart'); 
-            showAlert('Berhasil keluar', 'success'); 
+            showAlert('Keluar', 'success'); 
         }
 
-        // Auth state listener
         auth.onAuthStateChanged(async (user) => {
             currentUser = user;
             if (user) {
@@ -1377,12 +1302,7 @@
                 if (doc.exists) {
                     currentUserData = doc.data();
                 } else {
-                    currentUserData = { 
-                        name: user.email?.split('@')[0] || 'User', 
-                        email: user.email, 
-                        role: 'user',
-                        address: '', city: '', postalCode: '', phone: ''
-                    };
+                    currentUserData = { name: user.email?.split('@')[0] || 'User', email: user.email, role: 'user' };
                     await db.collection('users').doc(user.uid).set(currentUserData);
                 }
             } else {

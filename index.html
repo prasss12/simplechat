@@ -3,173 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Index of /VTB</title>
+<title>VOID THREAT BLACKSITE</title>
 
 <style>
 body{
-    font-family: Consolas, monospace;
-    background:#fff;
-    color:#111;
+    font-family:Consolas,monospace;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+    color:#222;
+}
+
+.container{
     max-width:1000px;
     margin:auto;
-    padding:20px;
 }
 
 h1{
-    font-size:28px;
-    margin-bottom:10px;
+    margin-bottom:5px;
 }
 
-hr{
-    margin:15px 0;
+.subtitle{
+    color:#666;
+    margin-bottom:20px;
 }
 
-a{
-    color:#0056b3;
-    text-decoration:none;
-}
-
-a:hover{
-    text-decoration:underline;
+input{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    margin-bottom:20px;
+    font-family:inherit;
 }
 
 .file{
-    display:flex;
-    justify-content:space-between;
-    padding:4px 0;
+    background:#fff;
+    border:1px solid #ddd;
+    padding:12px;
+    margin-bottom:8px;
+    cursor:pointer;
 }
 
-.date{
+.file:hover{
+    background:#fafafa;
+}
+
+.status{
+    font-size:12px;
     color:#666;
 }
 
-.footer{
-    margin-top:20px;
-    color:#666;
-    font-size:14px;
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    width:90%;
+    max-width:700px;
+    max-height:90vh;
+    overflow:auto;
+    padding:20px;
+}
+
+.modal img{
+    width:100%;
+    border:1px solid #ddd;
+    margin:15px 0;
+}
+
+.close{
+    float:right;
+    cursor:pointer;
+    font-size:22px;
 }
 </style>
-
 </head>
 <body>
 
-<h1>Index of /VTB</h1>
+<div class="container">
 
-<p>Void Threat Blacksite Public Archive Mirror</p>
-
-<hr>
-
-<div class="file">
-<a href="#">📁 entities/</a>
-<span class="date">2026-06-15 03:12</span>
+<h1>VOID THREAT BLACKSITE</h1>
+<div class="subtitle">
+Recovered Entity Database<br>
+Archive Status: Partially Recovered
 </div>
 
-<div class="file">
-<a href="#">📁 reports/</a>
-<span class="date">2026-06-14 19:44</span>
+<input type="text" id="search" placeholder="Search files...">
+
+<div id="files"></div>
+
 </div>
 
-<div class="file">
-<a href="#">📁 recovered/</a>
-<span class="date">2026-06-13 22:01</span>
+<div class="modal" id="modal">
+<div class="modal-content">
+
+<span class="close" onclick="closeModal()">✖</span>
+
+<h2 id="title"></h2>
+<p id="threat"></p>
+
+<img id="image" style="display:none;">
+
+<p id="description"></p>
+
+</div>
 </div>
 
-<hr>
+<script>
 
-<div class="file">
-<a href="#">📄 vtb-001.txt</a>
-<span class="date">2026-05-08</span>
+const files = [
+
+{
+id:"VTB-001",
+name:"Forest Watcher",
+type:"txt",
+threat:"HIGH RISK",
+image:"entities/vtb-001.jpg",
+description:"Humanoid entity approximately 3 meters tall. Frequently observed standing motionless between trees."
+},
+
+{
+id:"VTB-002",
+name:"The Observer",
+type:"txt",
+threat:"HIGH RISK",
+image:"entities/vtb-002.jpg",
+description:"Unknown entity repeatedly discovered in photographs after they are taken."
+},
+
+{
+id:"VTB-003",
+name:"The Smiling Passenger",
+type:"txt",
+threat:"HIGH RISK",
+image:"entities/vtb-003.jpg",
+description:"Unknown passenger appearing inside buses and trains during late-night hours."
+},
+
+{
+id:"VTB-004",
+name:"Tunnel Walker",
+type:"txt",
+threat:"MODERATE",
+image:"entities/vtb-004.jpg",
+description:"Tall humanoid figure frequently recorded inside abandoned tunnels."
+},
+
+{
+id:"VTB-005",
+name:"Deepwater Titan",
+type:"txt",
+threat:"EXTREME",
+image:"entities/vtb-005.jpg",
+description:"Massive aquatic organism inhabiting deep water environments."
+},
+
+{
+id:"VTB-006",
+name:"Antlered Shadow",
+type:"txt",
+threat:"HIGH RISK",
+image:"entities/vtb-006.jpg",
+description:"Shadow-like humanoid entity with massive antlers."
+},
+
+{
+id:"VTB-007",
+name:"The Window Face",
+type:"txt",
+threat:"HIGH RISK",
+image:"entities/vtb-007.jpg",
+description:"Distorted human-like face frequently observed behind windows of abandoned structures."
+},
+
+{
+id:"VTB-008",
+name:"Iron Jaw",
+type:"txt",
+threat:"EXTREME",
+image:"entities/vtb-008.jpg",
+description:"Large predatory entity possessing a split jaw structure and extreme physical strength."
+},
+
+{
+id:"VTB-009",
+name:"Radio Man",
+type:"txt",
+threat:"MODERATE",
+image:"entities/vtb-009.jpg",
+description:"Humanoid entity associated with unexplained radio broadcasts."
+},
+
+{
+id:"VTB-010",
+name:"White Mask",
+type:"txt",
+threat:"HIGH RISK",
+image:"entities/vtb-010.jpg",
+description:"Tall humanoid entity possessing a completely white featureless face."
+},
+
+{
+id:"VTB-011",
+name:"Corrupted Archive",
+type:"corrupted",
+description:"FILE CORRUPTED\nRecovery Progress: 14%"
+},
+
+{
+id:"VTB-012",
+name:"Corrupted Archive",
+type:"corrupted",
+description:"FILE CORRUPTED\nRecovery Progress: 31%"
+},
+
+{
+id:"VTB-013",
+name:"Restricted File",
+type:"restricted",
+description:"ACCESS DENIED\nLEVEL-5 CLEARANCE REQUIRED"
+},
+
+{
+id:"VTB-014",
+name:"Missing Archive",
+type:"missing",
+description:"ARCHIVE NOT FOUND\nFILE REMOVED FROM DATABASE"
+}
+
+];
+
+const filesContainer = document.getElementById("files");
+
+function render(search=""){
+
+filesContainer.innerHTML="";
+
+files
+.filter(file =>
+(file.id + file.name)
+.toLowerCase()
+.includes(search.toLowerCase())
+)
+.forEach(file=>{
+
+let icon="📄";
+
+if(file.type==="corrupted") icon="⚠";
+if(file.type==="restricted") icon="🔒";
+if(file.type==="missing") icon="❌";
+
+filesContainer.innerHTML += `
+<div class="file" onclick="openFile('${file.id}')">
+<b>${icon} ${file.id}.${file.type}</b>
+<div class="status">${file.name}</div>
 </div>
+`;
 
-<div class="file">
-<a href="#">📄 vtb-002.txt</a>
-<span class="date">2026-05-12</span>
-</div>
+});
 
-<div class="file">
-<a href="#">📄 vtb-003.txt</a>
-<span class="date">2026-05-16</span>
-</div>
+}
 
-<div class="file">
-<a href="#">📄 vtb-004.txt</a>
-<span class="date">2026-05-20</span>
-</div>
+render();
 
-<div class="file">
-<a href="#">📄 vtb-005.txt</a>
-<span class="date">2026-05-24</span>
-</div>
+function openFile(id){
 
-<div class="file">
-<a href="#">📄 vtb-006.txt</a>
-<span class="date">2026-05-29</span>
-</div>
+const file = files.find(f=>f.id===id);
 
-<div class="file">
-<a href="#">📄 vtb-007.txt</a>
-<span class="date">2026-06-01</span>
-</div>
+document.getElementById("modal").style.display="flex";
+document.getElementById("title").innerText=file.id+" - "+file.name;
 
-<div class="file">
-<a href="#">📄 vtb-008.txt</a>
-<span class="date">2026-06-03</span>
-</div>
+document.getElementById("description").innerText=file.description;
 
-<div class="file">
-<a href="#">📄 vtb-009.txt</a>
-<span class="date">2026-06-06</span>
-</div>
+if(file.image){
 
-<div class="file">
-<a href="#">📄 vtb-010.txt</a>
-<span class="date">2026-06-09</span>
-</div>
+document.getElementById("image").style.display="block";
+document.getElementById("image").src=file.image;
 
-<div class="file">
-<a href="#">⚠ vtb-011.corrupted</a>
-<span class="date">Unknown</span>
-</div>
+document.getElementById("threat").innerHTML=
+"<b>Threat Level:</b> "+file.threat;
 
-<div class="file">
-<a href="#">⚠ vtb-012.corrupted</a>
-<span class="date">Unknown</span>
-</div>
+}else{
 
-<div class="file">
-<a href="#">🔒 vtb-013.restricted</a>
-<span class="date">Classified</span>
-</div>
+document.getElementById("image").style.display="none";
+document.getElementById("threat").innerHTML="";
 
-<div class="file">
-<a href="#">❌ vtb-014.missing</a>
-<span class="date">Removed</span>
-</div>
+}
 
-<hr>
+}
 
-<div class="file">
-<a href="#">📄 expedition-report-07.pdf</a>
-<span class="date">Unavailable</span>
-</div>
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
 
-<div class="file">
-<a href="#">📄 incident-042.log</a>
-<span class="date">Unavailable</span>
-</div>
+document.getElementById("search")
+.addEventListener("input",e=>{
+render(e.target.value);
+});
 
-<div class="file">
-<a href="#">🎵 audio-recording-12.wav</a>
-<span class="date">Unavailable</span>
-</div>
-
-<hr>
-
-<div class="footer">
-Server: VTB Archive Node-03<br>
-Last Index Update: 2026-06-15<br>
-Notice: Some files may be incomplete or unavailable.
-</div>
+</script>
 
 </body>
 </html>

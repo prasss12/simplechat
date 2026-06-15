@@ -133,9 +133,22 @@
             background: #059669;
         }
 
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
         .btn-sm {
             padding: 0.4rem 0.8rem;
             font-size: 0.75rem;
+        }
+
+        .btn-block {
+            width: 100%;
         }
 
         /* Container */
@@ -352,27 +365,35 @@
         }
 
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 600;
             color: white;
         }
 
         .profile-info h2 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
         }
 
         .profile-info p {
             color: var(--gray);
             font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
         .profile-stats {
@@ -381,6 +402,7 @@
             gap: 1rem;
             padding: 1.5rem;
             border-bottom: 1px solid var(--border);
+            background: white;
         }
 
         .stat-card {
@@ -388,10 +410,16 @@
             padding: 1rem;
             background: var(--light);
             border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .stat-number {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: var(--primary);
         }
@@ -404,6 +432,7 @@
 
         .profile-address {
             padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .profile-address h4 {
@@ -415,6 +444,30 @@
         .profile-address p {
             font-size: 0.875rem;
             color: var(--gray);
+        }
+
+        .become-seller-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            margin: 1rem;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .become-seller-card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+        }
+
+        .become-seller-card p {
+            font-size: 0.75rem;
+            color: #b45309;
         }
 
         /* Cart */
@@ -601,6 +654,26 @@
             right: 0;
         }
 
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-list li i {
+            color: var(--success);
+            font-size: 0.75rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-container {
@@ -618,11 +691,18 @@
                 align-items: center;
                 text-align: center;
             }
+            .profile-actions {
+                justify-content: center;
+            }
             .products-grid {
                 grid-template-columns: 1fr;
             }
             .cart-item {
                 flex-wrap: wrap;
+            }
+            .become-seller-card {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -654,10 +734,10 @@
                         <label>Kata Sandi</label>
                         <input type="password" id="loginPassword" placeholder="********" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Masuk</button>
+                    <button type="submit" class="btn btn-primary btn-block">Masuk</button>
                 </form>
                 <div class="divider">atau</div>
-                <button class="btn btn-outline" onclick="googleLogin()" style="width:100%">
+                <button class="btn btn-outline btn-block" onclick="googleLogin()">
                     <i class="fab fa-google"></i> Lanjutkan dengan Google
                 </button>
                 <p style="text-align:center; margin-top:1rem; font-size:0.75rem; color:var(--gray)">
@@ -695,7 +775,7 @@
                             <option value="business">Penjual</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Daftar</button>
+                    <button type="submit" class="btn btn-primary btn-block">Daftar</button>
                 </form>
             </div>
         </div>
@@ -710,12 +790,15 @@
             </div>
             <div class="modal-body">
                 <p style="margin-bottom:1rem">Dengan menjadi penjual, Anda dapat:</p>
-                <ul style="margin-bottom:1.5rem; margin-left:1.25rem; color:var(--gray); font-size:0.875rem">
-                    <li>Menambahkan produk sendiri</li>
-                    <li>Mengelola stok produk</li>
-                    <li>Melihat pesanan masuk</li>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Menambahkan produk sendiri</li>
+                    <li><i class="fas fa-check-circle"></i> Mengelola stok produk</li>
+                    <li><i class="fas fa-check-circle"></i> Melihat pesanan masuk</li>
+                    <li><i class="fas fa-check-circle"></i> Mendapatkan penghasilan tambahan</li>
                 </ul>
-                <button class="btn btn-primary" onclick="upgradeToSeller()" style="width:100%">Upgrade ke Akun Penjual</button>
+                <button class="btn btn-warning btn-block" onclick="upgradeToSeller()" style="margin-top:1rem">
+                    <i class="fas fa-store"></i> Upgrade ke Akun Penjual
+                </button>
             </div>
         </div>
     </div>
@@ -749,7 +832,7 @@
                         <label>URL Gambar</label>
                         <input type="url" id="productImage" placeholder="https://example.com/image.jpg">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Tambahkan Produk</button>
+                    <button type="submit" class="btn btn-primary btn-block">Tambahkan Produk</button>
                 </form>
             </div>
         </div>
@@ -780,7 +863,7 @@
                         <label>Nomor Telepon</label>
                         <input type="tel" id="phone" placeholder="08123456789" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Simpan Alamat</button>
+                    <button type="submit" class="btn btn-primary btn-block">Simpan Alamat</button>
                 </form>
             </div>
         </div>
@@ -847,6 +930,7 @@
             showAlert('Selamat! Anda sekarang menjadi penjual', 'success');
             closeModal('becomeSellerModal');
             updateNav();
+            showProfile();
         }
 
         async function googleLogin() {
@@ -860,7 +944,8 @@
                         name: result.user.displayName,
                         email: result.user.email,
                         role: 'user',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        address: '', city: '', postalCode: '', phone: ''
                     });
                 }
                 showAlert('Login berhasil', 'success');
@@ -1207,28 +1292,55 @@
             const productsCount = (await db.collection('products').where('sellerId', '==', currentUser.uid).get()).size;
             const ordersCount = (await db.collection('orders').where('buyerId', '==', currentUser.uid).get()).size;
             
+            let sellerCard = '';
+            if (data.role !== 'business' && data.role !== 'admin') {
+                sellerCard = `
+                    <div class="become-seller-card">
+                        <div>
+                            <h4><i class="fas fa-store"></i> Jadi Penjual Sekarang!</h4>
+                            <p>Dapatkan penghasilan tambahan dengan menjual produk Anda</p>
+                        </div>
+                        <button class="btn btn-warning btn-sm" onclick="showBecomeSellerModal()">
+                            <i class="fas fa-arrow-right"></i> Daftar Jadi Penjual
+                        </button>
+                    </div>
+                `;
+            }
+            
             document.getElementById('mainContent').innerHTML = `
                 <div class="profile-container">
                     <div class="profile-header">
                         <div class="profile-avatar">${data.name?.charAt(0).toUpperCase() || 'U'}</div>
                         <div class="profile-info">
                             <h2>${data.name}</h2>
-                            <p>${data.email}</p>
+                            <p><i class="fas fa-envelope"></i> ${data.email}</p>
                             <p><span class="badge ${data.role === 'admin' ? 'badge-admin' : data.role === 'business' ? 'badge-business' : 'badge-user'}">${data.role === 'admin' ? 'Administrator' : data.role === 'business' ? 'Penjual' : 'Pembeli'}</span></p>
-                            ${data.role !== 'business' && data.role !== 'admin' ? 
-                                `<button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="showBecomeSellerModal()">Jadi Penjual</button>` : ''}
-                            <button class="btn btn-outline btn-sm" style="margin-top:0.5rem; margin-left:0.5rem" onclick="showAddressModal()">Edit Alamat</button>
+                            <div class="profile-actions">
+                                <button class="btn btn-outline btn-sm" onclick="showAddressModal()">
+                                    <i class="fas fa-map-marker-alt"></i> Edit Alamat
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    ${sellerCard}
                     <div class="profile-stats">
-                        <div class="stat-card"><div class="stat-number">${productsCount}</div><div class="stat-label">Produk</div></div>
-                        <div class="stat-card"><div class="stat-number">${ordersCount}</div><div class="stat-label">Pesanan</div></div>
-                        <div class="stat-card"><div class="stat-number">${cart.length}</div><div class="stat-label">Keranjang</div></div>
+                        <div class="stat-card">
+                            <div class="stat-number">${productsCount}</div>
+                            <div class="stat-label">Total Produk</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${ordersCount}</div>
+                            <div class="stat-label">Total Pesanan</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${cart.length}</div>
+                            <div class="stat-label">Keranjang</div>
+                        </div>
                     </div>
                     <div class="profile-address">
-                        <h4>Alamat Pengiriman</h4>
+                        <h4><i class="fas fa-map-marker-alt"></i> Alamat Pengiriman</h4>
                         <p>${data.address ? `${data.address}, ${data.city} - ${data.postalCode}` : 'Belum diisi'}</p>
-                        <p style="margin-top:0.5rem">📞 ${data.phone || '-'}</p>
+                        <p style="margin-top:0.5rem"><i class="fas fa-phone"></i> ${data.phone || '-'}</p>
                     </div>
                 </div>`;
         }
@@ -1250,7 +1362,8 @@
                         name: user.email?.split('@')[0] || 'User', 
                         email: user.email, 
                         role: 'user', 
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        address: '', city: '', postalCode: '', phone: ''
                     });
                     currentUserData = { name: user.email?.split('@')[0] || 'User', email: user.email, role: 'user' };
                 }

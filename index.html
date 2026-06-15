@@ -20,25 +20,22 @@
             --bg-dark: #111B21;
             --bg-dark-header: #202C33;
             --bg-light: #FFFFFF;
-            --bg-light-header: #F0F2F5;
-            --text-dark: #111B21;
             --text-light: #E9EDEF;
-            --text-muted: #667781;
-            --border-light: #E9EDEF;
+            --text-muted: #8696A0;
             --border-dark: #2A3942;
-            --outgoing-msg: #D9FDD3;
-            --incoming-msg: #FFFFFF;
+            --outgoing-msg: #005C4B;
+            --incoming-msg: #202C33;
             --online: #25D366;
             --offline: #8696A0;
         }
 
-        [data-theme="dark"] {
-            --bg-dark: #0A1217;
-            --bg-dark-header: #1E2A32;
-            --text-light: #E9EDEF;
-            --border-dark: #2A3942;
-            --outgoing-msg: #005C4B;
-            --incoming-msg: #202C33;
+        [data-theme="light"] {
+            --bg-dark: #FFFFFF;
+            --bg-dark-header: #F0F2F5;
+            --text-light: #111B21;
+            --border-dark: #E9EDEF;
+            --outgoing-msg: #D9FDD3;
+            --incoming-msg: #FFFFFF;
         }
 
         body {
@@ -59,7 +56,7 @@
         }
 
         .login-box {
-            background: var(--bg-light);
+            background: white;
             border-radius: 32px;
             padding: 40px;
             width: 90%;
@@ -78,14 +75,9 @@
         }
 
         .login-logo h1 {
-            color: var(--text-dark);
+            color: #111B21;
             font-size: 28px;
             margin-top: 10px;
-        }
-
-        .login-logo p {
-            color: var(--text-muted);
-            font-size: 14px;
         }
 
         .input-field {
@@ -98,17 +90,16 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-muted);
+            color: #667781;
         }
 
         .input-field input {
             width: 100%;
             padding: 15px 15px 15px 45px;
-            border: 1px solid var(--border-light);
+            border: 1px solid #E9EDEF;
             border-radius: 12px;
             font-size: 16px;
             outline: none;
-            transition: all 0.3s;
         }
 
         .input-field input:focus {
@@ -125,19 +116,13 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: var(--whatsapp-teal);
-            transform: translateY(-2px);
         }
 
         .btn-google {
             width: 100%;
             padding: 15px;
             background: white;
-            border: 1px solid var(--border-light);
+            border: 1px solid #E9EDEF;
             border-radius: 12px;
             cursor: pointer;
             display: flex;
@@ -145,17 +130,12 @@
             justify-content: center;
             gap: 10px;
             font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .btn-google:hover {
-            background: #f5f5f5;
         }
 
         .divider {
             text-align: center;
             margin: 20px 0;
-            color: var(--text-muted);
+            color: #667781;
             position: relative;
         }
 
@@ -166,7 +146,7 @@
             top: 50%;
             width: 45%;
             height: 1px;
-            background: var(--border-light);
+            background: #E9EDEF;
         }
 
         .divider::before { left: 0; }
@@ -175,13 +155,14 @@
         .auth-link {
             text-align: center;
             margin-top: 20px;
-            color: var(--text-muted);
+            color: #667781;
         }
 
         .auth-link a {
             color: var(--whatsapp-green);
             text-decoration: none;
             font-weight: 600;
+            cursor: pointer;
         }
 
         .error-msg {
@@ -191,13 +172,13 @@
             text-align: center;
         }
 
-        /* Main App Layout - WhatsApp Style */
+        /* Main App */
         .app-container {
             display: flex;
             height: 100vh;
         }
 
-        /* Sidebar (Chat List) */
+        /* Sidebar */
         .sidebar {
             width: 380px;
             background: var(--bg-dark);
@@ -299,7 +280,7 @@
             font-size: 14px;
         }
 
-        /* Tabs Navigation */
+        /* Tabs */
         .tabs-nav {
             display: flex;
             background: var(--bg-dark-header);
@@ -315,7 +296,6 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s;
             position: relative;
         }
 
@@ -390,16 +370,6 @@
         .chat-time {
             font-size: 11px;
             color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .unread-badge {
-            background: var(--whatsapp-green);
-            color: white;
-            border-radius: 20px;
-            padding: 2px 8px;
-            font-size: 11px;
-            font-weight: 600;
         }
 
         /* Chat Area */
@@ -408,7 +378,6 @@
             display: flex;
             flex-direction: column;
             background: var(--bg-dark);
-            position: relative;
         }
 
         .chat-header {
@@ -435,23 +404,11 @@
             cursor: pointer;
         }
 
-        .chat-details h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .chat-details p {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        /* Messages Container */
+        /* Messages */
         .messages-container {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="rgba(255,255,255,0.03)"/></svg>');
-            background-repeat: repeat;
         }
 
         .messages-list {
@@ -464,7 +421,6 @@
             max-width: 65%;
             padding: 8px 12px;
             border-radius: 12px;
-            position: relative;
             word-wrap: break-word;
         }
 
@@ -472,14 +428,13 @@
             background: var(--outgoing-msg);
             align-self: flex-end;
             border-bottom-right-radius: 4px;
-            color: var(--text-dark);
         }
 
         .message-in {
             background: var(--incoming-msg);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
-            color: var(--text-dark);
+            color: #111B21;
         }
 
         .message-text {
@@ -508,7 +463,7 @@
             margin-top: 4px;
         }
 
-        /* Message Input */
+        /* Input Area */
         .message-input-area {
             padding: 12px 20px;
             background: var(--bg-dark-header);
@@ -593,7 +548,6 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-size: 14px;
         }
 
         /* Modal */
@@ -677,7 +631,7 @@
             color: var(--text-light);
         }
 
-        /* Status Tab */
+        /* Status */
         .my-status-card {
             background: var(--bg-dark-header);
             margin: 16px;
@@ -702,7 +656,7 @@
             cursor: pointer;
         }
 
-        /* Toast */
+        /* Toast & Loading */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -723,7 +677,6 @@
             100% { opacity: 0; visibility: hidden; }
         }
 
-        /* Loading */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -755,7 +708,7 @@
             display: none !important;
         }
 
-        /* Mobile Responsive */
+        /* Mobile */
         @media (max-width: 768px) {
             .sidebar {
                 position: absolute;
@@ -766,11 +719,7 @@
                 z-index: 100;
                 transition: left 0.3s;
             }
-
-            .sidebar.show {
-                left: 0;
-            }
-
+            .sidebar.show { left: 0; }
             .chat-area {
                 position: absolute;
                 top: 0;
@@ -781,37 +730,15 @@
                 transform: translateX(100%);
                 transition: transform 0.3s;
             }
-
-            .chat-area.show {
-                transform: translateX(0);
-            }
-
-            .back-btn {
-                display: block;
-            }
-
-            .message {
-                max-width: 85%;
-            }
-
-            .sidebar {
-                width: 100%;
-            }
+            .chat-area.show { transform: translateX(0); }
+            .back-btn { display: block; }
+            .message { max-width: 85%; }
+            .sidebar { width: 100%; }
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark-header);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--text-muted);
-            border-radius: 3px;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark-header); }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
     </style>
 </head>
 <body>
@@ -846,7 +773,7 @@
                 <i class="fab fa-google"></i> Continue with Google
             </button>
             <div class="auth-link">
-                Don't have an account? <a href="#" id="showRegisterBtn">Register</a>
+                Don't have an account? <a id="showRegisterBtn">Register</a>
             </div>
         </div>
 
@@ -872,20 +799,19 @@
                 <button type="submit" class="btn-primary">Register</button>
             </form>
             <div class="auth-link">
-                Already have an account? <a href="#" id="showLoginBtn">Login</a>
+                Already have an account? <a id="showLoginBtn">Login</a>
             </div>
         </div>
     </div>
 
     <!-- Main App -->
     <div id="appContainer" class="app-container hidden">
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="user-info">
                     <div class="avatar">
-                        <img id="sidebarAvatar" src="" alt="Avatar">
-                        <div class="online-dot" id="onlineDot"></div>
+                        <img id="sidebarAvatar" src="">
+                        <div class="online-dot"></div>
                     </div>
                     <span class="user-name" id="sidebarName">User</span>
                 </div>
@@ -905,99 +831,51 @@
             <div class="tabs-nav">
                 <button class="tab-btn active" data-tab="chats"><i class="fas fa-comment"></i> Chats</button>
                 <button class="tab-btn" data-tab="status"><i class="fas fa-circle"></i> Status</button>
-                <button class="tab-btn" data-tab="calls"><i class="fas fa-phone"></i> Calls</button>
                 <button class="tab-btn" data-tab="profile"><i class="fas fa-user"></i> Profile</button>
             </div>
 
-            <!-- Chats List -->
             <div class="chats-list" id="chatsList"></div>
-
-            <!-- Status Tab -->
             <div id="statusTab" class="hidden">
                 <div class="my-status-card" onclick="openStatusUpload()">
-                    <div class="avatar">
-                        <img id="statusAvatar" src="" alt="">
-                    </div>
-                    <div>
-                        <div style="font-weight: 600;">My Status</div>
-                        <div style="font-size: 13px; color: var(--text-muted);">Tap to add status update</div>
-                    </div>
+                    <div class="avatar"><img id="statusAvatar" src=""></div>
+                    <div><div style="font-weight: 600;">My Status</div><div style="font-size: 13px; color: var(--text-muted);">Tap to add status</div></div>
                 </div>
                 <div id="statusList" class="status-list"></div>
             </div>
-
-            <!-- Calls Tab -->
-            <div id="callsTab" class="hidden">
-                <div class="chats-list" id="callsList"></div>
-            </div>
-
-            <!-- Profile Tab -->
             <div id="profileTab" class="hidden">
                 <div class="profile-tab">
                     <div class="profile-avatar-large" onclick="changeProfilePhoto()">
-                        <img id="profileAvatar" src="" alt="">
+                        <img id="profileAvatar" src="">
                         <i class="fas fa-camera"></i>
                     </div>
                     <input type="text" id="profileNameInput" class="profile-input" placeholder="Your Name">
                     <p style="color: var(--text-muted); font-size: 12px;" id="profileEmail"></p>
-                    
                     <div style="margin-top: 30px;">
-                        <h4 style="margin-bottom: 15px;">Privacy</h4>
-                        <div class="setting-item">
-                            <span>Last Seen & Online</span>
-                            <select id="lastSeenPrivacy">
-                                <option value="everyone">Everyone</option>
-                                <option value="contacts">My Contacts</option>
-                                <option value="nobody">Nobody</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 20px;">
                         <h4 style="margin-bottom: 15px;">Storage</h4>
                         <div id="storageInfo" style="margin-bottom: 15px;">Loading...</div>
                         <button class="btn-primary" onclick="clearAllMedia()" style="background: #e74c3c;">Clear All Media</button>
                     </div>
-
                     <div style="margin-top: 20px;">
-                        <button class="btn-primary" onclick="createGroup()" style="background: var(--whatsapp-green);">+ Create New Group</button>
+                        <button class="btn-primary" onclick="createGroup()" style="background: var(--whatsapp-green);">+ Create Group</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Chat Area -->
         <div class="chat-area" id="chatArea">
             <div class="chat-header">
                 <div class="chat-header-info">
                     <button class="back-btn" id="backToSidebar"><i class="fas fa-arrow-left"></i></button>
-                    <div class="avatar">
-                        <img id="chatAvatar" src="" alt="">
-                    </div>
-                    <div class="chat-details">
-                        <h3 id="chatName">Select a chat</h3>
-                        <p id="chatTyping" class="hidden">Typing...</p>
-                    </div>
-                </div>
-                <div class="sidebar-actions">
-                    <button class="icon-btn" id="callVideoBtn"><i class="fas fa-video"></i></button>
-                    <button class="icon-btn" id="callAudioBtn"><i class="fas fa-phone"></i></button>
+                    <div class="avatar"><img id="chatAvatar" src=""></div>
+                    <div class="chat-details"><h3 id="chatName">Select a chat</h3><p id="chatTyping" class="hidden">Typing...</p></div>
                 </div>
             </div>
-
-            <div class="messages-container" id="messagesContainer">
-                <div class="messages-list" id="messagesList"></div>
-            </div>
-
+            <div class="messages-container" id="messagesContainer"><div class="messages-list" id="messagesList"></div></div>
             <div class="message-input-area">
                 <button class="icon-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
                 <div class="input-wrapper">
-                    <div id="replyPreview" class="reply-preview hidden">
-                        <span id="replyText"></span>
-                        <button onclick="cancelReply()" style="background: none; border: none; color: var(--text-muted);">×</button>
-                    </div>
+                    <div id="replyPreview" class="reply-preview hidden"><span id="replyText"></span><button onclick="cancelReply()" style="background:none; border:none;">×</button></div>
                     <textarea id="messageInput" placeholder="Type a message..." rows="1"></textarea>
-                    <button class="icon-btn" id="emojiBtn"><i class="far fa-smile"></i></button>
                 </div>
                 <button class="icon-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
                 <button class="icon-btn" id="sendBtn" style="background: var(--whatsapp-green); color: white; border-radius: 50%;"><i class="fas fa-paper-plane"></i></button>
@@ -1007,10 +885,7 @@
 
     <!-- Bottom Sheet -->
     <div id="bottomSheet" class="bottom-sheet hidden">
-        <div class="sheet-header">
-            <h3>Attach Media</h3>
-            <button onclick="closeBottomSheet()" style="background: none; border: none; color: var(--text-light); font-size: 24px;">×</button>
-        </div>
+        <div class="sheet-header"><h3>Attach Media</h3><button onclick="closeBottomSheet()" style="background:none; border:none; font-size:24px;">×</button></div>
         <div class="sheet-options">
             <button onclick="uploadImage()"><i class="fas fa-image"></i> Gallery</button>
             <button onclick="takePhoto()"><i class="fas fa-camera"></i> Camera</button>
@@ -1019,7 +894,7 @@
         </div>
     </div>
 
-    <!-- Voice Recorder Modal -->
+    <!-- Voice Modal -->
     <div id="voiceModal" class="modal hidden">
         <div class="modal-content">
             <h3>🎤 Voice Message</h3>
@@ -1031,7 +906,7 @@
         </div>
     </div>
 
-    <!-- Status View Modal -->
+    <!-- Status View -->
     <div id="statusViewModal" class="modal hidden">
         <div style="position: relative; width: 100%; max-width: 400px; height: 80vh; background: #000; display: flex; align-items: center; justify-content: center;">
             <div id="statusViewer"></div>
@@ -1042,7 +917,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
     <script>
         // ==================== FIREBASE CONFIG ====================
@@ -1058,17 +932,18 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        
-        db.enablePersistence({ synchronizeTabs: true }).catch(e => console.log(e));
 
-        // ==================== GLOBAL VARIABLES ====================
+        // Enable offline persistence (biar cepet)
+        db.enablePersistence({ synchronizeTabs: true }).catch(e => console.log("Persistence:", e));
+
+        // ==================== GLOBAL ====================
         let currentUser = null;
         let currentChatId = null;
         let currentReplyTo = null;
         let currentMediaToSend = null;
         let messagesUnsub = null;
 
-        // ==================== HELPER FUNCTIONS ====================
+        // ==================== HELPER ====================
         function showLoading(show) {
             document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
         }
@@ -1097,7 +972,7 @@
             return div.innerHTML;
         }
 
-        function compressImage(file, maxSizeMB = 0.5, maxWH = 800) {
+        async function compressImage(file, maxSizeMB = 0.5, maxWH = 800) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -1125,7 +1000,7 @@
             });
         }
 
-        function fileToBase64(file) {
+        async function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -1134,16 +1009,16 @@
             });
         }
 
-        // ==================== AUTHENTICATION ====================
+        // ==================== AUTH ====================
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
                 await setupUser(user.uid);
                 document.getElementById('loginPage').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
-                loadChats();
+                await loadChats(); // tunggu selesai
                 loadStatuses();
-                loadCalls();
+                updateStorage();
                 showLoading(false);
             } else {
                 document.getElementById('loginPage').classList.remove('hidden');
@@ -1181,7 +1056,7 @@
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             if (password.length < 6) {
-                document.getElementById('registerError').innerHTML = 'Password must be at least 6 characters';
+                document.getElementById('registerError').innerHTML = 'Password min 6 characters';
                 showLoading(false); return;
             }
             try {
@@ -1231,7 +1106,6 @@
             document.querySelector('.login-box').classList.remove('hidden');
         });
 
-        // Update profile name
         document.getElementById('profileNameInput')?.addEventListener('change', async (e) => {
             await db.collection('users').doc(currentUser.uid).update({ displayName: e.target.value });
             await currentUser.updateProfile({ displayName: e.target.value });
@@ -1239,16 +1113,16 @@
             showToast('Name updated!');
         });
 
-        // Dark mode
-        let isDark = localStorage.getItem('theme') === 'dark';
-        if (isDark) document.body.setAttribute('data-theme', 'dark');
+        // Dark Mode
+        let isDark = localStorage.getItem('theme') === 'light';
         document.getElementById('darkModeToggle')?.addEventListener('click', () => {
             isDark = !isDark;
-            document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
         });
+        if (localStorage.getItem('theme') === 'light') document.body.setAttribute('data-theme', 'light');
 
-        // Tab navigation
+        // Tab Navigation
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1256,44 +1130,79 @@
                 const tab = btn.dataset.tab;
                 document.getElementById('chatsList').classList.add('hidden');
                 document.getElementById('statusTab').classList.add('hidden');
-                document.getElementById('callsTab').classList.add('hidden');
                 document.getElementById('profileTab').classList.add('hidden');
                 if (tab === 'chats') document.getElementById('chatsList').classList.remove('hidden');
                 else if (tab === 'status') document.getElementById('statusTab').classList.remove('hidden');
-                else if (tab === 'calls') document.getElementById('callsTab').classList.remove('hidden');
                 else if (tab === 'profile') document.getElementById('profileTab').classList.remove('hidden');
             });
         });
 
-        // ==================== CHATS ====================
+        document.getElementById('backToSidebar')?.addEventListener('click', () => {
+            document.querySelector('.chat-area').classList.remove('show');
+            document.querySelector('.sidebar').classList.add('show');
+        });
+
+        // ==================== CHATS (DIPERCEPAT) ====================
         async function loadChats() {
             if (!currentUser) return;
-            db.collection('chats').where('participants', 'array-contains', currentUser.uid)
-                .orderBy('lastMessageTime', 'desc').onSnapshot(async (snapshot) => {
-                const list = document.getElementById('chatsList');
+            
+            const list = document.getElementById('chatsList');
+            list.innerHTML = '<div style="text-align:center; padding:40px;">📱 Loading...</div>';
+            
+            try {
+                const snapshot = await db.collection('chats')
+                    .where('participants', 'array-contains', currentUser.uid)
+                    .orderBy('lastMessageTime', 'desc')
+                    .limit(50)
+                    .get();
+                
+                if (snapshot.empty) {
+                    list.innerHTML = '<div style="text-align:center; padding:40px;">💬 No chats yet</div>';
+                    return;
+                }
+                
                 list.innerHTML = '';
+                
                 for (const doc of snapshot.docs) {
                     const chat = doc.data();
                     const otherId = chat.participants?.find(p => p !== currentUser.uid);
-                    let name = chat.isGroup ? chat.groupName : 'Loading...';
+                    let name = chat.isGroup ? chat.groupName : 'Unknown';
                     let avatar = null;
+                    
                     if (!chat.isGroup && otherId) {
-                        const u = await db.collection('users').doc(otherId).get();
-                        name = u.data()?.displayName || 'Unknown';
-                        avatar = u.data()?.photoURL;
+                        const userDoc = await db.collection('users').doc(otherId).get();
+                        if (userDoc.exists) {
+                            name = userDoc.data()?.displayName || 'Unknown';
+                            avatar = userDoc.data()?.photoURL;
+                        }
                     }
-                    const presence = await db.collection('presence').doc(otherId).get();
-                    const isOnline = presence.exists ? presence.data().online : false;
-                    const av = avatar || `https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}`;
+                    
+                    let isOnline = false;
+                    if (otherId) {
+                        const presence = await db.collection('presence').doc(otherId).get();
+                        isOnline = presence.exists ? presence.data().online : false;
+                    }
+                    
+                    const av = avatar || `https://ui-avatars.com/api/?background=25D366&color=fff&name=${encodeURIComponent(name)}`;
+                    
                     list.innerHTML += `
                         <div class="chat-item" onclick="openChat('${doc.id}', '${escapeHtml(name)}', '${av}', ${chat.isGroup || false})">
-                            <div class="chat-avatar"><img src="${av}"><div class="online-dot" style="${isOnline ? 'background: #25D366' : 'background: #8696A0'}"></div></div>
-                            <div class="chat-info"><div class="chat-name">${escapeHtml(name)}</div><div class="chat-last-msg">${chat.lastMessage || 'Tap to chat'}</div></div>
+                            <div class="chat-avatar">
+                                <img src="${av}">
+                                <div class="online-dot" style="${isOnline ? 'background: #25D366' : 'background: #8696A0'}"></div>
+                            </div>
+                            <div class="chat-info">
+                                <div class="chat-name">${escapeHtml(name)}</div>
+                                <div class="chat-last-msg">${escapeHtml(chat.lastMessage) || 'Tap to chat'}</div>
+                            </div>
                             <div class="chat-meta"><div class="chat-time">${formatTime(chat.lastMessageTime)}</div></div>
                         </div>
                     `;
                 }
-            });
+            } catch (error) {
+                console.error(error);
+                list.innerHTML = '<div style="text-align:center; padding:40px;">❌ Error loading chats<br><small>Check Firestore setup</small></div>';
+            }
         }
 
         window.openChat = async function(chatId, name, avatar, isGroup) {
@@ -1303,8 +1212,8 @@
             document.querySelector('.chat-area').classList.add('show');
             document.querySelector('.sidebar').classList.remove('show');
             
-            // Load messages
             if (messagesUnsub) messagesUnsub();
+            
             const q = db.collection('messages').where('chatId', '==', chatId).orderBy('timestamp', 'desc').limit(30);
             messagesUnsub = q.onSnapshot(snapshot => {
                 const container = document.getElementById('messagesList');
@@ -1327,9 +1236,9 @@
             let mediaHtml = '';
             if (msg.mediaBase64) {
                 if (msg.mediaType === 'image') mediaHtml = `<img src="${msg.mediaBase64}" class="message-media" style="max-width:200px; border-radius:8px; margin-top:5px;">`;
-                else if (msg.mediaType === 'video') mediaHtml = `<video src="${msg.mediaBase64}" controls style="max-width:200px; border-radius:8px; margin-top:5px;"></video>`;
-                else if (msg.mediaType === 'audio') mediaHtml = `<audio src="${msg.mediaBase64}" controls style="margin-top:5px;"></audio>`;
-                else mediaHtml = `<div class="document-item" onclick="downloadFile('${msg.mediaBase64}', '${msg.mediaName}')">📄 ${msg.mediaName}</div>`;
+                else if (msg.mediaType === 'video') mediaHtml = `<video src="${msg.mediaBase64}" controls style="max-width:200px; border-radius:8px;"></video>`;
+                else if (msg.mediaType === 'audio') mediaHtml = `<audio src="${msg.mediaBase64}" controls></audio>`;
+                else mediaHtml = `<div style="padding:8px; background:rgba(0,0,0,0.1); border-radius:8px;">📄 ${msg.mediaName}</div>`;
             }
             div.innerHTML = `${replyHtml}<div class="message-text">${escapeHtml(msg.content || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>${mediaHtml}<div class="message-time">${formatTime(msg.timestamp)}</div>`;
             document.getElementById('messagesList').appendChild(div);
@@ -1339,6 +1248,7 @@
             const input = document.getElementById('messageInput');
             const content = input.value.trim();
             if (!content && !currentMediaToSend) return;
+            
             const msg = {
                 chatId: currentChatId, senderId: currentUser.uid, content: content,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(), replyTo: currentReplyTo
@@ -1348,11 +1258,13 @@
                 msg.mediaType = currentMediaToSend.type;
                 msg.mediaName = currentMediaToSend.name;
             }
+            
             await db.collection('messages').add(msg);
             await db.collection('chats').doc(currentChatId).update({
                 lastMessage: content || `[${currentMediaToSend?.type || 'Media'}]`,
                 lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
             });
+            
             input.value = '';
             currentMediaToSend = null;
             currentReplyTo = null;
@@ -1365,7 +1277,6 @@
             document.getElementById('replyPreview').classList.remove('hidden');
         };
         window.cancelReply = () => { currentReplyTo = null; document.getElementById('replyPreview').classList.add('hidden'); };
-        window.downloadFile = (url, name) => { const a = document.createElement('a'); a.href = url; a.download = name; a.click(); };
 
         function setupTyping(chatId) {
             const input = document.getElementById('messageInput');
@@ -1380,19 +1291,16 @@
                 if (data) {
                     const isTyping = Object.entries(data).some(([uid, v]) => v && uid !== currentUser.uid);
                     document.getElementById('chatTyping').classList.toggle('hidden', !isTyping);
-                    if (isTyping) document.getElementById('chatTyping').innerText = 'Typing...';
                 }
             });
         }
 
         document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
-        document.getElementById('messageInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-        document.getElementById('backToSidebar')?.addEventListener('click', () => {
-            document.querySelector('.chat-area').classList.remove('show');
-            document.querySelector('.sidebar').classList.add('show');
+        document.getElementById('messageInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
         });
 
-        // ==================== MEDIA UPLOAD ====================
+        // ==================== MEDIA ====================
         window.uploadImage = () => {
             const input = document.createElement('input');
             input.type = 'file'; input.accept = 'image/*';
@@ -1452,7 +1360,7 @@
         document.getElementById('attachBtn')?.addEventListener('click', () => document.getElementById('bottomSheet').classList.add('show'));
         window.closeBottomSheet = () => document.getElementById('bottomSheet').classList.remove('show');
 
-        // ==================== VOICE RECORDING ====================
+        // ==================== VOICE ====================
         let mediaRecorder, audioChunks = [];
         document.getElementById('voiceBtn')?.addEventListener('click', () => document.getElementById('voiceModal').classList.remove('hidden'));
         async function startRecording() {
@@ -1462,7 +1370,7 @@
             mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
             mediaRecorder.onstop = async () => {
                 const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                if (blob.size > 500000) { alert('Too long! Max 30 seconds.'); return; }
+                if (blob.size > 500000) { alert('Too long!'); return; }
                 const base64 = await new Promise(resolve => { const r = new FileReader(); r.onloadend = () => resolve(r.result); r.readAsDataURL(blob); });
                 currentMediaToSend = { base64, type: 'audio', name: 'voice.webm' };
                 sendMessage();
@@ -1510,22 +1418,25 @@
             input.click();
         };
 
-        function loadStatuses() {
-            db.collection('status').where('expiresAt', '>', firebase.firestore.Timestamp.now())
-                .orderBy('timestamp', 'desc').onSnapshot(async (snapshot) => {
-                const grouped = {};
-                snapshot.forEach(d => { const s = d.data(); if (!grouped[s.userId]) grouped[s.userId] = []; grouped[s.userId].push({ id: d.id, ...s }); });
-                const list = document.getElementById('statusList');
-                list.innerHTML = '';
-                for (const [uid, statuses] of Object.entries(grouped)) {
-                    const u = await db.collection('users').doc(uid).get();
-                    const name = u.data()?.displayName || 'Unknown';
-                    list.innerHTML += `<div class="status-item" onclick="viewStatus('${uid}', ${JSON.stringify(statuses).replace(/"/g, '&quot;')})">
-                        <div class="avatar"><img src="https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}"></div>
-                        <div><div style="font-weight:600;">${name}</div><div style="font-size:12px; color:var(--text-muted);">${formatTime(statuses[0].timestamp)}</div></div>
-                    </div>`;
-                }
-            });
+        async function loadStatuses() {
+            const snapshot = await db.collection('status')
+                .where('expiresAt', '>', firebase.firestore.Timestamp.now())
+                .orderBy('timestamp', 'desc')
+                .get();
+            
+            const grouped = {};
+            snapshot.forEach(d => { const s = d.data(); if (!grouped[s.userId]) grouped[s.userId] = []; grouped[s.userId].push({ id: d.id, ...s }); });
+            
+            const list = document.getElementById('statusList');
+            list.innerHTML = '';
+            for (const [uid, statuses] of Object.entries(grouped)) {
+                const u = await db.collection('users').doc(uid).get();
+                const name = u.data()?.displayName || 'Unknown';
+                list.innerHTML += `<div class="status-item" onclick="viewStatus('${uid}', ${JSON.stringify(statuses).replace(/"/g, '&quot;')})">
+                    <div class="avatar"><img src="https://ui-avatars.com/api/?background=25D366&color=fff&name=${name}"></div>
+                    <div><div style="font-weight:600;">${name}</div><div style="font-size:12px;">${formatTime(statuses[0].timestamp)}</div></div>
+                </div>`;
+            }
         }
 
         window.viewStatus = function(uid, statuses) {
@@ -1545,19 +1456,7 @@
         };
         window.closeStatusView = () => { document.getElementById('statusViewModal').classList.add('hidden'); document.getElementById('statusViewer').innerHTML = ''; };
 
-        // ==================== CALLS & GROUP ====================
-        function loadCalls() {
-            db.collection('calls').where('participants', 'array-contains', currentUser?.uid)
-                .orderBy('startedAt', 'desc').limit(30).onSnapshot(snapshot => {
-                const list = document.getElementById('callsList');
-                list.innerHTML = '';
-                snapshot.forEach(d => {
-                    const c = d.data();
-                    list.innerHTML += `<div class="chat-item"><div class="chat-info"><div class="chat-name">${c.from === currentUser.uid ? 'Outgoing' : 'Incoming'} Call</div><div class="chat-last-msg">${c.status}</div></div><div class="chat-meta"><div class="chat-time">${formatTime(c.startedAt)}</div></div></div>`;
-                });
-            });
-        }
-
+        // ==================== GROUP & STORAGE ====================
         window.createGroup = async () => {
             const name = prompt('Group name:');
             if (!name) return;
@@ -1571,9 +1470,9 @@
             }
             await db.collection('chats').add({ isGroup: true, groupName: name, participants: members, admins: [currentUser.uid], createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             showToast('Group created!');
+            loadChats();
         };
 
-        // ==================== STORAGE ====================
         async function updateStorage() {
             if (!currentUser) return;
             const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
@@ -1584,6 +1483,7 @@
             }
             document.getElementById('storageInfo').innerHTML = `📦 Used: ${(total/(1024*1024)).toFixed(2)} MB<br>📁 Files: ${count}`;
         }
+
         window.clearAllMedia = async () => {
             if (!confirm('Delete all media from all chats?')) return;
             const chats = await db.collection('chats').where('participants', 'array-contains', currentUser.uid).get();
@@ -1596,6 +1496,7 @@
             showToast('Media cleared!');
             updateStorage();
         };
+
         window.changeProfilePhoto = () => {
             const input = document.createElement('input');
             input.type = 'file'; input.accept = 'image/*';
@@ -1610,7 +1511,6 @@
         };
 
         setInterval(updateStorage, 30000);
-        setTimeout(updateStorage, 2000);
     </script>
 </body>
 </html>
